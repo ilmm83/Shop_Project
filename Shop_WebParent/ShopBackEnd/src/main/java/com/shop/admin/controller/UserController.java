@@ -3,12 +3,16 @@ package com.shop.admin.controller;
 import com.shop.admin.service.UserService;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
+
+import java.lang.ProcessBuilder.Redirect;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,8 +38,9 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createNewUser(@ModelAttribute User user) {
+    public String createNewUser(@ModelAttribute User user, RedirectAttributes redirect) {
         service.save(user);
+        redirect.addFlashAttribute("message", "The user has been saved successfuly.");
         return "redirect:/users";
     }
 
