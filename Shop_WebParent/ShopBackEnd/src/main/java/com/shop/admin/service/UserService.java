@@ -2,6 +2,7 @@ package com.shop.admin.service;
 
 import com.shop.admin.repository.RoleRepository;
 import com.shop.admin.repository.UserRepository;
+import com.shop.model.Role;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public List<Role> findAllRoles() {
+        return roleRepository.findAll();
     }
 
     public User getByEmail(String email) {

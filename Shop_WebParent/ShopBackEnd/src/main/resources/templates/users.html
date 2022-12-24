@@ -64,10 +64,11 @@
 
     <div class="ms-4">
         <h2>Manage Users</h2>
+        <a th:href="@{/users/user_form}">Create new user</a>
     </div>
 
     <div>
-        <table class="table table-responsive-xl">
+        <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
             <tr>
                 <th>User Id</th>
@@ -81,24 +82,24 @@
             </tr>
             </thead>
             <tbody>
-                <tr th:each="user : ${users}">
-                    <td>[[${user.id}]]</td>
-                    <td></td>
-                    <td>[[${user.email}]]</td>
-                    <td>[[${user.firstName}]]</td>
-                    <td>[[${user.lastName}]]</td>
-                    <td>[[${user.roles}]]</td>
-                    <td>[[${user.enabled}]]</td>
-                    <td>Edit &nbsp; Delete</td>
-                </tr>
+            <tr th:each="user : ${users}">
+                <td>[[${user.id}]]</td>
+                <td></td>
+                <td>[[${user.email}]]</td>
+                <td>[[${user.firstName}]]</td>
+                <td>[[${user.lastName}]]</td>
+                <td>[[${user.roles}]]</td>
+                <td>[[${user.enabled}]]</td>
+                <td>Edit &nbsp; Delete</td>
+            </tr>
             </tbody>
         </table>
     </div>
 
 </div>
 
-<div class="me-3">
-    <p style="text-align:right">Shop Control panel - Copyright &copy; Shop</p>
+<div class="text-center">
+    <p>Shop Control panel - Copyright &copy; Shop</p>
 </div>
 </body>
 </html>
