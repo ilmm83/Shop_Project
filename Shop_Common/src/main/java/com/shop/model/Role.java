@@ -23,4 +23,8 @@ public class Role {
     @Column(nullable = false)
     private String description;
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,34 +29,38 @@ class UserRepositoryTest {
     @BeforeEach
     void afterEach() {
         userRepository.deleteAll();
-        ;
         roleRepository.deleteAll();
     }
 
     @Test
     public void testUserCreation() {
-        Role admin = Role.builder()
-                .name("Admin")
-                .description("All mighty")
+        Role editor = Role.builder()
+                .name("Editor")
+                .description("manage categories, brands, products, articles and menus")
+                .build();
+        Role assistant = Role.builder()
+                .name("Assistant")
+                .description("manage question and reviews")
                 .build();
 
         Set<Role> roles = new HashSet<>();
-        roles.add(admin);
+        roles.add(editor);
+        roles.add(assistant);
 
         User user = User.builder()
-                .email("user1@gmail.com")
+                .email("user2@gmail.com")
                 .roles(roles)
-                .firstName("first name 1")
-                .lastName("last name 1")
+                .firstName("first name 2")
+                .lastName("last name 2")
                 .enabled(true)
-                .password("password1")
+                .password("password2")
                 .photos("photo")
                 .build();
 
-        roleRepository.save(admin);
+        roleRepository.save(editor);
+        roleRepository.save(assistant);
         User saved = userRepository.save(user);
 
         assertThat(saved).isEqualTo(user);
-        assertThat(saved.getRoles().contains(admin)).isTrue();
     }
 }
