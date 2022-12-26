@@ -5,6 +5,8 @@ import com.shop.admin.repository.UserRepository;
 import com.shop.model.Role;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -36,6 +39,7 @@ public class UserService {
 
     @Transactional
     public void save(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
