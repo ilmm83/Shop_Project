@@ -37,6 +37,10 @@ public class UserService {
         return user.get();
     }
 
+    public boolean isEmailExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     @Transactional
     public void save(User user) {
         user.setPassword(encoder.encode(user.getPassword()));

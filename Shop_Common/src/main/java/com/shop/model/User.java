@@ -10,7 +10,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "user")
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -38,14 +39,22 @@ public class User {
     private Boolean enabled;
 
     @ManyToMany
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     public void addRole(Role role) {
         this.roles.add(role);
     }
+
+    @Override
+    public String toString() {
+        return "User: \n"
+                + "  " + email + ", \n"
+                + "  " + password + ", \n"
+                + "  " + firstName + ", \n"
+                + "  " + lastName + ", \n"
+                + "  " + enabled + ", \n"
+                + "  " + roles + ";\n";
+    }
+
 }

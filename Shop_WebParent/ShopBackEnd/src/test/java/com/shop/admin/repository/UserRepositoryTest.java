@@ -1,20 +1,19 @@
 package com.shop.admin.repository;
 
-import com.shop.model.Role;
-import com.shop.model.User;
-import org.junit.jupiter.api.AfterEach;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import com.shop.model.Role;
+import com.shop.model.User;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
@@ -60,7 +59,23 @@ class UserRepositoryTest {
         roleRepository.save(editor);
         roleRepository.save(assistant);
         User saved = userRepository.save(user);
-
         assertThat(saved).isEqualTo(user);
+    }
+
+    @Test
+    public void canGetUserByEmail() {
+
+        User user = User.builder()
+                .email("user2@gmail.com")
+                .roles(null)
+                .firstName("first name 2")
+                .lastName("last name 2")
+                .enabled(true)
+                .password("password2")
+                .photos("photo")
+                .build();
+        userRepository.save(user);
+
+        System.out.println(userRepository.findByEmail(user.getEmail()).get());
     }
 }

@@ -51,6 +51,6 @@ class RoleRepositoryTest {
                 .build();
         List<Role> roles = repository.saveAll(List.of(salesperson, editor, shipper, assistant));
 
-        assertThat(roles.size()).isEqualTo(4);
+        assertThat(roles).hasSize(4);
     }
 }
