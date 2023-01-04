@@ -187,21 +187,21 @@
     </div>
 
     <!-- custom model for checking email window -->
-    <div class="modal fade text-center" id="modalDialog">
+    <div class="modal" id="modalDialog">
       <div class="modal-dialog">
         <div class="modal-content">
 
           <div class="modal-header">
             <h4 class="modal-title" id="modalTitle">Warning</h4>
-            <button class="close" type="button" data-dismiss="modal">&times;</button>
+            <button id="modalCancelBtnX" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-
+          
           <div class="modal-body">
-            <span id="modalBody"></span>
+            <p id="modalBody">Modal body text goes here.</p>
           </div>
-
+          
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button id="modalCancelBtn" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
 
         </div>
@@ -222,26 +222,46 @@
 
     // Script for validating an email from form
     function checkEmailUnique(form) {
-      url = "[[@{/users/check_email}]]";
-      userEmail = $("#email").val();
-      csrfValue = $("input[name='_csrf']").val(); // used 'input' because _csrf field is hidden
-      params = {email: userEmail, _csrf: csrfValue};
+      const url = "[[@{/users/check_email7}]]";
+      const userEmail = $("#email").val();
+      const csrfValue = $("input[name='_csrf']").val(); // used 'input' because _csrf field is hidden
+      const params = {email: userEmail, _csrf: csrfValue};
+      
 
       $.post(url, params, (response) => {
         if (response === "OK") {
           form.submit();
         } else if (response === "Duplicated") {
           showModalDialog("Warning", "There is another user having the email : " + userEmail)
+        } else {
+          showModalDialog("Error", "Unknown response from server!")
         }
+      })
+      .fail(() => {
+          showModalDialog("Error", "Could not connect to the server!")
       });
       return false;
     }
 
     function showModalDialog (title, message) {
-      $("#modalTitle").text(title);
-      $("modalBody").text(message);
-      $("modalDialog").modal(); //FIXME: modal method modal doesn't exist already. 
+      const modal = document.getElementById('modalDialog');
+      const cancelBtn = document.getElementById('modalCancelBtn');
+      const cancelBtnX = document.getElementById('modalCancelBtnX');
+
+      modal.style.display = 'block';
+      document.getElementById('modalTitle').innerHTML = title; 
+      document.getElementById('modalBody').innerHTML = message;
+    
+
+      cancelBtn.onclick = () => modal.style.display = 'none';
+      cancelBtnX.onclick = () => modal.style.display = 'none';
+
+      window.onclick = (event) => {
+        if (event.target == modal)
+          modal.style.display = 'none';
+      }
     }
+
   </script>
   </body>
 </html>
