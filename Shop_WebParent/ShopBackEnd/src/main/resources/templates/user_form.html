@@ -222,7 +222,7 @@
 
     // Script for validating an email from form
     function checkEmailUnique(form) {
-      const url = "[[@{/users/check_email7}]]";
+      const url = "[[@{/users/check_email}]]";
       const userEmail = $("#email").val();
       const csrfValue = $("input[name='_csrf']").val(); // used 'input' because _csrf field is hidden
       const params = {email: userEmail, _csrf: csrfValue};
