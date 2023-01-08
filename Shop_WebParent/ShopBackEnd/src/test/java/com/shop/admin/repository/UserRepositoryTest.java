@@ -26,9 +26,17 @@ class UserRepositoryTest {
     private RoleRepository roleRepository;
 
     @BeforeEach
-    void afterEach() {
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
+    void beforeEach() {
+        // userRepository.deleteAll();
+        // roleRepository.deleteAll();
+    }
+
+    @Test
+    public void canCountUserId() {
+        Long id = 1l;
+        Long counted = userRepository.countById(id);
+
+        assertThat(counted).isEqualTo(id);
     }
 
     @Test

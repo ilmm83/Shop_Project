@@ -1,13 +1,16 @@
 package com.shop.admin.controller;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.shop.admin.exception.UserNotFoundException;
 import com.shop.admin.service.UserService;
 import com.shop.model.User;
 
@@ -33,6 +36,7 @@ public class UserController {
 
         model.addAttribute("roles", service.findAllRoles());
         model.addAttribute("user", user);
+        model.addAttribute("pageTitle", "Create New User");
         return "user_form";
     }
 
@@ -43,4 +47,28 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/edit/{id}")
+    public String editUser(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
+        try {
+            model.addAttribute("user", service.findById(id));
+            model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
+            model.addAttribute("roles", service.findAllRoles());
+            return "user_form";
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+            redirect.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/users";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+        try {
+            service.delete(id);
+            redirect.addFlashAttribute("message", "The user with ID " + id + " has been deleted successfuly");
+        } catch (UserNotFoundException e) {
+            redirect.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/users";
+    }
 }

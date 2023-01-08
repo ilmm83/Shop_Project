@@ -11,6 +11,7 @@
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesom/all.css}" />
     <script
       type="text/javascript"
       th:src="@{/webjars/jquery/jquery.min.js}"
@@ -86,10 +87,11 @@
         <a th:href="@{/users/user_form}">Create new user</a>
       </div>
 
+      <!-- User has been saved successfuly -->
       <div class="text-center alert alert-success" th:if="${message != null}">
         [[${message}]]
       </div>
-      
+
       <div>
         <table
           class="table table-bordered table-striped table-hover table-responsive-xl"
@@ -109,21 +111,89 @@
           <tbody>
             <tr th:each="user : ${users}">
               <td>[[${user.id}]]</td>
-              <td></td>
+              <td class="text-center">
+                <span class="fa-solid fa-image-portrait fa-2x"></span>
+              </td>
               <td>[[${user.email}]]</td>
               <td>[[${user.firstName}]]</td>
               <td>[[${user.lastName}]]</td>
               <td>[[${user.roles}]]</td>
-              <td>[[${user.enabled}]]</td>
-              <td>Edit &nbsp; Delete</td>
+              <td class="text-center">
+                <span
+                  th:if="${user.enabled}"
+                  class="fa-solid fa-check fa-2x text-success"
+                ></span>
+                <span
+                  th:unless="${user.enabled}"
+                  class="fa-solid fa-xmark fa-2x text-danger"
+                ></span>
+              </td>
+              <td class="text-center">
+                <a
+                  style="text-decoration: none;"
+                  class="fa-solid fa-pen text-success fa-2x "
+                  th:href="@{'/users/edit/' + ${user.id}}"
+                  title="Edit this user"
+                ></a>
+                <span class="m-3"></span>
+                <a
+                  class="fa-solid fa-trash-can text-secondary fa-2x link-delete"
+                  th:href="@{'/users/delete/' + ${user.id}}"
+                  title="Delete this user"
+                ></a>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- custom model for checking email window -->
+    <div class="modal" id="confirmModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Confirmation</h4>
+            <button
+              id="modalCancelBtnX"
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <p id="modalBody"></p>
+          </div>
+
+          <div class="modal-footer">
+            <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+            <button
+              id="ConfirmationBtn"
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="text-center">
       <p>Shop Control panel - Copyright &copy; Shop</p>
     </div>
+
+    <script>
+      $(document).ready(() => {
+        $(".link-delete").on("click", (event) => {
+          event.preventDefault();
+          showModalConfirmationDialog();
+        });
+      });
+    </script>
+    <script th:src="@{/scripts/showModalConfirmationDialog.js}"></script>
   </body>
 </html>
