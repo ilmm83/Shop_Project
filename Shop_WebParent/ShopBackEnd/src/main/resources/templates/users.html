@@ -28,7 +28,7 @@
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
           <a class="navbar-brand" th:href="@{/}">
             <img
-              th:src="@{images/Shop-logo.png}"
+              th:src="@{/images/Shop-logo.png}"
               alt="Shop logo"
               width="120"
               height="90"
@@ -45,7 +45,7 @@
           <div class="collapse navbar-collapse" id="topNavbar">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" th:href="@{/users}">Users</a>
+                <a class="nav-link" th:href="@{/api/v1/users}">Users</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" th:href="@{/categories}">Categories</a>
@@ -84,7 +84,7 @@
 
       <div class="ms-4">
         <h2>Manage Users</h2>
-        <a th:href="@{/users/user_form}">Create new user</a>
+        <a th:href="@{/api/v1/users/user_form}">Create new user</a>
       </div>
 
       <!-- User has been saved successfuly -->
@@ -112,33 +112,52 @@
             <tr th:each="user : ${users}">
               <td>[[${user.id}]]</td>
               <td class="text-center">
-                <span class="fa-solid fa-image-portrait fa-2x"></span>
+                <span
+                  th:if="${user.photos == null}"
+                  class="fa-solid fa-image-portrait fa-2x"
+                ></span>
+                <img
+                  class="img-fluid rounded-3"
+                  style="width: 100px"
+                  th:if="${user.photos != null}"
+                  th:src="@{${user.photosImagePath}}"
+                  alt=""
+                />
               </td>
               <td>[[${user.email}]]</td>
               <td>[[${user.firstName}]]</td>
               <td>[[${user.lastName}]]</td>
               <td>[[${user.roles}]]</td>
               <td class="text-center">
-                <span
+                <a
+                  style="text-decoration: none"
                   th:if="${user.enabled}"
                   class="fa-solid fa-check fa-2x text-success"
-                ></span>
-                <span
+                  th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/false'}"
+                ></a>
+                <a
+                  style="text-decoration: none"
                   th:unless="${user.enabled}"
                   class="fa-solid fa-xmark fa-2x text-danger"
-                ></span>
+                  th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/true'}"
+                ></a>
               </td>
               <td class="text-center">
                 <a
-                  style="text-decoration: none;"
-                  class="fa-solid fa-pen text-success fa-2x "
-                  th:href="@{'/users/edit/' + ${user.id}}"
+                  style="text-decoration: none"
+                  class="fa-solid fa-pen text-success fa-2x"
+                  th:href="@{'/api/v1/users/edit/' + ${user.id}}"
+                  th:userId="${user.id}"
                   title="Edit this user"
                 ></a>
                 <span class="m-3"></span>
                 <a
-                  class="fa-solid fa-trash-can text-secondary fa-2x link-delete"
-                  th:href="@{'/users/delete/' + ${user.id}}"
+                  class="fa-solid fa-trash-can text-secondary fa-2x"
+                  th:href="@{'/api/v1/users/delete/' + ${user.id}}"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmModal"
+                  onclick="showModalConfirmationDialog($(this))"
+                  th:userId="${user.id}"
                   title="Delete this user"
                 ></a>
               </td>
@@ -149,7 +168,7 @@
     </div>
 
     <!-- custom model for checking email window -->
-    <div class="modal" id="confirmModal">
+    <div class="modal fade" id="confirmModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -186,14 +205,7 @@
       <p>Shop Control panel - Copyright &copy; Shop</p>
     </div>
 
-    <script>
-      $(document).ready(() => {
-        $(".link-delete").on("click", (event) => {
-          event.preventDefault();
-          showModalConfirmationDialog();
-        });
-      });
-    </script>
+    <script></script>
     <script th:src="@{/scripts/showModalConfirmationDialog.js}"></script>
   </body>
 </html>

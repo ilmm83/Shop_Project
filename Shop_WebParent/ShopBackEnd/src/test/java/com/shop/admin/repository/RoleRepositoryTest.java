@@ -14,7 +14,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
-// @Rollback(false) -- use this if wanna add new roles into db
+// @Rollback(false) //-- use this if wanna add new roles into db
 class RoleRepositoryTest {
 
     @Autowired
@@ -24,7 +24,7 @@ class RoleRepositoryTest {
     public void testCreateFirstRole() {
         Role admin = Role.builder()
                 .name("ADMIN")
-                .description("All mighty")
+                .description("Almighty")
                 .build();
         Role saved = repository.save(admin);
 

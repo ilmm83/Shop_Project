@@ -2,6 +2,8 @@ package com.shop.admin.repository;
 
 import com.shop.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,4 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Long countById(Long id);
+
+    @Query("UPDATE User u SET u.enabled = ?2 WHERE u.id = ?1")
+    @Modifying
+    void updateEnabledStatus(Long id, boolean enabled);
 }

@@ -54,12 +54,11 @@ public class UserService {
             return false;
         else if (!Objects.equals(user.get().getId(), id))
             return false;
-
         return true;
     }
 
     @Transactional
-    public void save(User user) {
+    public User save(User user) {
         if (user.getId() != null) {
             Optional<User> optional = userRepository.findById(user.getId());
             if (optional.isPresent()) {
@@ -69,8 +68,9 @@ public class UserService {
                 else
                     user.setPassword(encoder.encode(user.getPassword()));
             }
-        } else user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
+        } else
+            user.setPassword(encoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -79,5 +79,10 @@ public class UserService {
         if (counted == null || counted == 0)
             throw new UserNotFoundException("Could not find user with this ID " + id);
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void changeEnableState(Long id, boolean isEnable) {
+        userRepository.updateEnabledStatus(id, isEnable);
     }
 }

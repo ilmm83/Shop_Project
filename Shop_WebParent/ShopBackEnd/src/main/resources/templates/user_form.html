@@ -46,7 +46,7 @@
           <div class="collapse navbar-collapse" id="topNavbar">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" th:href="@{/users}">Users</a>
+                <a class="nav-link" th:href="@{/api/v1/users}">Users</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" th:href="@{/categories}">Categories</a>
@@ -89,11 +89,12 @@
 
       <!-- Registration form -->
       <form
-        th:action="@{/users/create}"
+        th:action="@{/api/v1/users/create}"
         method="post"
         style="max-width: 700px; margin: 0 auto"
         th:object="${user}" 
         onsubmit="return checkEmailUnique(this);" 
+        enctype="multipart/form-data"
       >
         <!-- for validating users existence -->
         <input type="hidden" th:field="*{id}"> 
@@ -190,6 +191,27 @@
             </div>
           </div>
 
+            <div class="form-group row p-2">
+              <label class="col-sm-4 col-form-label">Photos:</label>
+              <div class="col-sm-8">
+                <input type="hidden" th:field="*{photos}">
+                  <input 
+                    name="image"
+                    class="mb-3"
+                    type="file"
+                    onchange="showThumbnail(this)"
+                    value="Choose File"
+                    accept="image/png, image/jpeg"
+                  />
+                  <br>
+                <img 
+                  id="thumbnail" 
+                  class="img-fluid rounded-3"
+                  style="width: 100px"
+                  th:src="@{${user.photosImagePath}}" alt="">
+              </div>
+            </div>
+
           <div class="form-group row">
             <div class="text-center">
               <input type="submit" value="Save" class="btn btn-primary m-3" />
@@ -230,35 +252,13 @@
     // Script for Cancel button
     $(document).ready(() => {
       $("#buttonCancel").on("click", () => {
-        window.location = "[[@{/users}]]";
+        window.location = "[[@{/api/v1/users}]]";
       });
     });
 
-    // Script for validating an email from form
-    function checkEmailUnique(form) {
-      const url = "[[@{/users/check_email}]]";
-      const userEmail = $("#email").val();
-      const csrfValue = $("input[name='_csrf']").val(); // used 'input' because _csrf field is hidden
-      const userId = $('#id').val();
-      const params = {id: userId, email: userEmail, _csrf: csrfValue};
-
-      $.post(url, params, (response) => {
-        console.log(response +' '+ userId +' '+ userEmail);
-        if (response === "OK") {
-          form.submit();
-        } else if (response === "Duplicated") {
-          showModalDialog("Warning", "There is another user having the email : " + userEmail)
-        } else {
-          showModalDialog("Error", "Unknown response from server!")
-        }
-      })
-      .fail(() => {
-          showModalDialog("Error", "Could not connect to the server!")
-      });
-      return false;
-    }
-
   </script>
   <script th:src="@{/scripts/showModalDialog.js}"></script>
+  <script th:src="@{/scripts/checkEmailUnique.js}"></script>
+  <script th:src="@{/scripts/showThumbnail.js}"></script>
   </body>
 </html>

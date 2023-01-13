@@ -1,20 +1,21 @@
-function showModalConfirmationDialog() {
-  const modal = document.getElementById('confirmModal');
-  const cancelBtn = document.getElementById('ConfirmationBtn');
-  const cancelBtnX = document.getElementById('modalCancelBtnX');
-  const yesBtn = document.getElementById('yesBtn');
-  const DeleteUrl = document.getElementsByClassName('link-delete').item(0).getAttribute('href');
+function showModalConfirmationDialog(link) {
+  const modal = $("#confirmModal");
+  const cancelBtn = $("#ConfirmationBtn");
+  const cancelBtnX = $("#modalCancelBtnX");
+  const yesBtn = $("#yesBtn");
+  const userId = link.attr("userId");
+  const deleteUrl = link.attr("href");
 
-
-  $("#modalBody").text("Are you sure you want to delete this user?");
-  modal.style.display = 'block';
-
-  cancelBtn.onclick = () => modal.style.display = 'none';
-  cancelBtnX.onclick = () => modal.style.display = 'none';
-  yesBtn.onclick = () => yesBtn.setAttribute('href', DeleteUrl);
+  $("#modalBody").text(
+    `Are you sure you want delete the user with ID: ${userId}?`
+  );
+  
+  modal.show();
+  cancelBtn.click(() => modal.hide());
+  cancelBtnX.click(() => modal.hide());
+  yesBtn.click(() => yesBtn.attr("href", deleteUrl));
 
   window.onclick = (event) => {
-    if (event.target == modal)
-      modal.style.display = 'none';
-  }
+    if (event.target == modal) modal.hide();
+  };
 }

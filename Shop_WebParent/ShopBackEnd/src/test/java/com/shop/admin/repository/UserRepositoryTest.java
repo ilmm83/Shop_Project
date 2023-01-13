@@ -32,6 +32,13 @@ class UserRepositoryTest {
     }
 
     @Test
+    public void canChangeUserStatus() {
+    
+    userRepository.updateEnabledStatus(1L, true);
+    
+    }
+
+    @Test
     public void canCountUserId() {
         Long id = 1l;
         Long counted = userRepository.countById(id);
