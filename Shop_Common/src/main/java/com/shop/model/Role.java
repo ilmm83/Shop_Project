@@ -6,7 +6,7 @@ import lombok.*;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor

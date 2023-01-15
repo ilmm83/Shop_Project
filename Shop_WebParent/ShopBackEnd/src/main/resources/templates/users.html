@@ -110,7 +110,7 @@
           </thead>
           <tbody>
             <tr th:each="user : ${users}">
-              <td>[[${user.id}]]</td>
+              <td class="text-center">[[${user.id}]]</td>
               <td class="text-center">
                 <span
                   th:if="${user.photos == null}"
@@ -124,10 +124,10 @@
                   alt=""
                 />
               </td>
-              <td>[[${user.email}]]</td>
-              <td>[[${user.firstName}]]</td>
-              <td>[[${user.lastName}]]</td>
-              <td>[[${user.roles}]]</td>
+              <td class="text-center">[[${user.email}]]</td>
+              <td class="text-center">[[${user.firstName}]]</td>
+              <td class="text-center">[[${user.lastName}]]</td>
+              <td style="max-width: 400px">[[${user.roles}]]</td>
               <td class="text-center">
                 <a
                   style="text-decoration: none"
