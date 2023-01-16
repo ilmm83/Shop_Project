@@ -98,13 +98,115 @@
         >
           <thead class="table-dark">
             <tr>
-              <th>User Id</th>
+              <th>
+                <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField != 'id'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir}}"
+                 >User ID
+               </a> 
+                <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField == 'id'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortOrder}}"
+                 >User ID
+                </a> 
+                <span th:if="${sortField == 'id'}" 
+                th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
               <th>Photos</th>
-              <th>E-mail</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Roles</th>
-              <th>Enabled</th>
+              <th>
+                 <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField != 'email'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=email&sortDir=' + ${sortDir}}"
+                 >E-mail
+               </a> 
+                <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField == 'email'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortOrder}}"
+                 >E-mail
+                </a> 
+                <span th:if="${sortField == 'email'}" 
+                th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
+              <th>
+                <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField != 'firstName'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${sortDir}}"
+                 >First Name
+               </a> 
+                <a
+                  class="text-white"
+                  style="text-decoration: none;"
+                 th:if="${sortField == 'firstName'}"
+                 th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortOrder}}"
+                 >First Name
+                </a> 
+                <span th:if="${sortField == 'firstName'}" 
+                th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
+              <th>
+                <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField != 'lastName'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${sortDir}}"
+               >Last Name
+             </a> 
+              <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField == 'lastName'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortOrder}}"
+               >Last Name
+              </a> 
+              <span th:if="${sortField == 'lastName'}" 
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
+              <th>
+                <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField != 'roles'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=roles&sortDir=' + ${sortDir}}"
+               >Roles
+             </a> 
+              <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField == 'roles'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=roles&sortDir=' + ${reverseSortOrder}}"
+               >Roles
+              </a> 
+              <span th:if="${sortField == 'roles'}" 
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
+              <th>
+                <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField != 'enabled'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${sortDir}}"
+               >Enabled
+             </a> 
+              <a
+                class="text-white"
+                style="text-decoration: none;"
+               th:if="${sortField == 'enabled'}"
+               th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${reverseSortOrder}}"
+               >Enabled
+              </a> 
+              <span th:if="${sortField == 'enabled'}" 
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -167,6 +269,7 @@
       </div>
     </div>
 
+    <!-- pagination bar -->
     <div class="text-center">
       <span th:if="${totalUsers > 0}">
         Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalUsers}]]
@@ -178,22 +281,26 @@
         <ul class="pagination justify-content-center">
           <li class="page-item">
             <li class="page-item">
-              <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/1'}">First</a>
+              <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" 
+                th:href="@{'/api/v1/users/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">First</a>
             </li>
-            <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${currentPage - 1}}" aria-label="Previous">
+            <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" 
+              th:href="@{'/api/v1/users/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
           <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" th:each="i : ${#numbers.sequence(1, lastPage)}" class="page-item">
-            <a class="page-link" th:href="@{'/api/v1/users/' + ${i}}">[[${i}]]</a>
+            <a class="page-link" th:href="@{'/api/v1/users/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
           </li>
           <li class="page-item">
-            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${currentPage + 1}}" aria-label="Next">
+            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" 
+            th:href="@{'/api/v1/users/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
           <li class="page-item">
-            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${lastPage}}" aria-label="Last">
+            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" 
+            th:href="@{'/api/v1/users/' + ${lastPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}" aria-label="Last">
               <span aria-hidden="true">Last</span>
             </a>
           </li>

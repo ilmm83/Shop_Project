@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +32,16 @@ public class UserService {
 
     public static final int PAGE_SIZE = 4;
 
-
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    public Page<User> listByPage(int pageNum) {
-       PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE); 
-       return userPaging.findAll(pageable);
+    public Page<User> listByPage(int pageNum, String sortField, String sortDirection) {
+        Sort sort = Sort.by(sortField);
+        sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
+
+        PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
+        return userPaging.findAll(pageable);
     }
 
     public User findById(Long id) throws UserNotFoundException {

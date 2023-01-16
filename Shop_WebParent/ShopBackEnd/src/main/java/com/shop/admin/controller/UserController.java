@@ -3,6 +3,7 @@ package com.shop.admin.controller;
 import java.io.IOException;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -32,19 +33,20 @@ public class UserController {
 
     @GetMapping
     public String listFirstPage(Model model) {
-        Page<User> page = service.listByPage(1);
-        pageChanger(1, model, page);
+        Page<User> page = service.listByPage(1, "id", "asc");
+        pageChanger(1, model, page, "id", "asc");
         return "users";
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PathVariable("pageNum") int pageNum, Model model) {
-        Page<User> page = service.listByPage(pageNum);
-        pageChanger(pageNum, model, page);
+    public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
+            @Param("sortDir") String sortDir, Model model) {
+
+        Page<User> page = service.listByPage(pageNum, sortField, sortDir);
+        pageChanger(pageNum, model, page, sortField, sortDir);
         return "users";
     }
 
-    
     @GetMapping("/user_form")
     public String signIn(Model model) {
         User user = new User();
@@ -58,7 +60,7 @@ public class UserController {
 
     @PostMapping("/create")
     public String createNewUser(User user, RedirectAttributes redirect, @RequestParam("image") MultipartFile file)
-    throws IOException {
+            throws IOException {
         if (!file.isEmpty()) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             user.setPhotos(fileName);
@@ -68,10 +70,10 @@ public class UserController {
             FileUploadUtil.saveFile(uploadDir, fileName, file);
         } else {
             if (user.getPhotos().isEmpty())
-            user.setPhotos(null);
+                user.setPhotos(null);
             service.save(user);
         }
-        
+
         redirect.addFlashAttribute("message", "The user has been saved successfuly.");
         return REDIRECT_API_V1_USERS;
     }
@@ -89,7 +91,7 @@ public class UserController {
         }
         return REDIRECT_API_V1_USERS;
     }
-    
+
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
         try {
@@ -100,28 +102,33 @@ public class UserController {
         }
         return REDIRECT_API_V1_USERS;
     }
-    
+
     @GetMapping("/{id}/enabled/true")
     public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Enabled.");
         service.changeEnableState(id, true);
         return REDIRECT_API_V1_USERS;
     }
-    
+
     @GetMapping("/{id}/enabled/false")
     public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
         service.changeEnableState(id, false);
         return REDIRECT_API_V1_USERS;
     }
-    
-    private void pageChanger(int pageNum, Model model, Page<User> page) {
+
+    private void pageChanger(int pageNum, Model model, Page<User> page, String sortField, String sortDir) {
         long startCount = (pageNum - 1) * UserService.PAGE_SIZE + 1l;
         long endCount = startCount + UserService.PAGE_SIZE - 1;
         if (startCount > page.getTotalElements())
             endCount = page.getTotalElements();
-    
+
+        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
+
         model.addAttribute("users", page.getContent());
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("reverseSortOrder", reverseSortOrder);
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("lastPage", (page.getTotalElements() / UserService.PAGE_SIZE) + 1);
         model.addAttribute("totalUsers", page.getTotalElements());
