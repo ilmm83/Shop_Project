@@ -94,7 +94,7 @@
 
       <div>
         <table
-          class="table table-bordered table-striped table-hover table-responsive-xl"
+          class="text-center table table-bordered table-striped table-hover table-responsive-xl"
         >
           <thead class="table-dark">
             <tr>
@@ -127,7 +127,7 @@
               <td class="text-center">[[${user.email}]]</td>
               <td class="text-center">[[${user.firstName}]]</td>
               <td class="text-center">[[${user.lastName}]]</td>
-              <td style="max-width: 400px">[[${user.roles}]]</td>
+              <td class="text-center">[[${user.roles}]]</td>
               <td class="text-center">
                 <a
                   style="text-decoration: none"
@@ -165,6 +165,40 @@
           </tbody>
         </table>
       </div>
+    </div>
+
+    <div class="text-center">
+      <span th:if="${totalUsers > 0}">
+        Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalUsers}]]
+      </span>
+      <span th:if="${totalUsers <= 0}">
+        No Users found.
+      </span>
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+            <li class="page-item">
+              <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/1'}">First</a>
+            </li>
+            <a th:class="${currentPage > 1 ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${currentPage - 1}}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" th:each="i : ${#numbers.sequence(1, lastPage)}" class="page-item">
+            <a class="page-link" th:href="@{'/api/v1/users/' + ${i}}">[[${i}]]</a>
+          </li>
+          <li class="page-item">
+            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${currentPage + 1}}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a th:class="${currentPage != lastPage ? 'page-link' : 'page-link disabled'}" th:href="@{'/api/v1/users/' + ${lastPage}}" aria-label="Last">
+              <span aria-hidden="true">Last</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
     <!-- custom model for checking email window -->

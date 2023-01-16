@@ -48,13 +48,15 @@ public class User {
 
     @Override
     public String toString() {
+        var listOfRoleNames = roles.stream().map(Role::getName).toList();
         return "User: \n"
+                + "  " + id + ", \n"
                 + "  " + email + ", \n"
                 + "  " + password + ", \n"
                 + "  " + firstName + ", \n"
                 + "  " + lastName + ", \n"
                 + "  " + enabled + ", \n"
-                + "  " + roles + ";\n";
+                + "  " + listOfRoleNames + ";\n";
     }
 
     @Transient

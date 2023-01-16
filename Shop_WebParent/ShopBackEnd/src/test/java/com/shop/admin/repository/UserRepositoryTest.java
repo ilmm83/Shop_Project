@@ -93,4 +93,6 @@ class UserRepositoryTest {
 
         System.out.println(userRepository.findByEmail(user.getEmail()).get());
     }
+
+
 }

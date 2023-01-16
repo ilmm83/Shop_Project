@@ -2,11 +2,15 @@ package com.shop.admin.service;
 
 import com.shop.admin.exception.UserNotFoundException;
 import com.shop.admin.repository.RoleRepository;
+import com.shop.admin.repository.UserPagingAndSortingRepository;
 import com.shop.admin.repository.UserRepository;
 import com.shop.model.Role;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +24,21 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
 
+    private final UserPagingAndSortingRepository userPaging;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
+    public static final int PAGE_SIZE = 4;
+
+
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Page<User> listByPage(int pageNum) {
+       PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE); 
+       return userPaging.findAll(pageable);
     }
 
     public User findById(Long id) throws UserNotFoundException {
