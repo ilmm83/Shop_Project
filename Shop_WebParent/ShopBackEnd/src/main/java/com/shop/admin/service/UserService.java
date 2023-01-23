@@ -2,13 +2,10 @@ package com.shop.admin.service;
 
 import com.shop.admin.exception.UserNotFoundException;
 import com.shop.admin.repository.RoleRepository;
-import com.shop.admin.repository.UserPagingAndSortingRepository;
 import com.shop.admin.repository.UserRepository;
 import com.shop.model.Role;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,23 +22,35 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
 
-    private final UserPagingAndSortingRepository userPaging;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
     public static final int PAGE_SIZE = 4;
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<User> findAllUsersSortedByFirstName() {
+        return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
     }
 
-    public Page<User> listByPage(int pageNum, String sortField, String sortDirection) {
+    public List<User> findAllUsersSortedById() {
+        return (List<User>) userRepository.findAll(Sort.by("id").ascending());
+    }
+
+    public Page<User> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
+
         Sort sort = Sort.by(sortField);
+        if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an
+                                                          // exception
+            sort = Sort.by("firstName");
+
         sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
 
         PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-        return userPaging.findAll(pageable);
+
+        if (keyword != null)
+            return userRepository.findAll(keyword, pageable);
+        else
+            return userRepository.findAll(pageable);
     }
 
     public User findById(Long id) throws UserNotFoundException {

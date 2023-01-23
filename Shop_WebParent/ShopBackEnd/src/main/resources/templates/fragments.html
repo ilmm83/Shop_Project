@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <!-- Column Link  -->
+    <th th:fragment="column_link(fieldName, columnLabel)">
+      <a
+        class="text-white"
+        style="text-decoration: none"
+        th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=' + ${fieldName} 
+        + '&sortDir=' + ${sortField != fieldName ?  sortDir : reverseSortOrder} 
+        + ${keyword != null ? '&keyword=' + keyword : ''}}"
+        >[[${columnLabel}]]
+      </a>
+      <span
+        th:if="${sortField == fieldName}"
+        th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"
+      ></span>
+    </th>
+
+    <!-- All users data for table -->
+    <tr th:fragment="fill_table_users()" th:each="user : ${users}">
+      <td class="text-center">[[${user.id}]]</td>
+      <td class="text-center">
+        <span
+          th:if="${user.photos == null}"
+          class="fa-solid fa-image-portrait fa-2x"
+        ></span>
+        <img
+          class="img-fluid rounded-3"
+          style="width: 100px"
+          th:if="${user.photos != null}"
+          th:src="@{${user.photosImagePath}}"
+          alt=""
+        />
+      </td>
+      <td class="text-center">[[${user.email}]]</td>
+      <td class="text-center">[[${user.firstName}]]</td>
+      <td class="text-center">[[${user.lastName}]]</td>
+      <td class="text-center">[[${user.roles}]]</td>
+      <td class="text-center">
+        <a
+          style="text-decoration: none"
+          th:if="${user.enabled}"
+          class="fa-solid fa-check fa-2x text-success"
+          th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/false'}"
+        ></a>
+        <a
+          style="text-decoration: none"
+          th:unless="${user.enabled}"
+          class="fa-solid fa-xmark fa-2x text-danger"
+          th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/true'}"
+        ></a>
+      </td>
+      <td class="text-center">
+        <a
+          style="text-decoration: none"
+          class="fa-solid fa-pen text-success fa-2x"
+          th:href="@{'/api/v1/users/edit/' + ${user.id}}"
+          th:userId="${user.id}"
+          title="Edit this user"
+        ></a>
+        <span class="m-3"></span>
+        <a
+          class="fa-solid fa-trash-can text-secondary fa-2x"
+          th:href="@{'/api/v1/users/delete/' + ${user.id}}"
+          data-bs-toggle="modal"
+          data-bs-target="#confirmModal"
+          onclick="showModalConfirmationDialog($(this))"
+          th:userId="${user.id}"
+          title="Delete this user"
+        ></a>
+      </td>
+    </tr>
+
+    <!-- a tags in pagination section -->
+    <a
+      th:fragment="pagination_button(label, page_num)"
+      th:class="page-link"
+      th:href="@{'/api/v1/users/' + ${page_num} 
+      + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} 
+      + ${keyword != null ? '&keyword=' + keyword : ''}}"
+      >[[${label}]]</a
+    >
+  </body>
+</html>

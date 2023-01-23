@@ -18,8 +18,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shop.admin.exception.UserNotFoundException;
 import com.shop.admin.service.UserService;
 import com.shop.admin.utils.FileUploadUtil;
+import com.shop.admin.utils.exporter.UserCsvExporter;
+import com.shop.admin.utils.exporter.UserExcelExporter;
+import com.shop.admin.utils.exporter.UserPDFExporter;
 import com.shop.model.User;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -33,17 +37,38 @@ public class UserController {
 
     @GetMapping
     public String listFirstPage(Model model) {
-        Page<User> page = service.listByPage(1, "id", "asc");
-        pageChanger(1, model, page, "id", "asc");
+        Page<User> page = service.listByPage(1, "id", "asc", null);
+        changingDisplayUsersPage(1, model, page, "id", "asc", null);
         return "users";
+    }
+
+    @GetMapping("/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        var users = service.findAllUsersSortedByFirstName();
+        UserCsvExporter exporter = new UserCsvExporter();
+        exporter.export(users, response);
+    }
+
+    @GetMapping("/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        var users = service.findAllUsersSortedByFirstName();
+        UserExcelExporter exporter = new UserExcelExporter();
+        exporter.export(users, response);
+    }
+
+    @GetMapping("/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws IOException {
+        var users = service.findAllUsersSortedById();
+        UserPDFExporter exporter = new UserPDFExporter();
+        exporter.export(users, response);
     }
 
     @GetMapping("/{pageNum}")
     public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
-            @Param("sortDir") String sortDir, Model model) {
+            @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
 
-        Page<User> page = service.listByPage(pageNum, sortField, sortDir);
-        pageChanger(pageNum, model, page, sortField, sortDir);
+        Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
+        changingDisplayUsersPage(pageNum, model, page, sortField, sortDir, keyword);
         return "users";
     }
 
@@ -61,6 +86,7 @@ public class UserController {
     @PostMapping("/create")
     public String createNewUser(User user, RedirectAttributes redirect, @RequestParam("image") MultipartFile file)
             throws IOException {
+
         if (!file.isEmpty()) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             user.setPhotos(fileName);
@@ -75,7 +101,9 @@ public class UserController {
         }
 
         redirect.addFlashAttribute("message", "The user has been saved successfuly.");
-        return REDIRECT_API_V1_USERS;
+
+        String firstPartOfEmail = user.getEmail().split("@")[0];
+        return REDIRECT_API_V1_USERS + "/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("/edit/{id}")
@@ -117,7 +145,8 @@ public class UserController {
         return REDIRECT_API_V1_USERS;
     }
 
-    private void pageChanger(int pageNum, Model model, Page<User> page, String sortField, String sortDir) {
+    private void changingDisplayUsersPage(int pageNum, Model model, Page<User> page, String sortField, String sortDir,
+            String keyword) {
         long startCount = (pageNum - 1) * UserService.PAGE_SIZE + 1l;
         long endCount = startCount + UserService.PAGE_SIZE - 1;
         if (startCount > page.getTotalElements())
@@ -125,6 +154,7 @@ public class UserController {
 
         String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
 
+        model.addAttribute("keyword", keyword);
         model.addAttribute("users", page.getContent());
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("sortField", sortField);
