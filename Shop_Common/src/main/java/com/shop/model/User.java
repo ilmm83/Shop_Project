@@ -10,8 +10,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -38,7 +37,7 @@ public class User {
 
     private Boolean enabled;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
@@ -46,23 +45,28 @@ public class User {
         this.roles.add(role);
     }
 
+    
     @Override
     public String toString() {
         var listOfRoleNames = roles.stream().map(Role::getName).toList();
         return "User: \n"
-                + "  " + id + ", \n"
-                + "  " + email + ", \n"
-                + "  " + password + ", \n"
-                + "  " + firstName + ", \n"
-                + "  " + lastName + ", \n"
-                + "  " + enabled + ", \n"
-                + "  " + listOfRoleNames + ";\n";
+        + "  " + id + ", \n"
+        + "  " + email + ", \n"
+        + "  " + password + ", \n"
+        + "  " + firstName + ", \n"
+        + "  " + lastName + ", \n"
+        + "  " + enabled + ", \n"
+        + "  " + listOfRoleNames + ";\n";
     }
 
     @Transient
     public String getPhotosImagePath() {
-       if (this.id == null || this.photos == null) return null;
-       return "/images/user-images/" + this.id + "/" + this.photos;
+        if (this.id == null || this.photos == null) return null;
+        return "/images/user-images/" + this.id + "/" + this.photos;
     }
 
+    @Transient
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

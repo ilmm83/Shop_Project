@@ -7,7 +7,7 @@
   </head>
   <body>
     <!-- Column Link  -->
-    <th th:fragment="column_link(fieldName, columnLabel)">
+    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
       <a
         class="text-white"
         style="text-decoration: none"
@@ -24,7 +24,7 @@
 
     <!-- All users data for table -->
     <tr th:fragment="fill_table_users()" th:each="user : ${users}">
-      <td class="text-center">[[${user.id}]]</td>
+      <td class="text-center hideable-column">[[${user.id}]]</td>
       <td class="text-center">
         <span
           th:if="${user.photos == null}"
@@ -38,7 +38,7 @@
           alt=""
         />
       </td>
-      <td class="text-center">[[${user.email}]]</td>
+      <td class="text-center hideable-column">[[${user.email}]]</td>
       <td class="text-center">[[${user.firstName}]]</td>
       <td class="text-center">[[${user.lastName}]]</td>
       <td class="text-center">[[${user.roles}]]</td>
