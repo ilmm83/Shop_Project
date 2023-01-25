@@ -26,9 +26,13 @@ public class SecurityConfig{
                 .formLogin()
                     .usernameParameter("email")
                     .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/api/v1/users")
+                    .defaultSuccessUrl("/", true)
                 .and()
                 .logout().permitAll()
+                .and()
+                .rememberMe()
+                    .key("ds;flkqha;FEKDJS;lkjdgfasdgdasgHKjKSJAHasijhjDFHkjhlkjFHjkdghasdf")
+                    .tokenValiditySeconds(7 * 24 * 60 * 60)
                 .and()
                 .build();
     }
