@@ -1,11 +1,9 @@
 package com.shop.admin.service;
 
-import com.shop.admin.exception.UserNotFoundException;
-import com.shop.admin.repository.RoleRepository;
-import com.shop.admin.repository.UserRepository;
-import com.shop.model.Role;
-import com.shop.model.User;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,9 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import com.shop.admin.exception.UserNotFoundException;
+import com.shop.admin.repository.RoleRepository;
+import com.shop.admin.repository.UserRepository;
+import com.shop.model.Role;
+import com.shop.model.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,6 @@ public class UserService {
 
         Sort sort = Sort.by(sortField);
         if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an
-                                                          // exception
             sort = Sort.by("firstName");
 
         sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
@@ -96,6 +97,27 @@ public class UserService {
         } else
             user.setPassword(encoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserAccount(User formUser) throws UserNotFoundException {
+        Optional<User> optional = userRepository.findById(formUser.getId());
+        if (optional.isEmpty())
+            throw new UserNotFoundException("Could not find a user with ID : " + formUser.getId());
+
+        User dbUser = optional.get();
+        if (!formUser.getPassword().isEmpty())
+            dbUser.setPassword(encoder.encode(formUser.getPassword()));
+        if (formUser.getFirstName() != null)
+            dbUser.setFirstName(formUser.getFirstName());
+        if (formUser.getLastName() != null)
+            dbUser.setLastName(formUser.getLastName());
+        if (formUser.getEnabled() != null)
+            dbUser.setEnabled(formUser.getEnabled());
+        if (formUser.getPhotos() != null)
+            dbUser.setPhotos(formUser.getPhotos());
+
+        return userRepository.save(dbUser);
     }
 
     @Transactional

@@ -19,6 +19,7 @@ public class SecurityConfig{
         return http
                 .authorizeHttpRequests()
                     .requestMatchers("/images/**", "/scripts/**", "/webjars/**").permitAll()
+                    .requestMatchers("/api/v1/users").hasAuthority("Admin")
                     .anyRequest().authenticated()    
                 .and()
                 .userDetailsService(userDetailsService())

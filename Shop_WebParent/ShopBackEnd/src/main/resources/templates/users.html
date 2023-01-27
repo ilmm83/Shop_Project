@@ -4,7 +4,9 @@
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin')}"></head>
+  <head
+    th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin')}"
+  ></head>
 
   <body>
     <div>
@@ -54,6 +56,7 @@
       </div>
 
       <!-- User has been saved successfuly -->
+      <br />
       <div class="text-center alert alert-success" th:if="${message != null}">
         [[${message}]]
       </div>
@@ -282,7 +285,7 @@
 
     <div th:replace="~{fragments :: footer()}"></div>
 
-    <script type="text/javascript" th:src="@{/scripts/logout.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
     <script
       type="text/javascript"

@@ -177,17 +177,9 @@
       <p>Shop Control panel - Copyright &copy; Shop</p>
     </div>
 
-  <script type="text/javascript">
-    // Script for Cancel button
-    $(document).ready(() => {
-      $("#buttonCancel").on("click", () => {
-        window.location = "[[@{/api/v1/users}]]";
-      });
-    });
-
-  </script>
-  <script th:src="@{/scripts/showModalDialog.js}"></script>
-  <script th:src="@{/scripts/checkEmailUnique.js}"></script>
-  <script th:src="@{/scripts/showThumbnail.js}"></script>
+  <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+  <script type="text/javascript" th:src="@{/scripts/showModalDialog.js}"></script>
+  <script type="text/javascript" th:src="@{/scripts/checkEmailUnique.js}"></script>
+  <script type="text/javascript" th:src="@{/scripts/showThumbnail.js}"></script>
   </body>
 </html>
