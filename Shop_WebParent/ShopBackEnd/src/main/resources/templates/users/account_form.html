@@ -36,7 +36,7 @@
         <div class="ms-4 text-center">
           <h2>Your Account Data</h2>
         </div>
-        
+
         <!-- User has been updated successfuly -->
         <div class="text-center alert alert-success" th:if="${message != null}">
           [[${message}]]
@@ -126,26 +126,25 @@
               <input class="m-2" type="checkbox" th:field="*{enabled}" />
             </div>
           </div>
-
-          <div class="form-group p-2">
+          
+          <div class="form-group row p-2">
             <label class="col-sm-4 col-form-label">Photos:</label>
-            <input type="hidden" th:field="*{photos}" />
-            <input
-              name="image"
-              class="mb-3"
-              type="file"
-              onchange="showThumbnail(this)"
-              value="Choose File"
-              accept="image/png, image/jpeg"
-            />
             <div class="col-sm-8">
-              <img
-                id="thumbnail"
+              <input type="hidden" th:field="*{photos}">
+                <input 
+                  name="image"
+                  class="mb-3"
+                  type="file"
+                  onchange="showThumbnail(this)"
+                  value="Choose File"
+                  accept="image/png, image/jpeg"
+                />
+                <br>
+              <img 
+                id="thumbnail" 
                 class="img-fluid rounded-3"
                 style="width: 150px"
-                th:src="@{${user.photosImagePath}}"
-                alt=""
-              />
+                th:src="@{${user.photosImagePath}}" alt="">
             </div>
           </div>
 
@@ -164,43 +163,12 @@
       </form>
     </div>
 
-    <!-- custom model for checking email window -->
-    <div class="modal" id="modalDialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="modalTitle">Warning</h4>
-            <button
-              id="modalCancelBtnX"
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
+    <div th:replace="~{fragments :: footer()}"></div>
 
-          <div class="modal-body">
-            <p id="modalBody"></p>
-          </div>
 
-          <div class="modal-footer">
-            <button
-              id="modalCancelBtn"
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center">
-      <p>Shop Control panel - Copyright &copy; Shop</p>
-    </div>
-
+    <script>
+      moduleURL = "[[@{/api/v1/users}]]";
+    </script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script
       type="text/javascript"

@@ -173,11 +173,13 @@
       </div>
     </div>
 
-    <div class="text-center">
-      <p>Shop Control panel - Copyright &copy; Shop</p>
-    </div>
+    <div th:replace="~{fragments :: footer()}"></div>
 
-  <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+    <script>
+        moduleURL = '[[@{/api/v1/users}]]'
+    </script>
+  <script type="text/javascript" th:src="@{/scripts/common.js}">
+  </script>
   <script type="text/javascript" th:src="@{/scripts/showModalDialog.js}"></script>
   <script type="text/javascript" th:src="@{/scripts/checkEmailUnique.js}"></script>
   <script type="text/javascript" th:src="@{/scripts/showThumbnail.js}"></script>

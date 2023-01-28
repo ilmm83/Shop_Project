@@ -39,7 +39,7 @@ public class UserController {
     public String listFirstPage(Model model) {
         Page<User> page = service.listByPage(1, "id", "asc", null);
         changingDisplayUsersPage(1, model, page, "id", "asc", null);
-        return "users";
+        return "users/users";
     }
 
     @GetMapping("/export/csv")
@@ -69,7 +69,7 @@ public class UserController {
 
         Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
         changingDisplayUsersPage(pageNum, model, page, sortField, sortDir, keyword);
-        return "users";
+        return "users/users";
     }
 
     @GetMapping("/user_form")
@@ -80,7 +80,7 @@ public class UserController {
         model.addAttribute("roles", service.findAllRoles());
         model.addAttribute("user", user);
         model.addAttribute("pageTitle", "Create New User");
-        return "user_form";
+        return "users/user_form";
     }
 
     @PostMapping("/create")
@@ -112,7 +112,7 @@ public class UserController {
             model.addAttribute("user", service.findById(id));
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
             model.addAttribute("roles", service.findAllRoles());
-            return "user_form";
+            return "users/user_form";
         } catch (UserNotFoundException e) {
             e.printStackTrace();
             redirect.addFlashAttribute("message", e.getMessage());

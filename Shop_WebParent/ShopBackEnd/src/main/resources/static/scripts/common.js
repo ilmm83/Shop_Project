@@ -6,7 +6,7 @@ $(document).ready(function() {
 
   // Script for Cancel button
   $("#buttonCancel").click(() => {
-    window.location = "/ShopAdmin/api/v1/users";
+    window.location = moduleURL;
   });
 
   customizeDropDownMenu();

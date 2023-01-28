@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:replace="~{fragments :: html_head('Error - Shop Admin')}"></title>
+  </head>
+  <body>
+    <!-- form for generating a csrf token -->
+    <form
+      th:action="@{/logout}"
+      th:hidden="true"
+      method="post"
+      name="LogoutForm"
+    >
+      <input type="submit" />
+    </form>
+    <nav th:replace="~{fragments :: navbar()}"></nav>
+    <div class="container-fluid">
+      <div class="m-3 text-center">
+        <h2>Sorry, an unexpected error has occured!</h2>
+      </div>
+    </div>
+
+    <br />
+    <div th:replace="~{fragments :: footer()}"></div>
+
+    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+  </body>
+</html>

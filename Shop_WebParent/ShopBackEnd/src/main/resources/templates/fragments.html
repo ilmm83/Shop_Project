@@ -114,16 +114,16 @@
       ></script>
     </head>
 
-    <!-- Navigation Bat -->
+    <!-- Navigation Bar -->
     <nav
       th:fragment="navbar()"
       class="navbar navbar-expand-lg bg-dark navbar-dark"
     >
-      <a class="navbar-brand" th:href="@{/}">
+      <a class="navbar-brand p-2" th:href="@{/}">
         <img
-          th:src="@{/images/Shop-logo.png}"
+          th:src="@{/images/Shop-logo-big.png}"
           alt="Shop logo"
-          width="120"
+          width="85"
           height="90"
         />
       </a>
@@ -140,35 +140,41 @@
           <li class="nav-item" sec:authorize="hasAuthority('Admin')">
             <a class="nav-link" th:href="@{/api/v1/users}">Users</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/categories}">Categories</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+            <a class="nav-link" th:href="@{/api/v1/categories}">Categories</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/brands}">Brands</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+            <a class="nav-link" th:href="@{/api/v1/brands}">Brands</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/products}">Products</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
+            <a class="nav-link" th:href="@{/api/v1/products}">Products</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/customers}">Customers</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+            <a class="nav-link" th:href="@{/api/v1/questions}">Questions</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+            <a class="nav-link" th:href="@{/api/v1/reviews}">Reviews</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/Orders}">Orders</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+            <a class="nav-link" th:href="@{/api/v1/customers}">Customers</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/sales_report}">Sales Report</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+            <a class="nav-link" th:href="@{/api/v1/shipping}">Shipping</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/articles}">Articles</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')">
+            <a class="nav-link" th:href="@{/api/v1/orders}">Orders</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/menus}">Menus</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+            <a class="nav-link" th:href="@{/api/v1/reports}">Reports</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/settings}">Settings</a>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+            <a class="nav-link" th:href="@{/api/v1/articles}">Articles</a>
+          </li>
+          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+            <a class="nav-link" th:href="@{/api/v1/menus}">Menus</a>
+          </li>
+          <li class="nav-item"  sec:authorize="hasAuthority('Admin')">
+            <a class="nav-link" th:href="@{/api/v1/settings}">Settings</a>
           </li>
           <li>
             <span class="fas fa-user fa-2x text-secondary"></span>

@@ -41,7 +41,7 @@ public class UserService {
     public Page<User> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
 
         Sort sort = Sort.by(sortField);
-        if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an
+        if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an 
             sort = Sort.by("firstName");
 
         sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
@@ -84,19 +84,19 @@ public class UserService {
     }
 
     @Transactional
-    public User save(User user) {
-        if (user.getId() != null) {
-            Optional<User> optional = userRepository.findById(user.getId());
+    public User save(User formUser) {
+        if (formUser.getId() != null) {
+            Optional<User> optional = userRepository.findById(formUser.getId());
             if (optional.isPresent()) {
-                User alrdyExist = optional.get();
-                if (alrdyExist.getPassword().isEmpty())
-                    user.setPassword(alrdyExist.getPassword());
+                User dbUser = optional.get();
+                if (formUser.getPassword().isEmpty())
+                    formUser.setPassword(dbUser.getPassword());
                 else
-                    user.setPassword(encoder.encode(user.getPassword()));
+                    formUser.setPassword(encoder.encode(formUser.getPassword()));
             }
         } else
-            user.setPassword(encoder.encode(user.getPassword()));
-        return userRepository.save(user);
+            formUser.setPassword(encoder.encode(formUser.getPassword()));
+        return userRepository.save(formUser);
     }
 
     @Transactional
