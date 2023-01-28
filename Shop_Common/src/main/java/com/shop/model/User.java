@@ -8,8 +8,8 @@ import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
 @Table(name = "users")
+@Entity
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
