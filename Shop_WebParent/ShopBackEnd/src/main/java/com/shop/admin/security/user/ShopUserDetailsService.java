@@ -1,4 +1,4 @@
-package com.shop.admin.security;
+package com.shop.admin.security.user;
 
 import java.util.Optional;
 
@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.shop.admin.repository.UserRepository;
+import com.shop.admin.repository.user.UserRepository;
 import com.shop.model.User;
 
 public class ShopUserDetailsService implements UserDetailsService{

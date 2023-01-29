@@ -1,4 +1,4 @@
-package com.shop.admin.repository;
+package com.shop.admin.repository.user;
 
 import com.shop.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,6 +2,8 @@ package com.shop.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,6 +48,20 @@ public class Category {
   @JoinColumn(name = "parent_id")
   private Category parent;
 
-  @OneToMany(mappedBy = "parent") 
+  @OneToMany(mappedBy = "parent")
   private Set<Category> children = new HashSet<>();
+
+  @Override
+  public String toString() {
+    return 
+        "\n  id - " + id + ", \n"
+        + "  Category - " + name + ", \n"
+        + "  alias - " + alias + ", \n"
+        + "  image - " + image + ", \n"
+        + "  parent - " + parent + ", \n"
+        + "  enabled - " + enabled + ", \n"
+        + "  childrens\n\t" + children.stream()
+            .map(kid -> kid.getName())
+            .collect(Collectors.toList()) + ";\n";
+  }
 }

@@ -1,4 +1,4 @@
-package com.shop.admin.controller;
+package com.shop.admin.controller.user;
 
 import java.io.IOException;
 
@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shop.admin.exception.UserNotFoundException;
-import com.shop.admin.security.ShopUserDetails;
-import com.shop.admin.service.UserService;
+import com.shop.admin.security.user.ShopUserDetails;
+import com.shop.admin.service.user.UserService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.model.User;
 

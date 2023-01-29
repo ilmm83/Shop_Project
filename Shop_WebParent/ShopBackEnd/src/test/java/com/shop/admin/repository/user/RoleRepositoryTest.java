@@ -1,5 +1,6 @@
-package com.shop.admin.repository;
+package com.shop.admin.repository.user;
 
+import com.shop.admin.repository.user.RoleRepository;
 import com.shop.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

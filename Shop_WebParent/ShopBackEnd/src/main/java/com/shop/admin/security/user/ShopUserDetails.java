@@ -1,7 +1,6 @@
-package com.shop.admin.security;
+package com.shop.admin.security.user;
 
 import java.util.Collection;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;

@@ -1,4 +1,4 @@
-package com.shop.admin.repository;
+package com.shop.admin.repository.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import com.shop.admin.repository.user.RoleRepository;
+import com.shop.admin.repository.user.UserRepository;
 import com.shop.model.Role;
 import com.shop.model.User;
 

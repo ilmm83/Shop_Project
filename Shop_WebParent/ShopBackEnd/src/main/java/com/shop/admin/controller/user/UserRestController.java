@@ -1,10 +1,10 @@
-package com.shop.admin.controller;
+package com.shop.admin.controller.user;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.admin.service.UserService;
+import com.shop.admin.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 

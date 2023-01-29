@@ -1,4 +1,4 @@
-package com.shop.admin.service;
+package com.shop.admin.service.user;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.admin.exception.UserNotFoundException;
-import com.shop.admin.repository.RoleRepository;
-import com.shop.admin.repository.UserRepository;
+import com.shop.admin.repository.user.RoleRepository;
+import com.shop.admin.repository.user.UserRepository;
 import com.shop.model.Role;
 import com.shop.model.User;
 
