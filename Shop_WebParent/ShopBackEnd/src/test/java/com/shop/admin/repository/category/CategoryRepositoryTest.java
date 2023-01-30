@@ -49,7 +49,6 @@ public class CategoryRepositoryTest {
 
     var list = List.of(computers, electronics);
     var categories = (List<Category>) repository.saveAll(list);
-
     assertThat(categories.size()).isPositive();
   }
 
@@ -78,28 +77,29 @@ public class CategoryRepositoryTest {
     assertThat(category).isNotNull();
   }
 
-  // @Test
-  // public void canPrintHierachicalCategories() {
-  //   var categories = repository.findAll();
+  @Test
+  public void canPrintHierachicalCategories() {
+    Iterable<Category> categories = repository.findAll();
 
-  //   for (var sub : categories) {
-  //     if (sub.getParent() != null)continue;
-  //     log.info(sub.getName());
-  //     for (var parent : sub.getChildren()) {
-  //       log.info("--" + parent.getName());
-  //       printChildren(sub, 1);
-  //     }
-  //   }
-  // }
+    for (Category cat : categories) {
+      if (cat.getParent() == null) {
+        log.info(cat.getName());
+        for (var sub : cat.getChildren()) {
+          log.info("--" + sub.getName());
+          printChildren(sub);
+        }
+      }
+    }
+  }
 
-  // private void printChildren(Category parent, int level) {
-  //   int subLevel = level++;
-  //   String dash = "";
-  //   for (var sub : parent.getChildren()) {
-  //     for (int i = 0; i < subLevel; i++)
-  //       dash += "--";
-  //     log.info(dash + sub.getName());
-  //     printChildren(sub, subLevel);
-  //   }
-  // }
+  private void printChildren(Category parent) {
+    Set<Category> children = parent.getChildren();
+    String dashes = "--";
+    for (Category sub : children) {
+      for (int i = 0; i < children.size(); i++) dashes += "--";
+      log.info(dashes + sub.getName());
+      printChildren(sub);
+      children.remove(sub);
+    }
+  }
 }

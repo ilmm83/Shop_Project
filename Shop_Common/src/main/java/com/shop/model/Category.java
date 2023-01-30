@@ -2,7 +2,6 @@ package com.shop.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
@@ -14,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +28,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class Category {
+
+
+  public Category(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +51,8 @@ public class Category {
 
   private boolean enabled;
 
+  
+
   @OneToOne
   @JoinColumn(name = "parent_id")
   private Category parent;
@@ -53,8 +62,7 @@ public class Category {
 
   @Override
   public String toString() {
-    return 
-        "\n  id - " + id + ", \n"
+    return "\n  id - " + id + ", \n"
         + "  Category - " + name + ", \n"
         + "  alias - " + alias + ", \n"
         + "  image - " + image + ", \n"
@@ -62,6 +70,18 @@ public class Category {
         + "  enabled - " + enabled + ", \n"
         + "  childrens\n\t" + children.stream()
             .map(kid -> kid.getName())
-            .collect(Collectors.toList()) + ";\n";
+            .collect(Collectors.toList())
+        + ";\n";
   }
+
+  @Transient
+  public String getPhotosImagePath() {
+    if (this.id == null || this.image == null)
+      return null;
+    return "/images/categories-images/" + this.id + "/" + this.image;
+  }
+
+
+
+
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head th:replace="~{fragments :: html_head('Create new Category')}"></head>
+
+  <body>
+    <div>
+      <!-- form for generating a csrf token -->
+      <form
+        th:action="@{/logout}"
+        th:hidden="true"
+        method="post"
+        name="LogoutForm"
+      >
+        <input type="submit" />
+      </form>
+
+      <div>
+        <nav th:replace="~{fragments :: navbar()}"></nav>
+      </div>
+
+      <!-- Registration form -->
+      <form
+        th:action="@{/api/v1/categories/new}"
+        method="post"
+        style="max-width: 500px; margin: 20px auto"
+        th:object="${category}"
+        enctype="multipart/form-data"
+      >
+        <div class="m-3 text-center">
+          <h2>Create New Category Form</h2>
+        </div>
+        <!-- User has been updated successfuly -->
+        <div class="text-center alert alert-success" th:if="${message != null}">
+          [[${message}]]
+        </div>
+
+        <div class="border border-secondary border-opacity-25 rounded p-3">
+          <!-- for validating users existence -->
+          <input type="hidden" th:field="*{id}" />
+
+          <div class="form-group p-2 row">
+            <label class="col-sm-4 col-form-label">Category Name:</label>
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{name}"
+                required
+                minlength="3"
+                maxlength="128"
+              />
+            </div>
+          </div>
+
+          <div class="form-group p-2 row">
+            <label class="col-sm-4 col-form-label">Alias:</label>
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{alias}"
+                required
+                minlength="3"
+                maxlength="64"
+              />
+            </div>
+          </div>
+
+          <div class="form-group row p-2">
+            <label class="col-sm-4 col-form-label">Parent Category:</label>
+            <div class="col-sm-8">
+              <select class="form-select" th:field="*{parent}">
+                <option th:value="${null}">No parent</option>
+                <th:block th:each="category : ${categories}">
+                  <option th:value="${category.id}">[[${category.name}]]</option>
+                </th:block>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row p-2">
+            <label class="col-sm-4 col-form-label">Enabled:</label>
+            <div class="col-sm-8">
+              <input class="m-2" type="checkbox" th:field="*{enabled}" />
+            </div>
+          </div>
+
+          <div class="form-group row p-2">
+            <label class="col-sm-4 col-form-label">Image:</label>
+            <div class="col-sm-8">
+              <input type="hidden" th:field="*{image}" />
+              <input
+                name="fileImage"
+                class="mb-3"
+                type="file"
+                onchange="showThumbnail(this)"
+                value="Choose File"
+                accept="image/png, image/jpeg"
+                required
+              />
+              <br />
+              <img
+                id="thumbnail"
+                class="img-fluid rounded-3"
+                style="width: 150px"
+                th:src="@{${category.photosImagePath}}"
+                alt=""
+              />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="text-center">
+              <input type="submit" value="Save" class="btn btn-primary m-3" />
+              <input
+                type="button"
+                value="Cancel"
+                class="btn btn-secondary"
+                id="buttonCancel"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div th:replace="~{fragments :: footer()}"></div>
+
+    <script>
+      const moduleURL = "[[@{/api/v1/categories}]]";
+    </script>
+    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/showModalDialog.js}"
+    ></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/showThumbnail.js}"
+    ></script>
+  </body>
+</html>

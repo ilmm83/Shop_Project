@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head
+    th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin')}"
+  ></head>
+
+  <body>
+    <div>
+      <div>
+        <!-- form for generating a csrf token -->
+        <form
+          th:action="@{/logout}"
+          th:hidden="true"
+          method="post"
+          name="LogoutForm"
+        >
+          <input type="submit" />
+        </form>
+
+        <nav th:replace="~{fragments :: navbar()}"></nav>
+      </div>
+
+      <div class="ms-4">
+        <h2>Manage Categories</h2>
+        <a
+          class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
+          style="text-decoration: none"
+          title="Create new Category"
+          th:href="@{/api/v1/categories/new}"
+        ></a>
+        &nbsp;&nbsp;
+        <a
+          class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+          style="text-decoration: none"
+          title="Export to CSV"
+          th:href="@{/api/v1/categories/export/csv}"
+        ></a>
+      </div>
+
+      <!-- Category has been saved successfuly -->
+      <br />
+      <div class="text-center alert alert-success" th:if="${message != null}">
+        [[${message}]]
+      </div>
+
+
+      <!-- Filter bar -->
+      <form
+        class="row g-3 m-2 align-items-center"
+        th:action="@{/api/v1/categories/1}"
+      >
+        <input type="hidden" name="sortField" th:value="${sortField}" />
+        <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+        <div class="col-auto">
+          <div class="input-group">
+            <div class="input-group-text">Filter</div>
+            <input
+              class="form-control"
+              type="text"
+              name="keyword"
+              th:value="${keyword}"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <div class="col-auto">
+          <button
+            class="btn btn-secondary"
+            type="button"
+            id="btnClear"
+            onclick="clearSearch()"
+          >
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+        <div>&nbsp;</div>
+      </form>
+
+      <div class="full-details">
+        <table
+          class="text-center table table-bordered table-striped table-hover table-responsive-xl"
+        >
+          <thead class="table-dark">
+            <tr>
+              <th>Id</th>
+              <th>Category image</th>
+              <th>Category Name</th>
+              <th>Alias</th>
+              <th>Enabled</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- All Categories data for table -->
+            <tr th:each="category: ${categories}">
+              <td class="text-center hideable-column">[[${category.id}]]</td>
+              <td class="text-center">
+                <div th:if="${category.image == null}">
+                  <i class="fa-solid fa-laptop"></i>
+                </div>
+                <img
+                  class="img-fluid rounded-3"
+                  style="width: 100px"
+                  th:if="${category.image != null}"
+                  th:src="@{${category.photosImagePath}}"
+                  alt=""
+                />
+              </td>
+              <td class="text-center">[[${category.name}]]</td>
+              <td class="text-center">[[${category.alias}]]</td>
+              <td class="text-center">
+                <a
+                  style="text-decoration: none"
+                  th:if="${category.enabled}"
+                  class="fa-solid fa-check fa-2x text-success"
+                  th:href="@{'/api/v1/categories/' + ${category.id} + '/enabled/false'}"
+                ></a>
+                <a
+                  style="text-decoration: none"
+                  th:unless="${category.enabled}"
+                  class="fa-solid fa-xmark fa-2x text-danger"
+                  th:href="@{'/api/v1/categories/' + ${category.id} + '/enabled/true'}"
+                ></a>
+              </td>
+              <td class="text-center">
+                <a
+                  style="text-decoration: none"
+                  class="fa-solid fa-pen text-success fa-2x"
+                  th:href="@{'/api/v1/categories/edit/' + ${category.id}}"
+                  th:categoryId="${category.id}"
+                  title="Edit this category"
+                ></a>
+                <span class="m-3"></span>
+                <a
+                  class="fa-solid fa-trash-can text-secondary fa-2x"
+                  th:href="@{'/api/v1/categories/delete/' + ${category.id}}"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmModal"
+                  onclick="showModalConfirmationDialog($(this))"
+                  th:categoryId="${category.id}"
+                  title="Delete this category"
+                ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- custom model for checking email window -->
+    <div class="modal fade" id="confirmModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Confirmation</h4>
+            <button
+              id="modalCancelBtnX"
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <p id="modalBody"></p>
+          </div>
+
+          <div class="modal-footer">
+            <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+            <button
+              id="ConfirmationBtn"
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer()}"></div>
+
+    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/showModalConfirmationDialog.js}"
+    ></script>
+  </body>
+</html>
