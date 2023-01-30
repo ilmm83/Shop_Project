@@ -9,7 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shop.admin.exception.UserNotFoundException;
+import com.shop.admin.exception.category.CategoryNotFoundException;
+import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.repository.category.CategoryRepository;
 import com.shop.model.Category;
 
@@ -69,10 +70,10 @@ public class CategoryService {
     }
 
     @Transactional
-    public void delete(Long id) throws UserNotFoundException {
+    public void delete(Long id) throws CategoryNotFoundException {
         Long counted = categoryRepository.countById(id);
         if (counted == null || counted == 0)
-            throw new UserNotFoundException("Could not find user with this ID " + id);
+            throw new CategoryNotFoundException("Could not find category with this ID " + id);
         categoryRepository.deleteById(id);
     }
 

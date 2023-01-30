@@ -33,10 +33,7 @@
         <div class="m-3 text-center">
           <h2>Create New Category Form</h2>
         </div>
-        <!-- User has been updated successfuly -->
-        <div class="text-center alert alert-success" th:if="${message != null}">
-          [[${message}]]
-        </div>
+
 
         <div class="border border-secondary border-opacity-25 rounded p-3">
           <!-- for validating users existence -->
@@ -73,7 +70,7 @@
           <div class="form-group row p-2">
             <label class="col-sm-4 col-form-label">Parent Category:</label>
             <div class="col-sm-8">
-              <select class="form-select" th:field="*{parent}">
+              <select class="form-select" th:field="*{parentId}">
                 <option th:value="${null}">No parent</option>
                 <th:block th:each="category : ${categories}">
                   <option th:value="${category.id}">[[${category.name}]]</option>

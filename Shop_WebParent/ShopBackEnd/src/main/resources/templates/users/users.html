@@ -196,7 +196,7 @@
               th:href="@{'/api/v1/users/delete/' + ${user.id}}"
               data-bs-toggle="modal"
               data-bs-target="#confirmModal"
-              onclick="showModalConfirmationDialog($(this))"
+              onclick="showModalConfirmationDialog($(this), 'user', $(this).attr('userId'))"
               th:userId="${user.id}"
               title="Delete this user"
             ></a>

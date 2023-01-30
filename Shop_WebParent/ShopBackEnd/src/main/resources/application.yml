@@ -19,9 +19,9 @@ spring:
       ddl-auto: update
     show_sql: false
 
-# logging:
-#   level:
-#     root: warn
+logging:
+  level:
+    root: warn
 #   file:
 #     name: logs/Shop-backend.log
 #   logback:

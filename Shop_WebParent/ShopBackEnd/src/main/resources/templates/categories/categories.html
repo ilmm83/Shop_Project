@@ -148,7 +148,7 @@
                   th:href="@{'/api/v1/categories/delete/' + ${category.id}}"
                   data-bs-toggle="modal"
                   data-bs-target="#confirmModal"
-                  onclick="showModalConfirmationDialog($(this))"
+                  onclick="showModalConfirmationDialog($(this), 'category', $(this).attr('categoryId'))"
                   th:categoryId="${category.id}"
                   title="Delete this category"
                 ></a>

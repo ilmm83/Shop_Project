@@ -1,13 +1,12 @@
-function showModalConfirmationDialog(link) {
+function showModalConfirmationDialog(link, entity, entityId) {
   const modal = $("#confirmModal");
   const cancelBtn = $("#ConfirmationBtn");
   const cancelBtnX = $("#modalCancelBtnX");
   const yesBtn = $("#yesBtn");
-  const userId = link.attr("userId");
   const deleteUrl = link.attr("href");
 
   $("#modalBody").text(
-    `Are you sure you want delete the user with ID: ${userId}?`
+    `Are you sure you want delete the ${entity} with ID: ${entityId}?`
   );
   
   modal.show();

@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shop.admin.exception.UserNotFoundException;
+import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.repository.user.RoleRepository;
 import com.shop.admin.repository.user.UserRepository;
 import com.shop.model.Role;

@@ -29,16 +29,25 @@ import lombok.Setter;
 @Builder
 public class Category {
 
+  public Category(Long id) {
+    this.id = id;
+  }
+
+  public Category(Category parent) {
+    this.parent = parent;
+  }
 
   public Category(Long id, String name) {
     this.id = id;
     this.name = name;
   }
 
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Transient
+  private Long parentId;
 
   @Column(length = 128, nullable = false, unique = true)
   private String name;
@@ -50,8 +59,6 @@ public class Category {
   private String image;
 
   private boolean enabled;
-
-  
 
   @OneToOne
   @JoinColumn(name = "parent_id")
@@ -80,8 +87,5 @@ public class Category {
       return null;
     return "/images/categories-images/" + this.id + "/" + this.image;
   }
-
-
-
 
 }

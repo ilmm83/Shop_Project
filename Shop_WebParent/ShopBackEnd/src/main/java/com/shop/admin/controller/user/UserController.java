@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shop.admin.exception.UserNotFoundException;
+import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.service.user.UserService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.admin.utils.exporter.UserCsvExporter;
