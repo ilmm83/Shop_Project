@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.shop.model.Category;
 
 @Repository
-public interface CategoryRepository extends PagingAndSortingRepository<Category, Long>{
+public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
 
   Category save(Category category);
 
@@ -23,11 +23,14 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
   void updateEnabledStatus(Long id, boolean enabled);
 
   java.lang.Iterable<Category> findAll();
-  
+
   @Query("SELECT c FROM Category c WHERE CONCAT(c.id, ' ', c.name, ' ', c.alias) LIKE %?1%")
   Page<Category> findAll(String keyword, Pageable pageable);
 
   Long countById(Long id);
 
   void deleteById(Long id);
+
+  @Query("SELECT c FROM Category c WHERE c.name LIKE %?1% OR c.alias LIKE %?2%")
+  java.lang.Iterable<Category> findByNameAndAlias(String name, String alias);
 }

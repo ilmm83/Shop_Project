@@ -2,6 +2,7 @@ package com.shop.admin.service.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,8 +65,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category save(Category formCategory) {
-        return categoryRepository.save(formCategory);
+    public Category save(Category catFromForm) {
+        return categoryRepository.save(catFromForm);
     }
 
     @Transactional
@@ -89,11 +90,36 @@ public class CategoryService {
         var children = parent.getChildren();
         var dashes = "--";
         for (var sub : children) {
-            for (int i = 0; i < children.size(); i++) dashes += "--";
+            for (int i = 0; i < children.size(); i++)
+                dashes += "--";
             catToForm.add(new Category(sub.getId(), dashes + sub.getName()));
             listChildren(sub, catToForm);
             children.remove(sub);
         }
     }
 
+    public String checkNameAndAliasUnique(Long id, String name, String alias) {
+        var categories = categoryRepository.findByNameAndAlias(name, alias);
+        var response = "OK";
+
+        for (var cat : categories) {
+            if (!response.equals("OK")) break;
+            if (cat == null) continue;
+            response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
+        }
+
+        return response;
+    }
+
+    private String isCategoryExistsByNameOrAlias(Long id, Category category, String name, String alias) {
+        if (id != null) {
+            if (category == null || category.getId() == id)
+                return "OK";
+            else if (category.getName().equals(name))
+                return "Name";
+            else if (category.getAlias().equals(alias))
+                return "Alias";
+        }
+        return "OK";
+    }
 }

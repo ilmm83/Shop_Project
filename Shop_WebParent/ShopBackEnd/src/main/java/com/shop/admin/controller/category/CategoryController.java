@@ -2,6 +2,7 @@ package com.shop.admin.controller.category;
 
 import java.io.IOException;
 
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -72,6 +73,26 @@ public class CategoryController {
     return "redirect:/api/v1/categories";
   }
 
+  @GetMapping("edit/{id}")
+  public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    try {
+      var category = service.findById(id);
+      
+      model.addAttribute("categories", service.listCategoriesHierarchal());
+      model.addAttribute("categoryDTO", convertToCategoryDTO(category));
+      model.addAttribute("category", category);
+
+      attributes.addFlashAttribute("message", "The category with ID: " + id + " has been updated successfully!");
+    } catch (CategoryNotFoundException e) {
+      attributes.addFlashAttribute("message", e.getMessage());
+      e.printStackTrace();
+    }
+
+    return "categories/categories_form";
+  }
+
+  
+
 
   private Category convertToCategory(CategoryDTO dto) {
     var category = new Category();
@@ -83,5 +104,17 @@ public class CategoryController {
     category.setEnabled(dto.isEnabled());
 
     return category;
+  }
+
+  private CategoryDTO convertToCategoryDTO(Category category) {
+    var dto = new CategoryDTO();
+    dto.setId(category.getId());
+    dto.setParentId(category.getParent() == null ? 0 : category.getParent().getId());
+    dto.setName(category.getName());
+    dto.setAlias(category.getAlias());
+    dto.setImage(category.getImage());
+    dto.setEnabled(category.isEnabled());
+
+    return dto;
   }
 }

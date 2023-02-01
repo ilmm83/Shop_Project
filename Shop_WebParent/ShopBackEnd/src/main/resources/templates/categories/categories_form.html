@@ -29,6 +29,7 @@
         style="max-width: 500px; margin: 20px auto"
         th:object="${categoryDTO}"
         enctype="multipart/form-data"
+        onsubmit="return checkNameAndAliasUnique(this)"
       >
         <div class="m-3 text-center">
           <h2>Create New Category Form</h2>
@@ -126,11 +127,34 @@
       </form>
     </div>
 
+    <!-- custom model for checking email window -->
+    <div class="modal" id="modalDialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title" id="modalTitle">Warning</h4>
+            <button id="modalCancelBtnX" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body">
+            <p id="modalBody"></p>
+          </div>
+          
+          <div class="modal-footer">
+            <button id="modalCancelBtn" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div th:replace="~{fragments :: footer()}"></div>
 
     <script>
       const moduleURL = "[[@{/api/v1/categories}]]";
     </script>
+    <script type="text/javascript" th:src="@{/scripts/checkNameAndAliasUnique.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script
       type="text/javascript"
