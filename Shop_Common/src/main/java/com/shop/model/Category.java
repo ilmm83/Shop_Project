@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,8 @@ public class Category {
     this.id = id;
   }
 
-  public Category(Category parent) {
+  public Category(String name, Category parent) {
+    this(name);
     this.parent = parent;
   }
 
@@ -42,20 +44,23 @@ public class Category {
     this.name = name;
   }
 
+  public Category(String name) {
+    this.name = name;
+    this.alias = name;
+    this.image = "default.png";
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Transient
-  private Long parentId;
-
-  @Column(length = 128, nullable = false, unique = true)
+  @Column(length = 128, unique = true)
   private String name;
 
-  @Column(length = 64, nullable = false, unique = true)
+  @Column(length = 64, unique = true)
   private String alias;
 
-  @Column(length = 64, nullable = false)
+  @Column(length = 64)
   private String image;
 
   private boolean enabled;

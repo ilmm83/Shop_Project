@@ -14,9 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shop.admin.exception.category.CategoryNotFoundException;
-import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.service.category.CategoryService;
 import com.shop.admin.utils.FileUploadUtil;
+import com.shop.dto.CategoryDTO;
 import com.shop.model.Category;
 
 import lombok.RequiredArgsConstructor;
@@ -38,19 +38,19 @@ public class CategoryController {
   public String createForm(Model model) {
 
     model.addAttribute("categories", service.listCategoriesHierarchal());
+    model.addAttribute("categoryDTO", new CategoryDTO());
     model.addAttribute("category", new Category());
     return "categories/categories_form";
   }
 
   @PostMapping("/new")
-  public String createNewCategory(Category category, @RequestParam("fileImage") MultipartFile multipart, Model model,
+  public String createNewCategory(CategoryDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
       RedirectAttributes attributes) throws IOException {
 
     String fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+    var category = convertToCategory(dto);
     category.setImage(fileName);
 
-    var parent = new Category(category.getParentId());
-    category.setParent(parent);
 
     var saved = service.save(category);
     String uploadDir = "../categories-images/" + saved.getId();
@@ -60,16 +60,28 @@ public class CategoryController {
     return "redirect:/api/v1/categories";
   }
 
-  
   @GetMapping("delete/{id}")
   public String delete(@PathVariable("id") long id, RedirectAttributes attributes) {
     try {
       service.delete(id);
-      attributes.addFlashAttribute("message", "The category with ID: " + id + "has been deleted successfully!");
+      attributes.addFlashAttribute("message", "The category with ID: " + id + " has been deleted successfully!");
     } catch (CategoryNotFoundException e) {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
     }
     return "redirect:/api/v1/categories";
+  }
+
+
+  private Category convertToCategory(CategoryDTO dto) {
+    var category = new Category();
+    category.setId(dto.getId());
+    category.setParent(dto.getParentId() == 0 ? null : new Category(dto.getParentId()));
+    category.setName(dto.getName());
+    category.setAlias(dto.getAlias());
+    category.setImage(dto.getImage());
+    category.setEnabled(dto.isEnabled());
+
+    return category;
   }
 }

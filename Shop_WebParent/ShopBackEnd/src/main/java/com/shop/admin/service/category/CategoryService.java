@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.admin.exception.category.CategoryNotFoundException;
-import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.repository.category.CategoryRepository;
 import com.shop.model.Category;
 
@@ -57,10 +56,10 @@ public class CategoryService {
             return categoryRepository.findAll(pageable);
     }
 
-    public Category findById(Long id) throws UserNotFoundException {
+    public Category findById(Long id) throws CategoryNotFoundException {
         Category found = categoryRepository.findById(id);
         if (found == null)
-            throw new UserNotFoundException("Could not find the user with id " + id);
+            throw new CategoryNotFoundException("Could not find the user with id " + id);
         return found;
     }
 
@@ -86,7 +85,6 @@ public class CategoryService {
         return (List<Category>) categoryRepository.findAll();
     }
 
-    
     private void listChildren(Category parent, List<Category> catToForm) {
         var children = parent.getChildren();
         var dashes = "--";
