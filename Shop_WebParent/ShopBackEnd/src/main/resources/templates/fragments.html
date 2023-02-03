@@ -8,13 +8,13 @@
   <body>
     <!-- Column Link  -->
     <th
-      th:fragment="column_link(fieldName, columnLabel, removeTag)"
+      th:fragment="column_link(section, fieldName, columnLabel, removeTag)"
       th:remove="${removeTag}"
     >
       <a
         class="text-white"
         style="text-decoration: none"
-        th:href="@{'/api/v1/users/' + ${currentPage} + '?sortField=' + ${fieldName} 
+        th:href="@{'/api/v1/' + ${section} + '/' + ${currentPage} + '?sortField=' + ${fieldName} 
         + '&sortDir=' + ${sortField != fieldName ?  sortDir : reverseSortOrder} 
         + ${keyword != null ? '&keyword=' + keyword : ''}}"
         >[[${columnLabel}]]
@@ -83,9 +83,9 @@
 
     <!-- a tags in pagination section -->
     <a
-      th:fragment="pagination_button(label, page_num)"
+      th:fragment="pagination_button(section,label, page_num)"
       th:class="page-link"
-      th:href="@{'/api/v1/users/' + ${page_num} 
+      th:href="@{'/api/v1/' + ${section} + '/' + ${page_num} 
       + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} 
       + ${keyword != null ? '&keyword=' + keyword : ''}}"
       >[[${label}]]</a

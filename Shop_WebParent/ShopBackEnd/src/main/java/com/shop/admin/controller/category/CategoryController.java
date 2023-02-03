@@ -2,7 +2,8 @@ package com.shop.admin.controller.category;
 
 import java.io.IOException;
 
-import org.springframework.security.web.RedirectStrategy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -31,7 +32,18 @@ public class CategoryController {
 
   @GetMapping
   public String categories(Model model) {
-    model.addAttribute("categories", service.findAllCategoriesSortedById());
+    Page<Category> page = service.findAllCategoriesSortedBy(null, 1, "name", "asc");
+    changingDisplayUsersPage(1, model, page, "name", "asc", null);
+
+    return "categories/categories";
+  }
+
+  @GetMapping("/{pageNum}")
+  public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
+      @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
+
+    Page<Category> page = service.findAllCategoriesSortedBy(keyword, pageNum, sortField, sortDir);
+    changingDisplayUsersPage(pageNum, model, page, sortField, sortDir, keyword);
     return "categories/categories";
   }
 
@@ -48,14 +60,17 @@ public class CategoryController {
   public String createNewCategory(CategoryDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
       RedirectAttributes attributes) throws IOException {
 
-    String fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
     var category = convertToCategory(dto);
-    category.setImage(fileName);
+    if (!multipart.isEmpty()) {
+      var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+      category.setImage(fileName);
 
+      var saved = service.save(category);
+      var uploadDir = "../categories-images/" + saved.getId();
+      FileUploadUtil.saveFile(uploadDir, fileName, multipart);
 
-    var saved = service.save(category);
-    String uploadDir = "../categories-images/" + saved.getId();
-    FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+    } else
+      service.save(category);
 
     attributes.addFlashAttribute("message", "The category has been saved successfully!");
     return "redirect:/api/v1/categories";
@@ -77,12 +92,11 @@ public class CategoryController {
   public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
     try {
       var category = service.findById(id);
-      
+
       model.addAttribute("categories", service.listCategoriesHierarchal());
       model.addAttribute("categoryDTO", convertToCategoryDTO(category));
       model.addAttribute("category", category);
 
-      attributes.addFlashAttribute("message", "The category with ID: " + id + " has been updated successfully!");
     } catch (CategoryNotFoundException e) {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
@@ -91,8 +105,19 @@ public class CategoryController {
     return "categories/categories_form";
   }
 
-  
+  @GetMapping("/{id}/enabled/true")
+  public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Enabled.");
+    service.changeEnableState(id, true);
+    return "redirect:/api/v1/categories";
+  }
 
+  @GetMapping("/{id}/enabled/false")
+  public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Disabled.");
+    service.changeEnableState(id, false);
+    return "redirect:/api/v1/categories";
+  }
 
   private Category convertToCategory(CategoryDTO dto) {
     var category = new Category();
@@ -117,4 +142,20 @@ public class CategoryController {
 
     return dto;
   }
+
+  private void changingDisplayUsersPage(int pageNum, Model model, Page<Category> page, String sortField, String sortDir,
+      String keyword) {
+
+    String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
+
+    model.addAttribute("keyword", keyword);
+    model.addAttribute("categories", page.getContent());
+    model.addAttribute("sortDir", sortDir);
+    model.addAttribute("sortField", sortField);
+    model.addAttribute("reverseSortOrder", reverseSortOrder);
+    model.addAttribute("currentPage", pageNum);
+    model.addAttribute("lastPage", (page.getTotalElements() / CategoryService.PAGE_SIZE) + 1);
+    model.addAttribute("totalCategories", page.getTotalElements());
+  }
+
 }

@@ -63,7 +63,7 @@
 
       <!-- Filter bar -->
       <form
-        class="row g-3 m-2 align-items-center"
+        class="row g-3 ms-2 align-items-center"
         th:action="@{/api/v1/users/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
@@ -109,7 +109,7 @@
             <tr>
               <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('id', 'User ID', 'tag')}"
+                  th:replace="~{fragments :: column_link('users', 'id', 'User ID', 'tag')}"
                 ></span>
               </th>
 
@@ -117,21 +117,21 @@
 
               <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('email', 'E-mail', 'tag')}"
+                  th:replace="~{fragments :: column_link('users', 'email', 'E-mail', 'tag')}"
                 ></span>
               </th>
 
               <th
-                th:replace="~{fragments :: column_link('firstName', 'First Name', 'none')}"
+                th:replace="~{fragments :: column_link('users', 'firstName', 'First Name', 'none')}"
               ></th>
               <th
-                th:replace="~{fragments :: column_link('lastName', 'Last Name', 'none')}"
+                th:replace="~{fragments :: column_link('users', 'lastName', 'Last Name', 'none')}"
               ></th>
               <th
-                th:replace="~{fragments :: column_link('roles', 'Roles', 'none')}"
+                th:replace="~{fragments :: column_link('users', 'roles', 'Roles', 'none')}"
               ></th>
               <th
-                th:replace="~{fragments :: column_link('enabled', 'Enabled', 'none')}"
+                th:replace="~{fragments :: column_link('users', 'enabled', 'Enabled', 'none')}"
               ></th>
               <th></th>
             </tr>
@@ -206,25 +206,24 @@
       </div>
     </div>
 
+    <br>
     <!-- pagination bar -->
     <div class="text-center">
-      <span th:if="${totalUsers > 0}">
-        Showing users # [[${startCount}]] to [[${endCount}]] of
-        [[${totalUsers}]]
-      </span>
       <span th:if="${totalUsers <= 0}"> No Users found. </span>
       <nav>
         <ul class="pagination justify-content-center flex-wrap">
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
           >
-            <a th:replace="~{fragments :: pagination_button('First', 1)}"></a>
+            <a
+              th:replace="~{fragments :: pagination_button('users', 'First', 1)}"
+            ></a>
           </li>
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('&laquo;', ${currentPage - 1})}"
+              th:replace="~{fragments :: pagination_button('users', '&laquo;', ${currentPage - 1})}"
             ></a>
           </li>
           <li
@@ -232,17 +231,22 @@
             th:each="i : ${#numbers.sequence(1, lastPage)}"
             class="page-item"
           >
-            <a th:replace="~{fragments :: pagination_button(${i}, ${i})}"></a>
+            <a
+              th:replace="~{fragments :: pagination_button('users', ${i}, ${i})}"
+            ></a>
           </li>
-          <a
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-            th:replace="~{fragments :: pagination_button('&raquo;', ${currentPage + 1})}"
-          ></a>
           <li
             th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('Last', ${lastPage})}"
+              th:replace="~{fragments :: pagination_button('users', '&raquo;', ${currentPage + 1})}"
+            ></a>
+          </li>
+          <li
+            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('users', 'Last', ${lastPage})}"
             ></a>
           </li>
         </ul>

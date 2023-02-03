@@ -2,6 +2,7 @@ package com.shop.admin.repository.category;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -23,6 +24,8 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
   void updateEnabledStatus(Long id, boolean enabled);
 
   java.lang.Iterable<Category> findAll();
+
+  java.lang.Iterable<Category> findAll(Sort sort);
 
   @Query("SELECT c FROM Category c WHERE CONCAT(c.id, ' ', c.name, ' ', c.alias) LIKE %?1%")
   Page<Category> findAll(String keyword, Pageable pageable);

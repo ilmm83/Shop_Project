@@ -145,12 +145,9 @@ public class UserController {
         return REDIRECT_API_V1_USERS;
     }
 
+
     private void changingDisplayUsersPage(int pageNum, Model model, Page<User> page, String sortField, String sortDir,
             String keyword) {
-        long startCount = (pageNum - 1) * UserService.PAGE_SIZE + 1l;
-        long endCount = startCount + UserService.PAGE_SIZE - 1;
-        if (startCount > page.getTotalElements())
-            endCount = page.getTotalElements();
 
         String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
 
@@ -162,7 +159,5 @@ public class UserController {
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("lastPage", (page.getTotalElements() / UserService.PAGE_SIZE) + 1);
         model.addAttribute("totalUsers", page.getTotalElements());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
     }
 }

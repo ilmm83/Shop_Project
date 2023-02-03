@@ -27,7 +27,7 @@ public class CategoryService {
 
     public List<Category> listCategoriesHierarchal() {
         var catToForm = new ArrayList<Category>();
-        var catFromDB = categoryRepository.findAll();
+        var catFromDB = categoryRepository.findAll(Sort.by("name").ascending());
 
         for (var category : catFromDB) {
             if (category.getParent() == null) {
@@ -41,8 +41,16 @@ public class CategoryService {
         return catToForm;
     }
 
-    public List<Category> findAllCategoriesSortedById() {
-        return (List<Category>) categoryRepository.findAll(Sort.by("id").ascending());
+    public Page<Category> findAllCategoriesSortedBy(String keyword, int pageNum, String field, String direction) {
+        Sort sort = Sort.by(field);
+        sort = direction.equals("asc") ? sort.ascending() : sort.descending();
+
+        PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
+
+        if (keyword != null)
+            return categoryRepository.findAll(keyword, pageable);
+        else
+            return categoryRepository.findAll(pageable);
     }
 
     public Page<Category> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
@@ -78,12 +86,27 @@ public class CategoryService {
     }
 
     @Transactional
-    public void changeEnableState(Long id, boolean isEnable) {
-        categoryRepository.updateEnabledStatus(id, isEnable);
+    public void changeEnableState(Long id, boolean isEnabled) {
+        categoryRepository.updateEnabledStatus(id, isEnabled);
     }
 
     public List<Category> findAll() {
         return (List<Category>) categoryRepository.findAll();
+    }
+
+    public String checkNameAndAliasUnique(Long id, String name, String alias) {
+        var categories = categoryRepository.findByNameAndAlias(name, alias);
+        var response = "OK";
+
+        for (var cat : categories) {
+            if (!response.equals("OK"))
+                break;
+            if (cat == null)
+                continue;
+            response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
+        }
+
+        return response;
     }
 
     private void listChildren(Category parent, List<Category> catToForm) {
@@ -96,19 +119,6 @@ public class CategoryService {
             listChildren(sub, catToForm);
             children.remove(sub);
         }
-    }
-
-    public String checkNameAndAliasUnique(Long id, String name, String alias) {
-        var categories = categoryRepository.findByNameAndAlias(name, alias);
-        var response = "OK";
-
-        for (var cat : categories) {
-            if (!response.equals("OK")) break;
-            if (cat == null) continue;
-            response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
-        }
-
-        return response;
     }
 
     private String isCategoryExistsByNameOrAlias(Long id, Category category, String name, String alias) {

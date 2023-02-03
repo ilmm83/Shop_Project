@@ -47,10 +47,9 @@
         [[${message}]]
       </div>
 
-
       <!-- Filter bar -->
       <form
-        class="row g-3 m-2 align-items-center"
+        class="row g-3 ms-2 align-items-center"
         th:action="@{/api/v1/categories/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
@@ -94,11 +93,19 @@
         >
           <thead class="table-dark">
             <tr>
-              <th>Id</th>
+              <th
+                th:replace="~{fragments :: column_link('categories', 'id', 'ID', 'none')}"
+              ></th>
               <th>Category image</th>
-              <th>Category Name</th>
-              <th>Alias</th>
-              <th>Enabled</th>
+              <th
+                th:replace="~{fragments :: column_link('categories', 'name', 'Category Name', 'none')}"
+              ></th>
+              <th
+                th:replace="~{fragments :: column_link('categories', 'alias', 'Alias', 'none')}"
+              ></th>
+              <th
+                th:replace="~{fragments :: column_link('categories', 'enabled', 'Enabled', 'none')}"
+              ></th>
               <th></th>
             </tr>
           </thead>
@@ -193,8 +200,59 @@
       </div>
     </div>
 
+    <br>
+    <!-- pagination bar -->
+    <div class="text-center mt-3">
+      <span th:if="${totalCategories <= 0}"> No Users found. </span>
+      <nav>
+        <ul class="pagination justify-content-center flex-wrap">
+          <li
+            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('categories', 'First', 1)}"
+            ></a>
+          </li>
+          <li
+            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('categories', '&laquo;', ${currentPage - 1})}"
+            ></a>
+          </li>
+          <li
+            th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+            th:each="i : ${#numbers.sequence(1, lastPage)}"
+            class="page-item"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('categories', ${i}, ${i})}"
+            ></a>
+          </li>
+          <li
+            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('categories', '&raquo;', ${currentPage + 1})}"
+            >
+            </a>
+          </li>
+          <li
+            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
+          >
+            <a
+              th:replace="~{fragments :: pagination_button('categories', 'Last', ${lastPage})}"
+            ></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
     <div th:replace="~{fragments :: footer()}"></div>
 
+    <script>
+      moduleURL = "[[@{/api/v1/categories}]]";
+    </script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
     <script
