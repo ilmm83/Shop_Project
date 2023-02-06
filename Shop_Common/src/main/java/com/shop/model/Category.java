@@ -1,10 +1,12 @@
 package com.shop.model;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,13 +56,13 @@ public class Category {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(length = 128, unique = true)
+  @Column(length = 128, unique = true, nullable = false)
   private String name;
 
-  @Column(length = 64, unique = true)
+  @Column(length = 64, unique = true, nullable = false)
   private String alias;
 
-  @Column(length = 64)
+  @Column(length = 64, nullable = false)
   private String image;
 
   private boolean enabled;
@@ -90,7 +92,8 @@ public class Category {
   public String getPhotosImagePath() {
     if (this.id == null || this.image == null)
       return null;
-    return "/images/categories-images/" + this.id + "/" + this.image;
+
+    return "/categories-images/" + this.id + "/" + this.image;
   }
 
 }

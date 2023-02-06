@@ -18,9 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shop.admin.exception.category.CategoryNotFoundException;
 import com.shop.admin.service.category.CategoryService;
 import com.shop.admin.utils.FileUploadUtil;
+import com.shop.admin.utils.exporter.category.CategoryCSVExporter;
 import com.shop.dto.CategoryDTO;
 import com.shop.model.Category;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryController {
 
+  private static final String REDIRECT_API_V1_CATEGORIES = "redirect:/api/v1/categories";
   private final CategoryService service;
 
   @GetMapping
@@ -66,14 +69,14 @@ public class CategoryController {
       category.setImage(fileName);
 
       var saved = service.save(category);
-      var uploadDir = "../categories-images/" + saved.getId();
+      var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images\\" + saved.getId();
       FileUploadUtil.saveFile(uploadDir, fileName, multipart);
 
     } else
       service.save(category);
 
     attributes.addFlashAttribute("message", "The category has been saved successfully!");
-    return "redirect:/api/v1/categories";
+    return REDIRECT_API_V1_CATEGORIES;
   }
 
   @GetMapping("delete/{id}")
@@ -85,7 +88,7 @@ public class CategoryController {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
     }
-    return "redirect:/api/v1/categories";
+    return REDIRECT_API_V1_CATEGORIES;
   }
 
   @GetMapping("edit/{id}")
@@ -109,14 +112,21 @@ public class CategoryController {
   public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
     redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Enabled.");
     service.changeEnableState(id, true);
-    return "redirect:/api/v1/categories";
+    return REDIRECT_API_V1_CATEGORIES;
   }
 
   @GetMapping("/{id}/enabled/false")
   public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
     redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Disabled.");
     service.changeEnableState(id, false);
-    return "redirect:/api/v1/categories";
+    return REDIRECT_API_V1_CATEGORIES;
+  }
+
+  @GetMapping("/export/csv")
+  public void exportToCSV(HttpServletResponse response) throws IOException {
+    var categories = service.findAllCategoriesSortedByName();
+    var exporter = new CategoryCSVExporter();
+    exporter.export(categories, response);
   }
 
   private Category convertToCategory(CategoryDTO dto) {
@@ -157,5 +167,4 @@ public class CategoryController {
     model.addAttribute("lastPage", (page.getTotalElements() / CategoryService.PAGE_SIZE) + 1);
     model.addAttribute("totalCategories", page.getTotalElements());
   }
-
 }

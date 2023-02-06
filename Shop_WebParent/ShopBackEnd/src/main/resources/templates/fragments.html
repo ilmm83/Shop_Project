@@ -79,7 +79,6 @@
         ></a>
       </td>
     </tr>
-   
 
     <!-- a tags in pagination section -->
     <a
@@ -141,40 +140,73 @@
           <li class="nav-item" sec:authorize="hasAuthority('Admin')">
             <a class="nav-link" th:href="@{/api/v1/users}">Users</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+          >
             <a class="nav-link" th:href="@{/api/v1/categories}">Categories</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+          >
             <a class="nav-link" th:href="@{/api/v1/brands}">Brands</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')"
+          >
             <a class="nav-link" th:href="@{/api/v1/products}">Products</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
+          >
             <a class="nav-link" th:href="@{/api/v1/questions}">Questions</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
+          >
             <a class="nav-link" th:href="@{/api/v1/reviews}">Reviews</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+          >
             <a class="nav-link" th:href="@{/api/v1/customers}">Customers</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+          >
             <a class="nav-link" th:href="@{/api/v1/shipping}">Shipping</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')"
+          >
             <a class="nav-link" th:href="@{/api/v1/orders}">Orders</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+          >
             <a class="nav-link" th:href="@{/api/v1/reports}">Reports</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+          >
             <a class="nav-link" th:href="@{/api/v1/articles}">Articles</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+          <li
+            class="nav-item"
+            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+          >
             <a class="nav-link" th:href="@{/api/v1/menus}">Menus</a>
           </li>
-          <li class="nav-item"  sec:authorize="hasAuthority('Admin')">
+          <li class="nav-item" sec:authorize="hasAuthority('Admin')">
             <a class="nav-link" th:href="@{/api/v1/settings}">Settings</a>
           </li>
           <li>

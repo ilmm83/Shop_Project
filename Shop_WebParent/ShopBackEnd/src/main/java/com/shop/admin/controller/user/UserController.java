@@ -18,9 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shop.admin.exception.user.UserNotFoundException;
 import com.shop.admin.service.user.UserService;
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.admin.utils.exporter.UserCsvExporter;
-import com.shop.admin.utils.exporter.UserExcelExporter;
-import com.shop.admin.utils.exporter.UserPDFExporter;
+import com.shop.admin.utils.exporter.user.UserCsvExporter;
+import com.shop.admin.utils.exporter.user.UserExcelExporter;
+import com.shop.admin.utils.exporter.user.UserPDFExporter;
 import com.shop.model.User;
 
 import jakarta.servlet.http.HttpServletResponse;

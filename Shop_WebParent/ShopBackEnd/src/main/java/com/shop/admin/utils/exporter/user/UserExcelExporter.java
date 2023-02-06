@@ -1,4 +1,4 @@
-package com.shop.admin.utils.exporter;
+package com.shop.admin.utils.exporter.user;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.shop.admin.utils.exporter.AbstractExporter;
 import com.shop.model.User;
 
 import jakarta.servlet.ServletOutputStream;
@@ -26,7 +27,7 @@ public class UserExcelExporter extends AbstractExporter {
   }
 
   public void export(List<User> users, HttpServletResponse response) throws IOException {
-    setResponseHeader(response, ".xlsx", "application/octet-stream");
+    setResponseHeader(response, ".xlsx", "application/octet-stream", "user_");
 
     writeHeaderLine();
     writeDataLines(users);

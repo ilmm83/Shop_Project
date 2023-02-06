@@ -1,4 +1,4 @@
-package com.shop.admin.utils.exporter;
+package com.shop.admin.utils.exporter.user;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.shop.admin.utils.exporter.AbstractExporter;
 import com.shop.model.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserPDFExporter extends AbstractExporter {
 
   public void export(List<User> users, HttpServletResponse response) throws IOException {
-    setResponseHeader(response, ".pdf", "application/pdf");
+    setResponseHeader(response, ".pdf", "application/pdf", "user_");
 
     Document doc = new Document(PageSize.A4);
     PdfWriter.getInstance(doc, response.getOutputStream());

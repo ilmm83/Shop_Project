@@ -52,6 +52,11 @@ public class CategoryService {
         else
             return categoryRepository.findAll(pageable);
     }
+    
+    public List<Category> findAllCategoriesSortedByName() {
+        Sort sort = Sort.by("name").ascending();
+        return (List<Category>) categoryRepository.findAll(sort);
+    }
 
     public Page<Category> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
         Sort sort = Sort.by(sortField);

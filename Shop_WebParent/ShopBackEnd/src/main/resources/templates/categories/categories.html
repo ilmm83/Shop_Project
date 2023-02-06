@@ -72,9 +72,7 @@
           <button class="btn btn-primary" type="submit">
             <i class="fas fa-search"></i>
           </button>
-        </div>
-
-        <div class="col-auto">
+          &nbsp;
           <button
             class="btn btn-secondary"
             type="button"
@@ -93,9 +91,11 @@
         >
           <thead class="table-dark">
             <tr>
-              <th
-                th:replace="~{fragments :: column_link('categories', 'id', 'ID', 'none')}"
-              ></th>
+              <th class="hideable-column">
+                <span
+                  th:replace="~{fragments :: column_link('categories', 'id', 'ID', 'tag')}"
+                ></span>
+              </th>
               <th>Category image</th>
               <th
                 th:replace="~{fragments :: column_link('categories', 'name', 'Category Name', 'none')}"
@@ -166,6 +166,68 @@
       </div>
     </div>
 
+    <div class="less-details">
+      <div th:each="category : ${categories}" class="row m-1">
+        <div class="col-auto">
+          <span
+            th:if="${category.image == null}"
+            class="fa-solid fa-image-portrait fa-2x"
+          ></span>
+          <img
+            class="img-fluid rounded-3"
+            style="width: 100px"
+            th:if="${category.image != null}"
+            th:src="@{${category.photosImagePath}}"
+            alt=""
+          />
+        </div>
+        <div class="col-auto">
+          <div>[[${category.name}]]</div>
+          <div>&nbsp;</div>
+          <div>
+            <a
+              style="
+                text-decoration: none;
+                font-size: 1.6em;
+                vertical-align: -0.1em;
+              "
+              th:if="${category.enabled}"
+              class="fa-solid fa-check text-success"
+              th:href="@{'/api/v1/categories/' + ${category.id} + '/enabled/false'}"
+            ></a>
+            <a
+              style="
+                text-decoration: none;
+                font-size: 1.8em;
+                vertical-align: -0.1em;
+              "
+              th:unless="${category.enabled}"
+              class="fa-solid fa-xmark text-danger m-1"
+              th:href="@{'/api/v1/categories/' + ${category.id} + '/enabled/true'}"
+            ></a>
+            <a
+              style="text-decoration: none; font-size: 1.5em"
+              class="fa-solid fa-pen text-success"
+              th:href="@{'/api/v1/categories/edit/' + ${category.id}}"
+              th:categoryId="${category.id}"
+              title="Edit this category"
+            ></a>
+            <a
+              style="text-decoration: none; font-size: 1.5em"
+              class="fa-solid fa-trash-can text-secondary"
+              th:href="@{'/api/v1/categories/delete/' + ${category.id}}"
+              data-bs-toggle="modal"
+              data-bs-target="#confirmModal"
+              onclick="showModalConfirmationDialog($(this), 'category', $(this).attr('categoryId'))"
+              th:categoryId="${category.id}"
+              title="Delete this category"
+            ></a>
+          </div>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+      </div>
+    </div>
+
     <!-- custom model for checking email window -->
     <div class="modal fade" id="confirmModal">
       <div class="modal-dialog">
@@ -200,11 +262,11 @@
       </div>
     </div>
 
-    <br>
+    <br />
     <!-- pagination bar -->
     <div class="text-center mt-3">
-      <span th:if="${totalCategories <= 0}"> No Users found. </span>
-      <nav>
+      <span th:if="${totalCategories <= 0}">No Categories found.</span>
+      <nav th:if="${totalCategories > 0}">
         <ul class="pagination justify-content-center flex-wrap">
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
@@ -248,6 +310,7 @@
       </nav>
     </div>
 
+    <br />
     <div th:replace="~{fragments :: footer()}"></div>
 
     <script>

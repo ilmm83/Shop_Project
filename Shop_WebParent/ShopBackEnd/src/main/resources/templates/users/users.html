@@ -86,9 +86,7 @@
           <button class="btn btn-primary" type="submit">
             <i class="fas fa-search"></i>
           </button>
-        </div>
-
-        <div class="col-auto">
+          &nbsp;
           <button
             class="btn btn-secondary"
             type="button"
@@ -206,11 +204,11 @@
       </div>
     </div>
 
-    <br>
+    <br />
     <!-- pagination bar -->
     <div class="text-center">
       <span th:if="${totalUsers <= 0}"> No Users found. </span>
-      <nav>
+      <nav th:if="${totalUsers > 0}">
         <ul class="pagination justify-content-center flex-wrap">
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
@@ -287,8 +285,12 @@
       </div>
     </div>
 
+    <br />
     <div th:replace="~{fragments :: footer()}"></div>
 
+    <script>
+      const moduleURL = "[[@{/api/v1/users}]]";
+    </script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
     <script
