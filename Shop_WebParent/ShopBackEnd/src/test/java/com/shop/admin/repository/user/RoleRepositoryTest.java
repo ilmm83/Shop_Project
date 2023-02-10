@@ -1,31 +1,32 @@
 package com.shop.admin.repository.user;
 
-import com.shop.admin.repository.user.RoleRepository;
-import com.shop.model.Role;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import com.shop.model.Role;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
-// @Rollback(false) //-- use this if wanna add new roles into db
+@Rollback(true) 
 class RoleRepositoryTest {
 
     @Autowired
     private RoleRepository repository;
 
     @Test
-    public void testCreateFirstRole() {
+    public void canCreateRole() {
         Role admin = Role.builder()
-                .name("ADMIN")
-                .description("Almighty")
+                .name("Admin")
+                .description("All might")
                 .build();
         Role saved = repository.save(admin);
 
@@ -33,7 +34,7 @@ class RoleRepositoryTest {
     }
 
     @Test
-    public void testCreateRestRoles() {
+    public void canCreateRoles() {
         Role salesperson = Role.builder()
                 .name("Salesperson")
                 .description("manage product price, customers, shipping, orders and sales report")

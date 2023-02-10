@@ -2,9 +2,28 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>[[${title}]]</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesom/all.css}" />
+    <script
+      type="text/javascript"
+      th:src="@{/webjars/jquery/jquery.min.js}"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
   </head>
+
   <body>
     <!-- Column Link  -->
     <th
@@ -12,7 +31,7 @@
       th:remove="${removeTag}"
     >
       <a
-        class="text-white"
+        class="text-dark"
         style="text-decoration: none"
         th:href="@{'/api/v1/' + ${section} + '/' + ${currentPage} + '?sortField=' + ${fieldName} 
         + '&sortDir=' + ${sortField != fieldName ?  sortDir : reverseSortOrder} 
@@ -25,60 +44,56 @@
       ></span>
     </th>
 
-    <!-- All users data for table -->
-    <tr th:fragment="fill_table_users()" th:each="user : ${users}">
-      <td class="text-center hideable-column">[[${user.id}]]</td>
-      <td class="text-center">
-        <span
-          th:if="${user.photos == null}"
-          class="fa-solid fa-image-portrait fa-2x"
-        ></span>
-        <img
-          class="img-fluid rounded-3"
-          style="width: 100px"
-          th:if="${user.photos != null}"
-          th:src="@{${user.photosImagePath}}"
-          alt=""
-        />
-      </td>
-      <td class="text-center hideable-column">[[${user.email}]]</td>
-      <td class="text-center">[[${user.firstName}]]</td>
-      <td class="text-center">[[${user.lastName}]]</td>
-      <td class="text-center">[[${user.roles}]]</td>
-      <td class="text-center">
-        <a
-          style="text-decoration: none"
-          th:if="${user.enabled}"
-          class="fa-solid fa-check fa-2x text-success"
-          th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/false'}"
-        ></a>
-        <a
-          style="text-decoration: none"
-          th:unless="${user.enabled}"
-          class="fa-solid fa-xmark fa-2x text-danger"
-          th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/true'}"
-        ></a>
-      </td>
-      <td class="text-center">
-        <a
-          style="text-decoration: none"
-          class="fa-solid fa-pen text-success fa-2x"
-          th:href="@{'/api/v1/users/edit/' + ${user.id}}"
-          th:userId="${user.id}"
-          title="Edit this user"
-        ></a>
-        <span class="m-3"></span>
-        <a
-          class="fa-solid fa-trash-can text-secondary fa-2x"
-          th:href="@{'/api/v1/users/delete/' + ${user.id}}"
-          data-bs-toggle="modal"
-          data-bs-target="#confirmModal"
-          onclick="showModalConfirmationDialog($(this), 'user', $(this).attr('userId'))"
-          th:userId="${user.id}"
-          title="Delete this user"
-        ></a>
-      </td>
-    </tr>
+    <!-- Entity status -->
+    <div th:fragment="status(enabled, entity, entityUrl)" th:remove="tag">
+      <a
+        th:if="${enabled == true}"
+        style="text-decoration: none"
+        class="fa-regular fa-circle-check fa-2x text-success"
+        th:href="@{'/api/v1/' + ${entityUrl} + '/' +
+        ${entity.id} + '/enabled/false'}"
+      >
+      </a>
+      <a
+        th:if="${enabled == false}"
+        style="text-decoration: none"
+        class="fa-regular fa-circle-xmark fa-2x text-danger"
+        th:href="@{'/api/v1/' + ${entityUrl} + '/' +
+        ${entity.id} + '/enabled/true'}"
+      >
+      </a>
+    </div>
+
+    <!-- Edit entity -->
+    <span th:fragment="edit(url, entity, entityTitle)">
+      <a
+        style="text-decoration: none"
+        class="fa-solid fa-pen text-success fa-2x"
+        th:href="@{'/api/v1/' + ${url} + '/edit/' + ${entity.id}}"
+        th:entityId="${entity.id}"
+        th:title="'Edit this ' + ${entityTitle}"
+      ></a>
+    </span>
+
+    <!-- Delete entity -->
+    <span th:fragment="delete(url, entity, entityTitle, hasChildren)">
+      <a
+        th:if="${hasChildren == false}"
+        class="fa-solid fa-trash-can text-secondary fa-2x"
+        th:href="@{'/api/v1/' + ${url} + '/delete/' + ${entity.id}}"
+        data-bs-toggle="modal"
+        data-bs-target="#confirmModal"
+        onclick="showModalConfirmationDialog($(this), $(this).attr('entityName'), $(this).attr('entityId'))"
+        th:entityId="${entity.id}"
+        th:entityName="${entityTitle}"
+        th:title="'Delete this ' + ${entityTitle}"
+      ></a>
+      <span
+        th:if="${hasChildren == true}"
+        class="fa-solid fa-trash-can text-secondary fa-2x"
+        style="opacity: 50%"
+      ></span>
+    </span>
 
     <!-- a tags in pagination section -->
     <a
@@ -90,6 +105,7 @@
       >[[${label}]]</a
     >
 
+    <!-- html head tag -->
     <head th:fragment="html_head(title)">
       <meta charset="UTF-8" />
       <meta http-equiv="content-type" content="text/html" />
@@ -117,114 +133,158 @@
     <!-- Navigation Bar -->
     <nav
       th:fragment="navbar()"
-      class="navbar navbar-expand-lg bg-dark navbar-dark"
+      class="navbar navbar-expand-lg navbar-light sticky-top"
+      style="background-color: rgb(116, 49, 250)"
     >
-      <a class="navbar-brand p-2" th:href="@{/}">
-        <img
-          th:src="@{/images/Shop-logo-big.png}"
-          alt="Shop logo"
-          width="85"
-          height="90"
-        />
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#topNavbar"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="topNavbar">
-        <ul class="navbar-nav">
-          <li class="nav-item" sec:authorize="hasAuthority('Admin')">
-            <a class="nav-link" th:href="@{/api/v1/users}">Users</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/categories}">Categories</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/brands}">Brands</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/products}">Products</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/questions}">Questions</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/reviews}">Reviews</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/customers}">Customers</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/shipping}">Shipping</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/orders}">Orders</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/reports}">Reports</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/articles}">Articles</a>
-          </li>
-          <li
-            class="nav-item"
-            sec:authorize="hasAnyAuthority('Admin', 'Editor')"
-          >
-            <a class="nav-link" th:href="@{/api/v1/menus}">Menus</a>
-          </li>
-          <li class="nav-item" sec:authorize="hasAuthority('Admin')">
-            <a class="nav-link" th:href="@{/api/v1/settings}">Settings</a>
-          </li>
-          <li>
-            <span class="fas fa-user fa-2x text-secondary"></span>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              sec:authentication="principal.fullName"
-              th:href="@{/api/v1/account}"
-            ></a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" id="LogoutLink" href="#">Logout</a>
-            </div>
-          </li>
-        </ul>
+      <div class="container-xxl ">
+        <a class="navbar-brand m-2" th:href="@{/}">
+          <img
+            th:src="@{/images/Shop-logo-big.png}"
+            alt="Shop logo"
+            width="85"
+            height="90"
+          />
+        </a>
+        &nbsp;
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#topNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="topNavbar">
+          <ul class="navbar-nav">
+            <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+              <a class="nav-link fw-bold text-white" th:href="@{/api/v1/users}"
+                >Users</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/categories}"
+                >Categories</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+            >
+              <a class="nav-link fw-bold text-white" th:href="@{/api/v1/brands}"
+                >Brands</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/products}"
+                >Products</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/questions}"
+                >Questions</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Assistant')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/reviews}"
+                >Reviews</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/customers}"
+                >Customers</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/shipping}"
+                >Shipping</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')"
+            >
+              <a class="nav-link fw-bold text-white" th:href="@{/api/v1/orders}"
+                >Orders</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Salesperson')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/reports}"
+                >Reports</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+            >
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/articles}"
+                >Articles</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyAuthority('Admin', 'Editor')"
+            >
+              <a class="nav-link fw-bold text-white" th:href="@{/api/v1/menus}"
+                >Menus</a
+              >
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+              <a
+                class="nav-link fw-bold text-white"
+                th:href="@{/api/v1/settings}"
+                >Settings</a
+              >
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link fw-bold fas fa-user fa-2x text-white"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                th:href="@{/api/v1/account}"
+              ></a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" id="LogoutLink" href="#">Logout</a>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 

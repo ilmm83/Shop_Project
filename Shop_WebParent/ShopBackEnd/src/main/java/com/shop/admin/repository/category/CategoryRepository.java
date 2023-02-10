@@ -18,23 +18,23 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
   java.lang.Iterable<Category> saveAll(java.lang.Iterable<Category> categories);
 
   Category findById(long id);
+  
+  java.lang.Iterable<Category> findAll();
+
+  java.lang.Iterable<Category> findAll(Sort sort);
+  
+  Page<Category> findAll(Pageable pageable);
+  
+  Long countById(Long id);
+  
+  void deleteById(Long id);
 
   @Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")
   @Modifying
   void updateEnabledStatus(Long id, boolean enabled);
 
-  java.lang.Iterable<Category> findAll();
-
-  java.lang.Iterable<Category> findAll(Sort sort);
-
   @Query("SELECT c FROM Category c WHERE CONCAT(c.id, ' ', c.name, ' ', c.alias) LIKE %?1%")
   Page<Category> findAll(String keyword, Pageable pageable);
-  
-  Page<Category> findAll(Pageable pageable);
-
-  Long countById(Long id);
-
-  void deleteById(Long id);
 
   @Query("SELECT c FROM Category c WHERE c.name LIKE %?1% OR c.alias LIKE %?2%")
   java.lang.Iterable<Category> findByNameAndAlias(String name, String alias);

@@ -103,7 +103,7 @@
         <table
           class="text-center table table-bordered table-striped table-hover table-responsive-xl"
         >
-          <thead class="table-dark">
+          <thead>
             <tr>
               <th class="hideable-column">
                 <span
@@ -135,7 +135,40 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:replace="~{fragments :: fill_table_users()}"></tr>
+            <tr th:each="user : ${users}">
+              <td class="text-center hideable-column">[[${user.id}]]</td>
+              <td class="text-center">
+                <span
+                  th:if="${user.photos == null}"
+                  class="fa-solid fa-image-portrait fa-2x"
+                ></span>
+                <img
+                  class="img-fluid rounded-3"
+                  style="width: 100px"
+                  th:if="${user.photos != null}"
+                  th:src="@{${user.photosImagePath}}"
+                  alt=""
+                />
+              </td>
+              <td class="text-center hideable-column">[[${user.email}]]</td>
+              <td class="text-center">[[${user.firstName}]]</td>
+              <td class="text-center">[[${user.lastName}]]</td>
+              <td class="text-center">[[${user.roles}]]</td>
+              <td class="text-center">
+                <div
+                  th:replace="~{fragments :: status(${user.enabled}, ${user}, 'users')}"
+                ></div>
+              </td>
+              <td class="text-center">
+                <a
+                  th:replace="~{fragments :: edit('users', ${user}, 'user')}"
+                ></a>
+                <span class="m-3"></span>
+                <span
+                  th:replace="~{fragments :: delete('users', ${user}, 'user', false)}"
+                ></span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

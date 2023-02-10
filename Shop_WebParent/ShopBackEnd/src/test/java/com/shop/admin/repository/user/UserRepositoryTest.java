@@ -44,26 +44,18 @@ class UserRepositoryTest {
 
     @Test
     public void canCountUserId() {
-        Long id = 1l;
+        Long id = 10l;
         Long counted = userRepository.countById(id);
 
-        assertThat(counted).isEqualTo(id);
+        assertThat(counted).isPositive();
     }
 
     @Test
-    public void testUserCreation() {
-        Role editor = Role.builder()
-                .name("Editor")
-                .description("manage categories, brands, products, articles and menus")
-                .build();
-        Role assistant = Role.builder()
-                .name("Assistant")
-                .description("manage question and reviews")
-                .build();
+    public void canCreateUser() {
+        var editor = roleRepository.findById(3L).get();
+        var assistant = roleRepository.findById(5L).get();
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(editor);
-        roles.add(assistant);
+        var roles = Set.of(editor, assistant);
 
         User user = User.builder()
                 .email("user2@gmail.com")
@@ -84,9 +76,11 @@ class UserRepositoryTest {
     @Test
     public void canGetUserByEmail() {
 
+        var assistant = roleRepository.findById(5L).get();
+
         User user = User.builder()
                 .email("user2@gmail.com")
-                .roles(null)
+                .roles(Set.of(assistant))
                 .firstName("first name 2")
                 .lastName("last name 2")
                 .enabled(true)
