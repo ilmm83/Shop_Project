@@ -30,7 +30,7 @@ public class FileUploadUtil {
     }
   }
 
-  private static void folderCleaner(Path uploadPath) {
+  public static void folderCleaner(Path uploadPath) {
     File[] listFiles = uploadPath.toFile().listFiles();
     if (listFiles != null) {
       for (File file : listFiles) {
@@ -39,5 +39,6 @@ public class FileUploadUtil {
       }
     }
   }
+
 
 }

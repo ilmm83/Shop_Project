@@ -21,6 +21,14 @@ public interface BrandRepository extends PagingAndSortingRepository<Brand, Long>
 
   Brand delete(Brand brand);
 
+  Brand deleteById(Long id);
+
   @Query("SELECT b FROM Brand b WHERE CONCAT(b.id, ' ', b.name) LIKE %?1%")
   Page<Brand> findAll(String keyword, Pageable pageable);
+
+  @Query("SELECT b FROM Brand b WHERE b.name LIKE %?1%")
+  java.lang.Iterable<Brand> findByName(String name);
+
+  Long countById(Long id);
+
 }

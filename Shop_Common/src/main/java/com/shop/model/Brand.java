@@ -42,7 +42,7 @@ public class Brand {
   @Column(length = 128, nullable = false)
   private String logo;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable(name = "brands_categories", joinColumns = @JoinColumn(name = "brand_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
   private Set<Category> categories = new HashSet<>();
 
@@ -66,7 +66,7 @@ public class Brand {
     if (this.id == null || this.logo == null)
       return null;
 
-    return "/logos-images/" + this.id + "/" + this.logo;
+    return "/brands-images/" + this.id + "/" + this.logo;
   }
 
 }

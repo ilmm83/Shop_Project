@@ -11,9 +11,13 @@ public class MvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/resources/**");
 
-    var path = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images";
+    var pathToCategoriesImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images";
     registry.addResourceHandler("/categories-images/**")
-        .addResourceLocations("file:/" + path + "/");
+        .addResourceLocations("file:/" + pathToCategoriesImages + "/");
+
+    var pathToBrandsImages =  "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images";
+    registry.addResourceHandler("/brand-images/**")
+        .addResourceLocations("file:/" + pathToBrandsImages + "/");
   }
 
 }

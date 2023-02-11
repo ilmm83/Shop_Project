@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   $("#LogoutLink").click((e) => {
     e.preventDefault();
     document.LogoutForm.submit();
@@ -10,7 +10,26 @@ $(document).ready(function() {
   });
 
   customizeDropDownMenu();
+
+  const dropdownCategories = $("#parentIds");
+  const divChosenCategories = $("#chosenCategories");
+
+  dropdownCategories.change(() => {
+    divChosenCategories.empty();
+    showChosenCategories(dropdownCategories, divChosenCategories);
+  });
 });
+
+function showChosenCategories(dropdownCategories, divChosenCategories) {
+  dropdownCategories.children("option:selected").each(function () {
+    const selectedCategory = $(this);
+    const catName = selectedCategory.text().replace(/-/g, "");
+
+    divChosenCategories.append(
+      "<span class='badge text-bg-secondary m-1'>" + catName + "</span>"
+    );
+  });
+}
 
 function customizeDropDownMenu() {
   $(".navbar .dropdown").hover(
@@ -32,7 +51,7 @@ function customizeDropDownMenu() {
     }
   );
 
-  $(".dropdown > a").click(function() {
+  $(".dropdown > a").click(function () {
     location.href = this.href;
   });
 }

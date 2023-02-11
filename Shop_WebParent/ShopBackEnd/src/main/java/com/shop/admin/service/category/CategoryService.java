@@ -51,7 +51,7 @@ public class CategoryService {
         else
             return categoryRepository.findAll(pageable);
     }
-    
+
     public List<Category> findAllCategoriesSortedByName() {
         Sort sort = Sort.by("name").ascending();
         return (List<Category>) categoryRepository.findAll(sort);
@@ -126,14 +126,12 @@ public class CategoryService {
     }
 
     private String isCategoryExistsByNameOrAlias(Long id, Category category, String name, String alias) {
-        if (id != null) {
-            if (category == null || category.getId() == id)
-                return "OK";
-            else if (category.getName().equals(name))
-                return "Name";
-            else if (category.getAlias().equals(alias))
-                return "Alias";
-        }
+        if (category == null || category.getId() == id)
+            return "OK";
+        else if (category.getName().equals(name))
+            return "Name";
+        else if (category.getAlias().equals(alias))
+            return "Alias";
         return "OK";
     }
 }

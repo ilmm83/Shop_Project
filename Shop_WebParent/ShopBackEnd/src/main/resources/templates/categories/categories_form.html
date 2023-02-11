@@ -99,7 +99,7 @@
                 onchange="showThumbnail(this)"
                 value="Choose File"
                 accept="image/png, image/jpeg"
-                required
+                th:required="${categoryDTO.id == null}"
               />
               <br />
               <img
