@@ -12,12 +12,15 @@ public class MvcConfig implements WebMvcConfigurer {
     registry.addResourceHandler("/resources/**");
 
     var pathToCategoriesImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images";
-    registry.addResourceHandler("/categories-images/**")
-        .addResourceLocations("file:/" + pathToCategoriesImages + "/");
+    exposeDirectory(pathToCategoriesImages, "categories-images", registry);
 
-    var pathToBrandsImages =  "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images";
-    registry.addResourceHandler("/brand-images/**")
-        .addResourceLocations("file:/" + pathToBrandsImages + "/");
+    var pathToBrandsImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images";
+    exposeDirectory(pathToBrandsImages, "brands-images", registry);
+  }
+
+  private void exposeDirectory(String fullPath, String folderName, ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/" + folderName + "/**")
+        .addResourceLocations("file:/" + fullPath + "/");
   }
 
 }

@@ -1,5 +1,7 @@
 package com.shop.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,23 +9,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CategoryDTO {
+public class BrandDTO {
 
   private Long id;
 
-  private Long parentId;
+  private List<Long> parentIds;
 
   private String name;
 
-  private String alias;
+  private String logo;
 
-  private String image;
-
-  private boolean enabled;
 
   public String getPhotosImagePath() {
-    if (this.id == null || this.image == null)
+    if (this.id == null || this.logo == null)
       return null;
-    return "/categories-images/" + this.id + "/" + this.image;
+    return "/brands-images/" + this.id + "/" + this.logo;
   }
 }

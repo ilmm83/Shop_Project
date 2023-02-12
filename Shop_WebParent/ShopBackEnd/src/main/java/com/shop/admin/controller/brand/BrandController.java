@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,119 +35,128 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrandController {
 
-  private final BrandService brandService;
-  private final CategoryService catService;
-  private static final String REDIRECT_API_V1_BRANDS = "redirect:/api/v1/brands";
+    private final BrandService brandService;
+    private final CategoryService catService;
+    private static final String REDIRECT_API_V1_BRANDS = "redirect:/api/v1/brands";
 
-  @GetMapping
-  public String brandsPage(Model model) {
-    Page<Brand> page = brandService.findAllBrandsSortedBy(null, 1, "name", "asc");
-    changingDisplayUsersPage(1, model, page, "name", "asc", null);
+    @GetMapping
+    public String brandsPage(Model model) {
+        Page<Brand> page = brandService.findAllBrandsSortedBy(null, 1, "name", "asc");
+        changingDisplayBrandsPage(1, model, page, "name", "asc", null);
 
-    return "brands/brands";
-  }
-
-  @GetMapping("/new")
-  public String newBrandCreationPage(Model model) {
-    model.addAttribute("categories", catService.listCategoriesHierarchal());
-    model.addAttribute("brandDTO", new BrandDTO());
-
-    return "brands/brands_form";
-  }
-
-  @PostMapping("/new")
-  public String createNewBrand(BrandDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
-      RedirectAttributes attributes) throws IOException, CategoryNotFoundException {
-
-    var brand = convertToBrand(dto);
-    if (!multipart.isEmpty()) {
-      var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
-      brand.setLogo(fileName);
-
-      var saved = brandService.save(brand);
-      var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
-      FileUploadUtil.saveFile(uploadDir, fileName, multipart);
-    } else
-      brandService.save(brand);
-
-    attributes.addFlashAttribute("message", "The brand has been saved successfully!");
-    return REDIRECT_API_V1_BRANDS;
-  }
-
-  @GetMapping("/edit/{id}")
-  public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes)
-      throws BrandNotFoundException {
-    try {
-      var brand = brandService.findById(id);
-
-      model.addAttribute("brandDTO", convertToBrandDTO(brand));
-      model.addAttribute("categories", catService.listCategoriesHierarchal());
-    } catch (BrandNotFoundException e) {
-      e.printStackTrace();
-      throw new BrandNotFoundException(e.getMessage());
+        return "brands/brands";
     }
 
-    return "brands/brands_form";
-  }
+    @GetMapping("/{pageNum}")
+    public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
+            @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
 
-  @GetMapping("/delete/{id}")
-  public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
-    try {
-      brandService.deleteById(id);
-      var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
-      FileUploadUtil.folderCleaner(Path.of(uploadDir));
-      attributes.addFlashAttribute("message", "The brand with ID: " + id + " has been deleted successfully!");
-    } catch (BrandNotFoundException e) {
-      attributes.addFlashAttribute("message", e.getMessage());
-      e.printStackTrace();
-    }
-    return REDIRECT_API_V1_BRANDS;
-  }
-
-  private void changingDisplayUsersPage(int pageNum, Model model, Page<Brand> page, String sortField, String sortDir,
-      String keyword) {
-
-    String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-
-    model.addAttribute("keyword", keyword);
-    model.addAttribute("brands", page.getContent());
-    model.addAttribute("sortDir", sortDir);
-    model.addAttribute("sortField", sortField);
-    model.addAttribute("reverseSortOrder", reverseSortOrder);
-    model.addAttribute("currentPage", pageNum);
-    model.addAttribute("lastPage", (page.getTotalElements() / BrandService.PAGE_SIZE) + 1);
-    model.addAttribute("totalBrands", page.getTotalElements());
-  }
-
-  private Brand convertToBrand(BrandDTO dto) throws CategoryNotFoundException {
-    var brand = new Brand();
-    var categories = new HashSet<Category>();
-    for (var id : dto.getParentIds()) {
-      if (id == 0)
-        continue;
-      var cat = catService.findById(id);
-      if (cat != null)
-        categories.add(cat);
+        Page<Brand> page = brandService.findAllBrandsSortedBy(keyword, pageNum, sortField, sortDir);
+        changingDisplayBrandsPage(pageNum, model, page, sortField, sortDir, keyword);
+        return "brands/brands";
     }
 
-    brand.setId(dto.getId());
-    brand.setCategories(dto.getParentIds() == null ? Collections.emptySet() : categories);
-    brand.setName(dto.getName());
-    brand.setLogo(dto.getLogo());
+    @GetMapping("/new")
+    public String newBrandCreationPage(Model model) {
+        model.addAttribute("categories", catService.listCategoriesHierarchal());
+        model.addAttribute("brandDTO", new BrandDTO());
 
-    return brand;
-  }
+        return "brands/brands_form";
+    }
 
-  private BrandDTO convertToBrandDTO(Brand brand) {
-    var dto = new BrandDTO();
-    var categoriesIds = new LinkedList<Long>();
-    brand.getCategories().forEach(cat -> categoriesIds.add(cat.getId()));
+    @PostMapping("/new")
+    public String createNewBrand(BrandDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
+            RedirectAttributes attributes) throws IOException, CategoryNotFoundException {
 
-    dto.setId(brand.getId());
-    dto.setParentIds(brand.getCategories() == null ? Collections.emptyList() : categoriesIds);
-    dto.setName(brand.getName());
-    dto.setLogo(brand.getLogo());
+        var brand = convertToBrand(dto);
+        if (!multipart.isEmpty()) {
+            var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+            brand.setLogo(fileName);
 
-    return dto;
-  }
+            var saved = brandService.save(brand);
+            var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
+            FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+        } else
+            brandService.save(brand);
+
+        attributes.addFlashAttribute("message", "The brand has been saved successfully!");
+        return REDIRECT_API_V1_BRANDS;
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes)
+            throws BrandNotFoundException {
+        try {
+            var brand = brandService.findById(id);
+
+            model.addAttribute("brandDTO", convertToBrandDTO(brand));
+            model.addAttribute("categories", catService.listCategoriesHierarchal());
+        } catch (BrandNotFoundException e) {
+            e.printStackTrace();
+            throw new BrandNotFoundException(e.getMessage());
+        }
+
+        return "brands/brands_form";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        try {
+            brandService.deleteById(id);
+            var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
+            FileUploadUtil.folderCleaner(Path.of(uploadDir));
+            attributes.addFlashAttribute("message", "The brand with ID: " + id + " has been deleted successfully!");
+        } catch (BrandNotFoundException e) {
+            attributes.addFlashAttribute("message", e.getMessage());
+            e.printStackTrace();
+        }
+        return REDIRECT_API_V1_BRANDS;
+    }
+
+    private void changingDisplayBrandsPage(int pageNum, Model model, Page<Brand> page, String sortField, String sortDir,
+            String keyword) {
+
+        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("brands", page.getContent());
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("reverseSortOrder", reverseSortOrder);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("lastPage", (page.getTotalElements() / BrandService.PAGE_SIZE) + 1);
+        model.addAttribute("totalBrands", page.getTotalElements());
+    }
+
+    private Brand convertToBrand(BrandDTO dto) throws CategoryNotFoundException {
+        var brand = new Brand();
+        var categories = new HashSet<Category>();
+        for (var id : dto.getParentIds()) {
+            if (id == 0)
+                continue;
+            var cat = catService.findById(id);
+            if (cat != null)
+                categories.add(cat);
+        }
+
+        brand.setId(dto.getId());
+        brand.setCategories(dto.getParentIds() == null ? Collections.emptySet() : categories);
+        brand.setName(dto.getName());
+        brand.setLogo(dto.getLogo());
+
+        return brand;
+    }
+
+    private BrandDTO convertToBrandDTO(Brand brand) {
+        var dto = new BrandDTO();
+        var categoriesIds = new LinkedList<Long>();
+        brand.getCategories().forEach(cat -> categoriesIds.add(cat.getId()));
+
+        dto.setId(brand.getId());
+        dto.setParentIds(brand.getCategories() == null ? Collections.emptyList() : categoriesIds);
+        dto.setName(brand.getName());
+        dto.setLogo(brand.getLogo());
+
+        return dto;
+    }
 }

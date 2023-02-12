@@ -36,7 +36,7 @@ public class CategoryController {
   @GetMapping
   public String categories(Model model) {
     Page<Category> page = service.findAllCategoriesSortedBy(null, 1, "name", "asc");
-    changingDisplayUsersPage(1, model, page, "name", "asc", null);
+    changingDisplayCategoriesPage(1, model, page, "name", "asc", null);
 
     return "categories/categories";
   }
@@ -46,7 +46,7 @@ public class CategoryController {
       @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
 
     Page<Category> page = service.findAllCategoriesSortedBy(keyword, pageNum, sortField, sortDir);
-    changingDisplayUsersPage(pageNum, model, page, sortField, sortDir, keyword);
+    changingDisplayCategoriesPage(pageNum, model, page, sortField, sortDir, keyword);
     return "categories/categories";
   }
 
@@ -153,8 +153,8 @@ public class CategoryController {
     return dto;
   }
 
-  private void changingDisplayUsersPage(int pageNum, Model model, Page<Category> page, String sortField, String sortDir,
-      String keyword) {
+  private void changingDisplayCategoriesPage(int pageNum, Model model, Page<Category> page, String sortField, String sortDir,
+                                             String keyword) {
 
     String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
 
