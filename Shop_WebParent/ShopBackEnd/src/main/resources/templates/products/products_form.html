@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
+    <head
+      th:replace="~{fragments :: html_head('Create new Product', 'tag')}"
+    ></head>
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+    <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+  </head>
+
+  <body>
+    <form
+      th:action="@{/logout}"
+      th:hidden="true"
+      method="post"
+      name="LogoutForm"
+    >
+      <input type="submit" />
+    </form>
+
+    <div>
+      <nav th:replace="~{fragments :: navbar()}"></nav>
+    </div>
+    
+    <div class="text-center alert alert-success" th:if="${message != null}">
+      [[${message}]]
+    </div>
+
+    <!-- Registration form -->
+    <form
+      th:action="@{/api/v1/products/new}"
+      method="post"
+      th:object="${productDTO}"
+      style="max-width: 550px; margin: 25px auto"
+      enctype="multipart/form-data"
+      onsubmit="return checkName(this)"
+    >
+      <div class="m-3 text-center">
+        <h2>Create New Product Form</h2>
+      </div>
+      <!-- for validating users existence -->
+      <input type="hidden" th:field="*{id}" />
+
+      <div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              data-bs-toggle="tab"
+              data-bs-target="#overview"
+              type="button"
+              role="tab"
+            >
+              Overview
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#description"
+              type="button"
+              role="tab"
+            >
+              Description
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#images"
+              type="button"
+              role="tab"
+            >
+              Images
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#details"
+              type="button"
+              role="tab"
+            >
+              Details
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#shipping"
+              type="button"
+              role="tab"
+            >
+              Shipping
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div
+            class="tab-pane active"
+            id="overview"
+            role="tabpanel"
+            tabindex="0"
+          >
+            <div th:replace="~{products/product_overview :: content}"></div>
+          </div>
+          <div class="tab-pane" id="description" role="tabpanel" tabindex="0">
+            <div th:replace="~{products/product_description :: content}"></div>
+          </div>
+          <div class="tab-pane" id="images" role="tabpanel" tabindex="0">
+            Images
+          </div>
+          <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
+            Details
+          </div>
+          <div class="tab-pane" id="shipping" role="tabpanel" tabindex="0">
+            <div th:replace="~{products/product_shipping :: content}"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="modal" id="modalDialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modalTitle">Warning</h4>
+            <button
+              id="modalCancelBtnX"
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <p id="modalBody"></p>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              id="modalCancelBtn"
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer()}"></div>
+
+    <script>
+      const moduleURL = "[[@{/api/v1/products}]]";
+      const brandModuleURL = "[[@{/api/v1/brands}]]";
+    </script>
+    <script type="text/javascript" th:src="@{/scripts/checkName.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/getCategoriesForProducForm.js}"
+    ></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/showModalDialog.js}"
+    ></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/showThumbnail.js}"
+    ></script>
+  </body>
+</html>

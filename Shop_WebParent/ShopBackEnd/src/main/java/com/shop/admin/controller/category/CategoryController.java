@@ -153,8 +153,9 @@ public class CategoryController {
     return dto;
   }
 
-  private void changingDisplayCategoriesPage(int pageNum, Model model, Page<Category> page, String sortField, String sortDir,
-                                             String keyword) {
+  private void changingDisplayCategoriesPage(int pageNum, Model model, Page<Category> page, String sortField,
+      String sortDir,
+      String keyword) {
 
     String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
 

@@ -18,6 +18,9 @@ $(document).ready(function () {
     divChosenCategories.empty();
     showChosenCategories(dropdownCategories, divChosenCategories);
   });
+
+  $('#shortDescription').richText();
+  $('#fullDescription').richText();
 });
 
 function showChosenCategories(dropdownCategories, divChosenCategories) {

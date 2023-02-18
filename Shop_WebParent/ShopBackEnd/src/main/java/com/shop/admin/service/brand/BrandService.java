@@ -1,5 +1,7 @@
 package com.shop.admin.service.brand;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,6 +41,10 @@ public class BrandService {
     if (counted == null || counted == 0)
         throw new BrandNotFoundException("Could not find brand with this ID " + id);
     return repository.findById(id);
+  }
+  
+  public List<Brand> findAllByNameAsc() {
+    return (List<Brand>) repository.findAllByNameAsc();
   }
   
   public Page<Brand> findAllBrandsSortedBy(String keyword, int pageNum, String field, String direction) {

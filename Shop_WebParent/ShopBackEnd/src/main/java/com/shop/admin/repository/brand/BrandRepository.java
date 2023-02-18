@@ -13,22 +13,26 @@ public interface BrandRepository extends PagingAndSortingRepository<Brand, Long>
 
   Brand save(Brand brand);
 
-  java.lang.Iterable<Brand> saveAll(java.lang.Iterable<Brand> brands);
-
   Brand findById(long id);
-
-  java.lang.Iterable<Brand> findAll();
 
   Brand delete(Brand brand);
 
   Brand deleteById(Long id);
 
+  java.lang.Iterable<Brand> saveAll(java.lang.Iterable<Brand> brands);
+
+  java.lang.Iterable<Brand> findAll();
+
+  Long countById(Long id);
+
   @Query("SELECT b FROM Brand b WHERE CONCAT(b.id, ' ', b.name) LIKE %?1%")
   Page<Brand> findAll(String keyword, Pageable pageable);
+
+  @Query("SELECT b FROM Brand b ORDER BY b.name ASC")
+  java.lang.Iterable<Brand> findAllByNameAsc();
 
   @Query("SELECT b FROM Brand b WHERE b.name LIKE %?1%")
   java.lang.Iterable<Brand> findByName(String name);
 
-  Long countById(Long id);
 
 }

@@ -4,11 +4,10 @@
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head th:replace="~{fragments :: html_head('Account Detials')}"></head>
+  <head th:replace="~{fragments :: html_head('Account Detials', 'none')}"></head>
 
   <body>
     <div>
-      <!-- form for generating a csrf token -->
       <form
         th:action="@{/logout}"
         th:hidden="true"
@@ -30,14 +29,12 @@
         th:object="${user}"
         enctype="multipart/form-data"
       >
-        <!-- for validating users existence -->
         <input type="hidden" th:field="*{id}" />
 
         <div class="ms-4 text-center">
           <h2>Your Account Data</h2>
         </div>
 
-        <!-- User has been updated successfuly -->
         <div class="text-center alert alert-success" th:if="${message != null}">
           [[${message}]]
         </div>

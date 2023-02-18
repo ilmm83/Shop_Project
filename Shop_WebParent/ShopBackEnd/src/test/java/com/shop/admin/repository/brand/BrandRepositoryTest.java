@@ -16,12 +16,9 @@ import com.shop.admin.repository.category.CategoryRepository;
 import com.shop.model.Brand;
 import com.shop.model.Category;
 
-import lombok.extern.slf4j.Slf4j;
-
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @Rollback(true)
-@Slf4j
 public class BrandRepositoryTest {
 
   @Autowired

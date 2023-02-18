@@ -25,19 +25,19 @@
       </div>
 
       <div class="ms-4">
-        <h2>Manage Brands</h2>
+        <h2>Manage Products</h2>
         <a
           class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
           style="text-decoration: none"
-          title="Create new Brand"
-          th:href="@{/api/v1/brands/new}"
+          title="Create new Product"
+          th:href="@{/api/v1/products/new}"
         ></a>
         &nbsp;&nbsp;
         <a
           class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
           style="text-decoration: none"
           title="Export to CSV"
-          th:href="@{/api/v1/brands/export/csv}"
+          th:href="@{/api/v1/products/export/csv}"
         ></a>
       </div>
 
@@ -50,7 +50,7 @@
       <!-- Filter bar -->
       <form
         class="row g-3 ms-2 align-items-center"
-        th:action="@{/api/v1/brands/1}"
+        th:action="@{/api/v1/products/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
         <input type="hidden" name="sortDir" th:value="${sortDir}" />
@@ -93,91 +93,63 @@
             <tr>
               <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('brands', 'id', 'ID', 'tag')}"
+                  th:replace="~{fragments :: column_link('products', 'id', 'ID', 'tag')}"
                 ></span>
               </th>
-              <th>Logo</th>
+              <th>Main image</th>
               <th
-                th:replace="~{fragments :: column_link('brands', 'name', 'Brand Name', 'none')}"
+                th:replace="~{fragments :: column_link('products', 'name', 'Product Name', 'none')}"
               ></th>
               <th
-                th:replace="~{fragments :: column_link('brands', 'categories', 'Categories', 'none')}"
+                th:replace="~{fragments :: column_link('products', 'category', 'Category', 'none')}"
+              ></th>
+              <th
+                th:replace="~{fragments :: column_link('products', 'brand', 'Brand', 'none')}"
+              ></th>
+              <th
+                th:replace="~{fragments :: column_link('products', 'enabled', 'Enabled', 'none')}"
               ></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="brand : ${brands}">
-              <td class="text-center hideable-column">[[${brand.id}]]</td>
+            <tr th:each="product : ${products}">
+              <td class="text-center hideable-column">[[${product.id}]]</td>
+              <td class="text-center"></td>
+              <td class="text-center">[[${product.name}]]</td>
               <td class="text-center">
-                <div th:if="${brand.logo == null}">
-                  <i class="fa-solid fa-laptop"></i>
-                </div>
-                <img
-                  class="img-fluid rounded-3"
-                  style="width: 100px"
-                  th:if="${brand.logo != null}"
-                  th:src="@{${brand.photosImagePath}}"
-                  alt=""
-                />
-              </td>
-              <td class="text-center">[[${brand.name}]]</td>
-              <td>
-                <th:block
-                  class="text-center"
-                  th:each="catName : ${brand.categoriesNames}"
+                <span th:if="${product.category != null}"
+                  >[[${product.category.name}]]</span
                 >
-                  <span
-                    class="badge text-bg-secondary"
-                    th:text="${catName}"
-                  ></span>
-                </th:block>
+              </td>
+              <td class="text-center">
+                <span th:if="${product.brand != null}"
+                  >[[${product.brand.name}]]</span
+                >
+              </td>
+              <td>
+                <div
+                  th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
+                ></div>
               </td>
               <td class="text-center">
                 <a
-                  th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
+                  class="fas fa-file-alt fa-2x text-success"
+                  th:href="'/api/v1/products/' + ${product.id}"
+                  title="Veiw details of this product"
                 ></a>
                 <span class="m-3"></span>
                 <a
-                  th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
+                  th:replace="~{fragments :: edit('products', ${product}, 'product')}"
+                ></a>
+                <span class="m-3"></span>
+                <a
+                  th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
                 ></a>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <div class="less-details">
-      <div th:each="brand : ${brands}" class="row m-1">
-        <div class="col-auto">
-          <span
-            th:if="${brand.logo == null}"
-            class="fa-solid fa-image-portrait fa-2x"
-          ></span>
-          <img
-            class="img-fluid rounded-3"
-            style="width: 100px"
-            th:if="${brand.logo != null}"
-            th:src="@{${brand.photosImagePath}}"
-            alt=""
-          />
-        </div>
-        <div class="col-auto">
-          <div>[[${brand.name}]]</div>
-          <div class="m-1"></div>
-          <div class="mb-3"></div>
-          <div>
-            <a
-              th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
-            ></a>
-            &nbsp;
-            <a
-              th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
-            ></a>
-          </div>
-        </div>
-        <div>&nbsp;&nbsp;</div>
       </div>
     </div>
 
@@ -215,24 +187,24 @@
       </div>
     </div>
 
-    <br />
     <!-- pagination bar -->
+    <br />
     <div class="text-center mt-3">
-      <span th:if="${totalBrands <= 0}">No Brands found.</span>
-      <nav th:if="${totalBrands > 0}">
+      <span th:if="${totalProducts <= 0}">No Products found.</span>
+      <nav th:if="${totalProducts > 0}">
         <ul class="pagination justify-content-center flex-wrap">
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('brands', 'First', 1)}"
+              th:replace="~{fragments :: pagination_button('products', 'First', 1)}"
             ></a>
           </li>
           <li
             th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('brands', '&laquo;', ${currentPage - 1})}"
+              th:replace="~{fragments :: pagination_button('products', '&laquo;', ${currentPage - 1})}"
             ></a>
           </li>
           <li
@@ -241,14 +213,14 @@
             class="page-item"
           >
             <a
-              th:replace="~{fragments :: pagination_button('brands', ${i}, ${i})}"
+              th:replace="~{fragments :: pagination_button('products', ${i}, ${i})}"
             ></a>
           </li>
           <li
             th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('brands', '&raquo;', ${currentPage + 1})}"
+              th:replace="~{fragments :: pagination_button('products', '&raquo;', ${currentPage + 1})}"
             >
             </a>
           </li>
@@ -256,7 +228,7 @@
             th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
           >
             <a
-              th:replace="~{fragments :: pagination_button('brands', 'Last', ${lastPage})}"
+              th:replace="~{fragments :: pagination_button('products', 'Last', ${lastPage})}"
             ></a>
           </li>
         </ul>
@@ -267,7 +239,7 @@
     <div th:replace="~{fragments :: footer()}"></div>
 
     <script>
-      moduleURL = "[[@{/api/v1/brands}]]";
+      moduleURL = "[[@{/api/v1/products}]]";
     </script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
