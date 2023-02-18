@@ -34,20 +34,6 @@ public class ProductService {
       return repository.findAll(pageable);
   }
 
-  public String checkNameUnique(Long id, String name) {
-    var brands = repository.findByName(name);
-    var response = "OK";
-
-    for (var brand : brands) {
-      if (!response.equals("OK"))
-        break;
-      if (brand == null)
-        continue;
-      response = isProductExistsByName(id, brand, name);
-    }
-    return response;
-  }
-
   @Transactional
   public Product save(Product product) {
     if (product.getId() == null)
@@ -63,11 +49,30 @@ public class ProductService {
     return repository.save(product);
   }
 
+  @Transactional
+  public void changeProductState(Long id, boolean state) {
+    repository.changeProductState(id, state);
+  }
+
+  public String checkNameUnique(Long id, String name) {
+    var products = repository.findByName(name);
+    var response = "OK";
+
+    for (var product : products) {
+      if (!response.equals("OK"))
+        break;
+      if (product == null)
+        continue;
+      response = isProductExistsByName(id, product, name);
+    }
+    return response;
+  }
+
   private String isProductExistsByName(Long id, Product product, String name) {
     if (product == null || product.getId() == id)
       return "OK";
     else if (product.getName().equals(name))
-      return "Name";
+      return "product";
     return "OK";
   }
 

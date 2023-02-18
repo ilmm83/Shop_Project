@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +71,22 @@ public class ProductController {
     return "redirect:/api/v1/products";
   }
 
+  @GetMapping("/{id}/enabled/false")
+  public String changeToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    productService.changeProductState(id, false);
+    attributes.addAttribute("message", "The product with ID:" + id + "is now disabled.");
+    
+    return "redirect:/api/v1/products";
+  }
+
+  @GetMapping("/{id}/enabled/true")
+  public String changeToEnableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    productService.changeProductState(id, true);
+    attributes.addAttribute("message", "The product with ID:" + id + "is now enabled.");
+    
+    return "redirect:/api/v1/products";
+  }
+  
   private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, String sortField,
       String sortDir,
       String keyword) {

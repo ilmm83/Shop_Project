@@ -8,10 +8,10 @@ function checkName(form) {
   $.post(url, params, (response) => {
     if (response === "OK") {
       form.submit();
-    } else if (response === "Name") {
+    } else if (response !== "OK") {
       showModalDialog(
         "Warning",
-        "There is another brand having the name: " + name
+        `There is another ${response} having the name:  ${name}`
       );
     } else {
       showModalDialog("Error", "Unknown response from server!");

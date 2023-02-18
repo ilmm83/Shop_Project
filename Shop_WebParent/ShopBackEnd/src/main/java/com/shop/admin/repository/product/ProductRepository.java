@@ -2,6 +2,7 @@ package com.shop.admin.repository.product;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,9 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
   @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
   java.lang.Iterable<Product> findByName(String name);
+
+  @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
+  @Modifying
+  void changeProductState(Long id, boolean state);
 
 }

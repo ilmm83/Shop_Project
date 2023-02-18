@@ -77,7 +77,7 @@ public class BrandService {
     if (brand == null || brand.getId() == id)
       return "OK";
     else if (brand.getName().equals(name))
-      return "Name";
+      return "brand";
     return "OK";
   }
 }
