@@ -11,7 +11,6 @@
   <body>
     <div>
       <div>
-        <!-- form for generating a csrf token -->
         <form
           th:action="@{/logout}"
           th:hidden="true"
@@ -39,12 +38,6 @@
           title="Export to CSV"
           th:href="@{/api/v1/categories/export/csv}"
         ></a>
-      </div>
-
-      <!-- Category has been saved successfuly -->
-      <br />
-      <div class="text-center alert alert-success" th:if="${message != null}">
-        [[${message}]]
       </div>
 
       <!-- Filter bar -->
@@ -85,9 +78,13 @@
         <div>&nbsp;</div>
       </form>
 
+      <div class="text-center alert alert-success" th:if="${message != null}">
+        [[${message}]]
+      </div>
+      
       <div class="full-details">
         <table
-          class="text-center table table-bordered table-striped table-hover "
+          class="text-center table table-bordered table-striped table-hover"
         >
           <thead>
             <tr>

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.admin.exception.product.ProductNotFoundException;
 import com.shop.admin.repository.product.ProductRepository;
 import com.shop.model.Product;
 
@@ -52,6 +53,15 @@ public class ProductService {
   @Transactional
   public void changeProductState(Long id, boolean state) {
     repository.changeProductState(id, state);
+  }
+
+  @Transactional
+  public void deleteProduct(Long id) throws ProductNotFoundException {
+    var counted = repository.findById(id);
+    if (counted == null) 
+      throw new ProductNotFoundException("Could not find the product with id: " + id);
+
+    repository.deleteById(id);
   }
 
   public String checkNameUnique(Long id, String name) {

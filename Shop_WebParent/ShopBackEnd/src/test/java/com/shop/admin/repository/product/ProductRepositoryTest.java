@@ -48,17 +48,17 @@ public class ProductRepositoryTest {
         .createdAt(new Date())
         .updatedAt(new Date())
         .build();
-     var saved = repository.save(product); 
+    var saved = repository.save(product);
 
-     assertThat(product).isNotNull();
-     assertThat(product).isEqualTo(saved);
+    assertThat(product).isNotNull();
+    assertThat(product).isEqualTo(saved);
   }
 
   @Test
   void canFindAll() {
-      var brands = (List<Product>) repository.findAll();
+    var brands = (List<Product>) repository.findAll();
 
-      assertThat(brands).isNotNull();
+    assertThat(brands).isNotNull();
   }
 
   @Test
@@ -70,9 +70,21 @@ public class ProductRepositoryTest {
   @Test
   void canUpdateProduct() {
     var product = repository.findById(3L);
-    product.setAlias("Samsung A31"); 
+    product.setAlias("Samsung A31");
     var saved = repository.save(product);
 
     assertThat(saved.getAlias()).isEqualTo("Samsung A31");
+  }
+
+  @Test
+  void canSaveProductWithImages() {
+    var product = repository.findById(3L);
+    product.setMainImage("main Image");
+    product.addExtraImage("main image 2");
+
+    var saved = repository.save(product);
+
+    assertThat(saved.getImages().size()).isEqualTo(1);
+    assertThat(saved.getMainImage()).isEqualTo("main Image");
   }
 }

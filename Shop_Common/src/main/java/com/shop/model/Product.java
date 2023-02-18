@@ -2,7 +2,10 @@ package com.shop.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,6 +78,9 @@ public class Product {
   @Column(name = "weight")
   private float weight;
 
+  @Column(name = "main_image", nullable = false)
+  private String mainImage;
+
   @ManyToOne
   @JoinColumn(name = "brand_id")
   private Brand brand;
@@ -82,4 +89,10 @@ public class Product {
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+  private Set<ProductImage> images = new HashSet<>();
+
+  public void addExtraImage(String imageName) {
+    this.images.add(new ProductImage(imageName, this));
+  }
 }

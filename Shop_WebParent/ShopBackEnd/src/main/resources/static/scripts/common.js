@@ -19,8 +19,6 @@ $(document).ready(function () {
     showChosenCategories(dropdownCategories, divChosenCategories);
   });
 
-  $('#shortDescription').richText();
-  $('#fullDescription').richText();
 });
 
 function showChosenCategories(dropdownCategories, divChosenCategories) {

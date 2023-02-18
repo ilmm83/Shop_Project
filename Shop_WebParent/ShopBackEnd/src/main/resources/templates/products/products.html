@@ -11,7 +11,6 @@
   <body>
     <div>
       <div>
-        <!-- form for generating a csrf token -->
         <form
           th:action="@{/logout}"
           th:hidden="true"
@@ -41,15 +40,9 @@
         ></a>
       </div>
 
-      <!-- Category has been saved successfuly -->
-      <br />
-      <div class="text-center alert alert-success" th:if="${message != null}">
-        [[${message}]]
-      </div>
-
       <!-- Filter bar -->
       <form
-        class="row g-3 ms-2 align-items-center"
+        class="row g-3 ms-2 mt-2 align-items-center"
         th:action="@{/api/v1/products/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
@@ -84,6 +77,10 @@
         </div>
         <div>&nbsp;</div>
       </form>
+
+      <div class="text-center alert alert-success" th:if="${message != null}">
+        [[${message}]]
+      </div>
 
       <div class="full-details">
         <table

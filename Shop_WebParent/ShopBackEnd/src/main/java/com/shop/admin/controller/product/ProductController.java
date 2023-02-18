@@ -3,7 +3,6 @@ package com.shop.admin.controller.product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shop.admin.exception.brand.BrandNotFoundException;
 import com.shop.admin.exception.category.CategoryNotFoundException;
+import com.shop.admin.exception.product.ProductNotFoundException;
 import com.shop.admin.service.brand.BrandService;
 import com.shop.admin.service.category.CategoryService;
 import com.shop.admin.service.product.ProductService;
-import com.shop.admin.utils.FileUploadUtil;
 import com.shop.dto.ProductDTO;
 import com.shop.model.Product;
 
@@ -61,12 +60,11 @@ public class ProductController {
     try {
       var product = convertToProduct(dto);
       var saved = productService.save(product);
-      
-      attributs.addAttribute("message", "The product has been saved successfully.");
+
+      attributs.addFlashAttribute("message", "The product has been saved successfully.");
     } catch (BrandNotFoundException | CategoryNotFoundException e) {
-      attributs.addAttribute("message", e.getMessage());
+      attributs.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
-      throw new BrandNotFoundException(e.getMessage());
     }
     return "redirect:/api/v1/products";
   }
@@ -74,19 +72,32 @@ public class ProductController {
   @GetMapping("/{id}/enabled/false")
   public String changeToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
     productService.changeProductState(id, false);
-    attributes.addAttribute("message", "The product with ID:" + id + "is now disabled.");
-    
+    attributes.addFlashAttribute("message", "The product with ID: " + id + " is now disabled.");
+
+    return "redirect:/api/v1/products";
+  }
+
+  @GetMapping("/delete/{id}")
+  public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    try {
+      productService.deleteProduct(id);
+      attributes.addFlashAttribute("message", "The product with ID: " + id + " has been deleted successfully.");
+    } catch (ProductNotFoundException e) {
+      attributes.addFlashAttribute("message", e.getMessage());
+      e.printStackTrace();
+    }
+
     return "redirect:/api/v1/products";
   }
 
   @GetMapping("/{id}/enabled/true")
   public String changeToEnableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
     productService.changeProductState(id, true);
-    attributes.addAttribute("message", "The product with ID:" + id + "is now enabled.");
-    
+    attributes.addFlashAttribute("message", "The product with ID: " + id + " is now enabled.");
+
     return "redirect:/api/v1/products";
   }
-  
+
   private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, String sortField,
       String sortDir,
       String keyword) {
@@ -106,7 +117,7 @@ public class ProductController {
   private Product convertToProduct(ProductDTO dto) throws BrandNotFoundException, CategoryNotFoundException {
     var product = new Product();
     var brand = dto.getBrandId() == 0 ? null : brandService.findById(dto.getBrandId());
-    var category = dto.getCategoryId() == 0 ? null :categoryService.findById(dto.getCategoryId());
+    var category = dto.getCategoryId() == 0 ? null : categoryService.findById(dto.getCategoryId());
 
     product.setId(dto.getId());
     product.setName(dto.getName());
