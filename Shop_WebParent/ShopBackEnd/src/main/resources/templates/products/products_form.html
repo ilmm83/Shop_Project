@@ -25,7 +25,7 @@
     <div>
       <nav th:replace="~{fragments :: navbar()}"></nav>
     </div>
-    
+
     <div class="text-center alert alert-success" th:if="${message != null}">
       [[${message}]]
     </div>
@@ -35,14 +35,14 @@
       th:action="@{/api/v1/products/new}"
       method="post"
       th:object="${productDTO}"
-      style="max-width: 550px; margin: 25px auto"
+      style="max-width: 650px; margin: 25px auto"
       enctype="multipart/form-data"
       onsubmit="return checkName(this)"
     >
       <div class="m-3 text-center">
         <h2>Create New Product Form</h2>
       </div>
-      <!-- for validating users existence -->
+
       <input type="hidden" th:field="*{id}" />
 
       <div>
@@ -118,10 +118,10 @@
             <div th:replace="~{products/product_description :: content}"></div>
           </div>
           <div class="tab-pane" id="images" role="tabpanel" tabindex="0">
-            Images
+            <div th:replace="~{products/product_images :: content}"></div>
           </div>
           <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
-            Details
+            <div th:replace="~{products/product_details :: content}"></div>
           </div>
           <div class="tab-pane" id="shipping" role="tabpanel" tabindex="0">
             <div th:replace="~{products/product_shipping :: content}"></div>
@@ -171,6 +171,7 @@
     <script type="text/javascript" th:src="@{/scripts/checkName.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/richText.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/addMoreDetail.js}"></script>
     <script
       type="text/javascript"
       th:src="@{/scripts/getCategoriesForProducForm.js}"

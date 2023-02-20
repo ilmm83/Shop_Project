@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head
+    th:replace="~{fragments :: html_head('Create new Product', 'none')}"
+  ></head>
+
+  <body>
+    <div th:fragment="content" th:remove="tag">
+      <div>
+        <div class="container" id="divDetailsContainer">
+          <div class="row ps-3 pt-3 border border-bottom-0">
+            <div class="col col-sm-1">
+              <label>Name:</label>
+            </div>
+            <div class="col col-sm-4">
+              <input
+                class="form-control"
+                type="text"
+                name="detailName"
+                maxlength="255"
+              />
+            </div>
+            <div class="col col-sm-1">
+              <label>Value:</label>
+            </div>
+            <div class="col col-sm-4">
+              <input
+                class="form-control"
+                type="text"
+                name="detailValue"
+                maxlength="255"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="ps-2 pt-4 text-start">
+          <span class="btn btn-secondary" onclick="addMoreDetail()">
+            Add more detail
+          </span>
+        </div>
+
+        <div class="form-group row">
+          <div class="text-center">
+            <input type="submit" value="Save" class="btn btn-primary m-3" />
+            <input
+              type="button"
+              value="Cancel"
+              class="btn btn-secondary"
+              id="buttonCancel"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

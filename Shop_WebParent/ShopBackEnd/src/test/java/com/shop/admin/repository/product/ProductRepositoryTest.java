@@ -87,4 +87,14 @@ public class ProductRepositoryTest {
     assertThat(saved.getImages().size()).isEqualTo(1);
     assertThat(saved.getMainImage()).isEqualTo("main Image");
   }
+
+  @Test
+  void canSaveProductWithDetails() {
+    var product = repository.findById(3L);
+    product.addDetail("Device Memory", "128 GB");
+
+    var saved = repository.save(product);
+
+    assertThat(saved.getDetails().size()).isEqualTo(1);
+  }
 }

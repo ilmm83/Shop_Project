@@ -112,7 +112,15 @@
           <tbody>
             <tr th:each="product : ${products}">
               <td class="text-center hideable-column">[[${product.id}]]</td>
-              <td class="text-center"></td>
+              <td class="text-center">
+                <img
+                class="img-fluid rounded-3"
+                style="width: 100px"
+                th:if="${product.mainImage != null}"
+                th:src="@{${product.mainImagesPath}}"
+                alt=""
+              />
+              </td>
               <td class="text-center">[[${product.name}]]</td>
               <td class="text-center">
                 <span th:if="${product.category != null}"
@@ -150,7 +158,6 @@
       </div>
     </div>
 
-    <!-- custom model for checking email window -->
     <div class="modal fade" id="confirmModal">
       <div class="modal-dialog">
         <div class="modal-content">

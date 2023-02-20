@@ -30,6 +30,20 @@ public class FileUploadUtil {
     }
   }
 
+  public static void saveFileWithoutClearingForlder(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+    Path uploadPath = Paths.get(uploadDir);
+
+    if (!Files.exists(uploadPath))
+      Files.createDirectories(uploadPath);
+
+    try (InputStream is = multipartFile.getInputStream()) {
+      Path filePath = uploadPath.resolve(fileName);
+      Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new IOException("Could not save file: " + fileName, e);
+    }
+  }
+
   public static void folderCleaner(Path uploadPath) {
     File[] listFiles = uploadPath.toFile().listFiles();
     if (listFiles != null) {
@@ -39,6 +53,7 @@ public class FileUploadUtil {
       }
     }
   }
+
 
 
 }

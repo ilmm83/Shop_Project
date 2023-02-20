@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head
+    th:replace="~{fragments :: html_head('Create new Product', 'none')}"
+  ></head>
+
+  <body>
+    <div class="m-2" th:fragment="content" th:remove="tag">
+      <div class="row border" id="divProductImages">
+        <div class="p-2 col">
+          <div class="m-2"><label>Main Image:</label></div>
+          <div class="m-2">
+            <img
+              id="thumbnail"
+              alt=""
+              class="img-fluid"
+              th:src="@{${productDTO.mainImagesPath}}"
+            />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#thumbnail', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="fileImage"
+              name="fileImage"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage1">
+          <div id="extraImageHeader1" class="m-2">
+            <label>Extra Image #1:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(1)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail1" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail1', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage1"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage2">
+          <div id="extraImageHeader2" class="m-2">
+            <label>Extra Image #2:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(2)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail2" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail2', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage2"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage3">
+          <div id="extraImageHeader3" class="m-2">
+            <label>Extra Image #3:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(3)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail3" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail3', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage3"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage4">
+          <div id="extraImageHeader4" class="m-2">
+            <label>Extra Image #4:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(4)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail4" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail4', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage4"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage5">
+          <div id="extraImageHeader5" class="m-2">
+            <label>Extra Image #5:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(5)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail5" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail5', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage5"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage6">
+          <div id="extraImageHeader6" class="m-2">
+            <label>Extra Image #6:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(6)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail6" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail6', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage6"
+              name="extraImage"
+            />
+          </div>
+        </div>
+
+        <div class="p-2 col" id="divExtraImage7">
+          <div id="extraImageHeader7" class="m-2">
+            <label>Extra Image #7:</label>
+            <a
+              class="btn fas fa-times-circle fa-2xl text-secondary float-end"
+              title="Remove this image"
+              href="javascript:removeExtraImage(7)"
+            ></a>
+          </div>
+          <div class="m-2">
+            <img id="extraThumbnail7" alt="" class="img-fluid" src="" />
+          </div>
+          <div class="mt-3 ms-2">
+            <input
+              type="file"
+              onchange="showThumbnail('#extraThumbnail7', this, 502400)"
+              value="Choose File"
+              accept="image/png, image/jpeg"
+              id="extraImage7"
+              name="extraImage"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="text-center">
+          <input type="submit" value="Save" class="btn btn-primary m-3" />
+          <input
+            type="button"
+            value="Cancel"
+            class="btn btn-secondary"
+            id="buttonCancel"
+          />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

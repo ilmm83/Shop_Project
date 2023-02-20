@@ -56,8 +56,16 @@ public class ProductDTO {
 
   private float weight;
 
+  private String mainImage;
+
   private Long brandId;
 
   private Long categoryId;
 
+  public String getMainImagesPath() {
+    if (this.id == null || this.mainImage == null)
+      return null;
+
+    return "/product-images/" + this.id + "/" + this.mainImage;
+  }
 }

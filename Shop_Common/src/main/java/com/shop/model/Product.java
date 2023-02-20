@@ -3,6 +3,8 @@ package com.shop.model;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -92,7 +95,22 @@ public class Product {
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
   private Set<ProductImage> images = new HashSet<>();
 
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+  private List<ProductDetail> details = new LinkedList<>();
+
   public void addExtraImage(String imageName) {
     this.images.add(new ProductImage(imageName, this));
+  }
+
+  public void addDetail(String detailName, String detailValue) {
+    this.details.add(new ProductDetail(detailName, detailValue, this));
+  }
+
+  @Transient
+  public String getMainImagesPath() {
+    if (this.id == null || this.mainImage == null)
+      return null;
+
+    return "/product-images/" + this.id + "/" + this.mainImage;
   }
 }
