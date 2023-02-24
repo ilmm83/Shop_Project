@@ -19,6 +19,9 @@ public class MvcConfig implements WebMvcConfigurer {
 
     var pathToProductImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images";
     exposeDirectory(pathToProductImages, "product-images", registry);
+
+    var pathToProductExtraImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\extras";
+    exposeDirectory(pathToProductExtraImages, "extras", registry);
   }
 
   private void exposeDirectory(String fullPath, String folderName, ResourceHandlerRegistry registry) {

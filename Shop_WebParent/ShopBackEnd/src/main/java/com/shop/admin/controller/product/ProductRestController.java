@@ -20,4 +20,9 @@ public class ProductRestController {
   public String checkNameUnique(@Param("id") Long id, @Param("name") String name) {
     return service.checkNameUnique(id, name);
   }
+
+  @PostMapping("/remove_image")
+  public void removeImage(@Param("id") Long id, @Param("fileName") String fileName) {
+    service.removeImage(id, fileName);
+  }
 }

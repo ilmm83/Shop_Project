@@ -51,6 +51,11 @@ public class ProductService {
   }
 
   @Transactional
+  public void clearProductDetails(Long id) {
+    repository.clearProductDetails(id);
+  }
+
+  @Transactional
   public void changeProductState(Long id, boolean state) {
     repository.changeProductState(id, state);
   }
@@ -58,10 +63,15 @@ public class ProductService {
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
     var counted = repository.findById(id);
-    if (counted == null) 
+    if (counted == null)
       throw new ProductNotFoundException("Could not find the product with id: " + id);
 
     repository.deleteById(id);
+  }
+
+  @Transactional
+  public void removeImage(Long productId, String fileName) {
+    repository.removeImageByProductId(productId, fileName);
   }
 
   public String checkNameUnique(Long id, String name) {
@@ -84,6 +94,13 @@ public class ProductService {
     else if (product.getName().equals(name))
       return "product";
     return "OK";
+  }
+
+  public Product findById(Long id) throws ProductNotFoundException {
+    var product = repository.findById(id);
+    if (product == null)
+      throw new ProductNotFoundException("Could not found product with ID: " + id);
+    return product;
   }
 
 }

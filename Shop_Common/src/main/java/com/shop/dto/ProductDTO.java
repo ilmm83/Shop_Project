@@ -2,15 +2,14 @@ package com.shop.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.shop.model.ProductDetail;
+import com.shop.model.ProductImage;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,6 +56,10 @@ public class ProductDTO {
   private float weight;
 
   private String mainImage;
+
+  private List<ProductDetail> details = new LinkedList<>();
+
+  private List<ProductImage> images = new LinkedList<>();
 
   private Long brandId;
 

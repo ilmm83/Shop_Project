@@ -43,10 +43,10 @@ public class Product {
   private String alias;
 
   @Column(length = 512, nullable = false, name = "short_description")
-  private String shortDiscription;
+  private String shortDescription;
 
   @Column(length = 4096, nullable = false, name = "full_description")
-  private String fullDiscription;
+  private String fullDescription;
 
   @Column(name = "created_at")
   private Date createdAt;
@@ -93,7 +93,7 @@ public class Product {
   private Category category;
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-  private Set<ProductImage> images = new HashSet<>();
+  private List<ProductImage> images = new LinkedList<>();
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
   private List<ProductDetail> details = new LinkedList<>();

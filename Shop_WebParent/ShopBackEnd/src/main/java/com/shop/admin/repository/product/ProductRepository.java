@@ -36,4 +36,15 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
   @Modifying
   void changeProductState(Long id, boolean state);
 
+  @Query("DELETE FROM ProductDetail pd" +
+            " WHERE pd.product.id =" + 
+            " (SELECT p.id FROM Product p WHERE p.id=?1)")
+  @Modifying
+  void clearProductDetails(Long id);
+
+  @Query("DELETE FROM ProductImage pi" +
+            " WHERE pi.name=?2 AND pi.product.id =" +
+            " (SELECT p.id FROM Product p WHERE p.id=?1)")
+  @Modifying
+  void removeImageByProductId(Long productId, String fileName);
 }

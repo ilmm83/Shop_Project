@@ -3,6 +3,7 @@ package com.shop.admin.controller.product;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedList;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import com.shop.admin.service.product.ProductService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.dto.ProductDTO;
 import com.shop.model.Product;
+import com.shop.model.ProductDetail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,27 +64,47 @@ public class ProductController {
   }
 
   @PostMapping("/new")
-  public String createNewProduct(ProductDTO dto, @RequestParam("fileImage") MultipartFile mainImageMultipart,
-      @RequestParam("extraImage") MultipartFile[] extraMultipart,
+  public String createNewProduct(ProductDTO dto,
+      @RequestParam("fileImage") MultipartFile mainImageMultipart,
+      @RequestParam(name = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
       @RequestParam(name = "detailName", required = false) String[] detailNames,
       @RequestParam(name = "detailValue", required = false) String[] detailValues,
-      Model model, RedirectAttributes attributs) throws BrandNotFoundException {
+      Model model, RedirectAttributes attributs) {
 
     try {
       var product = convertToProduct(dto);
-      setMainImage(mainImageMultipart, product);
-      setExtraImages(extraMultipart, product);
+      productService.save(product);
+
+      setAndSaveMainImage(mainImageMultipart, product);
+      setAndSaveExtraImages(extraImagesMultipart, product);
       setProductDetails(detailNames, detailValues, product);
-      saveUploadedImages(extraMultipart, mainImageMultipart, product);
 
       attributs.addFlashAttribute("message", "The product has been saved successfully.");
       productService.save(product);
-      
-    } catch (BrandNotFoundException | CategoryNotFoundException | IOException e) {
+
+    } catch (BrandNotFoundException | CategoryNotFoundException | IOException | ProductNotFoundException e) {
       attributs.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
     }
     return "redirect:/api/v1/products";
+  }
+
+  @GetMapping("/edit/{id}")
+  public String editProduct(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    try {
+      var product = productService.findById(id);
+      var brands = brandService.findAllByNameAsc();
+      var categories = categoryService.listCategoriesHierarchal();
+      model.addAttribute("brands", brands);
+      model.addAttribute("categories", categories);
+      model.addAttribute("productDTO", convertToProductDTO(product));
+      model.addAttribute("imagesAmount", product.getImages().size()); 
+
+    } catch (ProductNotFoundException e) {
+      attributes.addFlashAttribute("message", e.getMessage());
+      e.printStackTrace();
+    }
+    return "products/products_form";
   }
 
   @GetMapping("/{id}/enabled/false")
@@ -118,58 +140,45 @@ public class ProductController {
   }
 
   private void setProductDetails(String[] detailNames, String[] detailValues, Product product) {
-    if (detailNames == null || detailNames.length == 0)
+    if (detailNames == null)
       return;
 
+    var details = new LinkedList<ProductDetail>();
     for (int i = 0; i < detailNames.length; i++) {
       var name = detailNames[i];
       var value = detailValues[i];
 
       if (!name.isEmpty() && !value.isEmpty())
-        product.addDetail(name, value);
+        details.add(new ProductDetail(name, value, product));
     }
+    if (product.getId() != null)
+      productService.clearProductDetails(product.getId());
+    product.setDetails(details);
   }
 
-  private void saveUploadedImages(MultipartFile[] extraImages, MultipartFile mainImage, Product product)
-      throws IOException {
-    if (mainImage.isEmpty())
-      return;
-
-    var saved = productService.save(product);
-    var fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());
-    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + saved.getId();
-    FileUploadUtil.saveFile(uploadDir, fileName, mainImage);
-
-    if (extraImages.length == 0)
-      return;
-
-    var uploadDirForExtras = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\"
-        + saved.getId() + "\\extras";
-    for (var imageMP : extraImages) {
-      if (imageMP.isEmpty())
-        continue;
-      var imageName = StringUtils.cleanPath(imageMP.getOriginalFilename());
-      FileUploadUtil.saveFileWithoutClearingForlder(uploadDirForExtras, imageName, imageMP);
-    }
-  }
-
-  private void setExtraImages(MultipartFile[] multipart, Product product) {
+  private void setAndSaveExtraImages(MultipartFile[] multipart, Product product) throws IOException {
     if (multipart.length == 0)
       return;
 
-    for (var file : multipart) {
-      if (file.isEmpty())
+    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\"
+        + product.getId() + "\\extras";
+    for (var image : multipart) {
+      if (image.isEmpty())
         continue;
-      var fileName = StringUtils.cleanPath(file.getOriginalFilename());
+      var fileName = StringUtils.cleanPath(image.getOriginalFilename());
+      FileUploadUtil.saveFileWithoutClearingForlder(uploadDir, fileName, image);
       product.addExtraImage(fileName);
     }
   }
 
-  private void setMainImage(MultipartFile multipart, Product product) {
-    if (!multipart.isEmpty()) {
-      var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
-      product.setMainImage(fileName);
-    }
+  private void setAndSaveMainImage(MultipartFile mainImage, Product product) throws IOException {
+    if (mainImage.isEmpty())
+      return;
+
+    var fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());
+    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + product.getId();
+    FileUploadUtil.saveFile(uploadDir, fileName, mainImage);
+    product.setMainImage(fileName);
   }
 
   private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, String sortField,
@@ -188,7 +197,39 @@ public class ProductController {
     model.addAttribute("totalProducts", page.getTotalElements());
   }
 
-  private Product convertToProduct(ProductDTO dto) throws BrandNotFoundException, CategoryNotFoundException {
+  private ProductDTO convertToProductDTO(Product product) {
+    var dto = new ProductDTO();
+    var brandId = product.getBrand() == null ? null : product.getBrand().getId();
+    var categoryId = product.getCategory() == null ? null : product.getCategory().getId();
+
+    dto.setId(product.getId());
+    dto.setName(product.getName());
+    dto.setAlias(product.getAlias());
+    dto.setShortDescription(product.getShortDescription());
+    dto.setFullDescription(product.getFullDescription());
+    dto.setCreatedAt(product.getCreatedAt());
+    dto.setUpdatedAt(product.getUpdatedAt());
+    dto.setEnabled(product.isEnabled());
+    dto.setInStock(product.isInStock());
+    dto.setPrice(product.getPrice());
+    dto.setDiscountPercent(product.getDiscountPercent());
+    dto.setCost(product.getCost());
+    dto.setLength(product.getLength());
+    dto.setWidth(product.getWidth());
+    dto.setHeight(product.getHeight());
+    dto.setWeight(product.getWeight());
+    dto.setMainImage(!product.getMainImage().isEmpty() ? product.getMainImage() : null);
+    dto.setDetails(product.getDetails());
+    dto.setImages(product.getImages());
+    dto.setBrandId(brandId);
+    dto.setCategoryId(categoryId);
+
+    return dto;
+  }
+
+  private Product convertToProduct(ProductDTO dto)
+      throws BrandNotFoundException, CategoryNotFoundException, ProductNotFoundException {
+
     var product = new Product();
     var brand = dto.getBrandId() == 0 ? null : brandService.findById(dto.getBrandId());
     var category = dto.getCategoryId() == 0 ? null : categoryService.findById(dto.getCategoryId());
@@ -196,8 +237,8 @@ public class ProductController {
     product.setId(dto.getId());
     product.setName(dto.getName());
     product.setAlias(dto.getAlias());
-    product.setShortDiscription(dto.getShortDescription());
-    product.setFullDiscription(dto.getFullDescription());
+    product.setShortDescription(dto.getShortDescription());
+    product.setFullDescription(dto.getFullDescription());
     product.setCreatedAt(dto.getCreatedAt());
     product.setUpdatedAt(dto.getUpdatedAt());
     product.setEnabled(dto.isEnabled());
@@ -209,6 +250,11 @@ public class ProductController {
     product.setWidth(dto.getWidth());
     product.setHeight(dto.getHeight());
     product.setWeight(dto.getWeight());
+    product.setMainImage(
+        dto.getMainImage() == null && dto.getId() != null ? productService.findById(dto.getId()).getMainImage()
+            : "");
+    product.setDetails(dto.getDetails());
+    product.setImages(dto.getImages());
     product.setBrand(brand);
     product.setCategory(category);
 
