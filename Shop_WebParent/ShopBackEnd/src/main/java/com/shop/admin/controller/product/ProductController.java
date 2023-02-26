@@ -2,7 +2,6 @@ package com.shop.admin.controller.product;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.LinkedList;
 
 import org.apache.commons.io.FileUtils;
@@ -76,7 +75,7 @@ public class ProductController {
       productService.save(product);
 
       setAndSaveMainImage(mainImageMultipart, product);
-      setAndSaveExtraImages(extraImagesMultipart, product);
+      setAndSaveNewExtraImages(extraImagesMultipart, product);
       setProductDetails(detailNames, detailValues, product);
 
       attributs.addFlashAttribute("message", "The product has been saved successfully.");
@@ -98,13 +97,42 @@ public class ProductController {
       model.addAttribute("brands", brands);
       model.addAttribute("categories", categories);
       model.addAttribute("productDTO", convertToProductDTO(product));
-      model.addAttribute("imagesAmount", product.getImages().size()); 
+      model.addAttribute("imagesAmount", product.getImages().size());
 
     } catch (ProductNotFoundException e) {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
     }
     return "products/products_form";
+  }
+
+  @GetMapping("/detail/{id}")
+  public String showProductDetails(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    try {
+      var product = productService.findById(id);
+      var brand = product.getBrand();
+      var category = product.getCategory();
+
+      isDescriptionsEmpty(product, "<div><br></div>");
+
+      model.addAttribute("brand", brand);
+      model.addAttribute("category", category);
+      model.addAttribute("productDTO", convertToProductDTO(product));
+      model.addAttribute("imagesAmount", product.getImages().size());
+
+      return "products/product_detail_modal";
+    } catch (ProductNotFoundException e) {
+      attributes.addFlashAttribute("message", e.getMessage());
+      e.printStackTrace();
+    }
+    return "redirect:/api/v1/products";
+  }
+
+  private void isDescriptionsEmpty(Product product, String empty) {
+    if (product.getFullDescription().equals(empty))
+      product.setFullDescription("No description.");
+    if (product.getShortDescription().equals(empty))
+      product.setShortDescription("No description.");
   }
 
   @GetMapping("/{id}/enabled/false")
@@ -156,7 +184,7 @@ public class ProductController {
     product.setDetails(details);
   }
 
-  private void setAndSaveExtraImages(MultipartFile[] multipart, Product product) throws IOException {
+  private void setAndSaveNewExtraImages(MultipartFile[] multipart, Product product) throws IOException {
     if (multipart.length == 0)
       return;
 
@@ -166,6 +194,9 @@ public class ProductController {
       if (image.isEmpty())
         continue;
       var fileName = StringUtils.cleanPath(image.getOriginalFilename());
+
+      if (product.containsImageName(fileName))
+        continue;
       FileUploadUtil.saveFileWithoutClearingForlder(uploadDir, fileName, image);
       product.addExtraImage(fileName);
     }

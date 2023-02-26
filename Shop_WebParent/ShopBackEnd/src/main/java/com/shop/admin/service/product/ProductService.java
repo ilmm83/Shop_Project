@@ -1,7 +1,10 @@
+
 package com.shop.admin.service.product;
 
+import java.io.File;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -72,6 +75,8 @@ public class ProductService {
   @Transactional
   public void removeImage(Long productId, String fileName) {
     repository.removeImageByProductId(productId, fileName);
+    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId + "\\extras\\" + fileName;
+    FileUtils.deleteQuietly(new File(uploadDir));
   }
 
   public String checkNameUnique(Long id, String name) {

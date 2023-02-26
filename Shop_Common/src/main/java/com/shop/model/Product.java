@@ -2,10 +2,8 @@ package com.shop.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -112,5 +110,13 @@ public class Product {
       return null;
 
     return "/product-images/" + this.id + "/" + this.mainImage;
+  }
+
+  public boolean containsImageName(String fileName) {
+    for (var image : images) {
+      if (image.getName().equals(fileName))
+        return true;
+    }
+    return false;
   }
 }

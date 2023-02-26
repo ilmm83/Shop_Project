@@ -43,4 +43,5 @@ public class ProductImage {
   public String getExtraImagePath() {
     return "/product-images/" + product.getId() + "/extras/" + this.name;
   }
+
 }

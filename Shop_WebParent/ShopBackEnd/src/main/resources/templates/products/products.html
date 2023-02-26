@@ -111,15 +111,21 @@
           </thead>
           <tbody>
             <tr th:each="product : ${products}">
-              <td class="text-center hideable-column">[[${product.id}]]</td>
+              <td
+                class="text-center hideable-column"
+                id="productId"
+                th:productId="${product.id}"
+              >
+                [[${product.id}]]
+              </td>
               <td class="text-center">
                 <img
-                class="img-fluid rounded-3"
-                style="width: 100px"
-                th:if="${product.mainImage != null}"
-                th:src="@{${product.mainImagesPath}}"
-                alt=""
-              />
+                  class="img-fluid rounded-3"
+                  style="width: 100px"
+                  th:if="${product.mainImage != null}"
+                  th:src="@{${product.mainImagesPath}}"
+                  alt=""
+                />
               </td>
               <td class="text-center">[[${product.name}]]</td>
               <td class="text-center">
@@ -138,11 +144,14 @@
                 ></div>
               </td>
               <td class="text-center">
-                <a
+                <span
                   class="fas fa-file-alt fa-2x text-success"
-                  th:href="'/api/v1/products/' + ${product.id}"
-                  title="Veiw details of this product"
-                ></a>
+                  th:href="@{'/api/v1/products/detail/' + ${product.id}}"
+                  title="View details of this product"
+                  onclick="showDetailsModal($(this).attr('href'))"
+                  data-bs-toggle="modal"
+                  data-bs-target="#detailModal"
+                ></span>
                 <span class="m-3"></span>
                 <a
                   th:replace="~{fragments :: edit('products', ${product}, 'product')}"
@@ -188,6 +197,12 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="detailModal">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content"></div>
       </div>
     </div>
 
