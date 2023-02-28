@@ -41,8 +41,8 @@ public class ProductController {
 
   @GetMapping
   public String productPage(Model model) {
-    var page = productService.findAllProductsSortedBy(null, 1, "id", "asc");
-    changingDisplayProductsPage(1, model, page, "id", "asc", null);
+    var page = productService.findAllProductsSortedBy(null, 1, "id", "asc", 0l);
+    changingDisplayProductsPage(1, model, page, "id", "asc", null, 0l);
 
     return "products/products";
   }
@@ -88,6 +88,20 @@ public class ProductController {
     return "redirect:/api/v1/products";
   }
 
+  @GetMapping("/{pageNum}")
+  public String pageByNumber(@PathVariable("pageNum") Integer pageNum,
+      @RequestParam("sortField") String sortField,
+      @RequestParam("sortDir") String sortDir,
+      @RequestParam(name = "keyword", required = false) String keyword,
+      @RequestParam(name = "categoryId", required = false) Long categoryId,
+      Model model) {
+
+    var page = productService.findAllProductsSortedBy(keyword, pageNum, sortField, sortDir, categoryId);
+    changingDisplayProductsPage(pageNum, model, page, sortField, sortDir, keyword, categoryId);
+
+    return "products/products";
+  }
+
   @GetMapping("/edit/{id}")
   public String editProduct(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
     try {
@@ -126,13 +140,6 @@ public class ProductController {
       e.printStackTrace();
     }
     return "redirect:/api/v1/products";
-  }
-
-  private void isDescriptionsEmpty(Product product, String empty) {
-    if (product.getFullDescription().equals(empty))
-      product.setFullDescription("No description.");
-    if (product.getShortDescription().equals(empty))
-      product.setShortDescription("No description.");
   }
 
   @GetMapping("/{id}/enabled/false")
@@ -213,8 +220,7 @@ public class ProductController {
   }
 
   private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, String sortField,
-      String sortDir,
-      String keyword) {
+      String sortDir, String keyword, Long categoryId) {
 
     String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
 
@@ -226,6 +232,10 @@ public class ProductController {
     model.addAttribute("currentPage", pageNum);
     model.addAttribute("lastPage", (page.getTotalElements() / ProductService.PAGE_SIZE) + 1);
     model.addAttribute("totalProducts", page.getTotalElements());
+    model.addAttribute("categories", categoryService.listCategoriesHierarchal());
+
+    if (categoryId != null)
+      model.addAttribute("categoryId", categoryId);
   }
 
   private ProductDTO convertToProductDTO(Product product) {
@@ -291,4 +301,12 @@ public class ProductController {
 
     return product;
   }
+
+  private void isDescriptionsEmpty(Product product, String empty) {
+    if (product.getFullDescription().equals(empty))
+      product.setFullDescription("No description.");
+    if (product.getShortDescription().equals(empty))
+      product.setShortDescription("No description.");
+  }
+
 }

@@ -137,6 +137,7 @@ public class CategoryController {
     category.setAlias(dto.getAlias());
     category.setImage(dto.getImage());
     category.setEnabled(dto.isEnabled());
+    category.setAllParentIDs(dto.getAllParentIDs());
 
     return category;
   }
@@ -149,6 +150,7 @@ public class CategoryController {
     dto.setAlias(category.getAlias());
     dto.setImage(category.getImage());
     dto.setEnabled(category.isEnabled());
+    dto.setAllParentIDs(category.getAllParentIDs());
 
     return dto;
   }

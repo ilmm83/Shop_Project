@@ -26,15 +26,23 @@ public class ProductService {
 
   public static final int PAGE_SIZE = 4;
 
-  public Page<Product> findAllProductsSortedBy(String keyword, int pageNum, String field, String direction) {
+  public Page<Product> findAllProductsSortedBy(String keyword, int pageNum, String field, String direction,
+      Long categoryId) {
     Sort sort = Sort.by(field);
     sort = direction.equals("asc") ? sort.ascending() : sort.descending();
 
     PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
 
-    if (keyword != null)
-      return repository.findAll(keyword, pageable);
-    else
+    if (keyword != null && !keyword.isEmpty()) {
+      if (categoryId != null && categoryId > 0) {
+        var categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
+        return repository.searchInCategory(categoryId, categoryIdMatch,keyword, pageable);
+      } else
+        return repository.findAll(keyword, pageable);
+    } else if (categoryId != null && categoryId > 0) {
+      var categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
+      return repository.findAllInCategory(categoryId, categoryIdMatch, pageable);
+    } else
       return repository.findAll(pageable);
   }
 
@@ -75,7 +83,8 @@ public class ProductService {
   @Transactional
   public void removeImage(Long productId, String fileName) {
     repository.removeImageByProductId(productId, fileName);
-    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId + "\\extras\\" + fileName;
+    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId
+        + "\\extras\\" + fileName;
     FileUtils.deleteQuietly(new File(uploadDir));
   }
 

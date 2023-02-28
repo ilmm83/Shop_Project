@@ -78,6 +78,14 @@ public class CategoryService {
 
     @Transactional
     public Category save(Category catFromForm) {
+        var parentProxy = catFromForm.getParent();
+        if (parentProxy != null) {
+            var parent = categoryRepository.findById(parentProxy.getId());
+            var allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
+            allParentIds += String.valueOf(parent.getId()) + "-";   
+            catFromForm.setAllParentIDs(allParentIds);
+        }
+
         return categoryRepository.save(catFromForm);
     }
 

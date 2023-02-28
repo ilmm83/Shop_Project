@@ -21,6 +21,8 @@ public class CategoryDTO {
 
   private boolean enabled;
 
+  private String allParentIDs;
+
   public String getPhotosImagePath() {
     if (this.id == null || this.image == null)
       return null;

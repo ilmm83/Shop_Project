@@ -38,4 +38,5 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 
   @Query("SELECT c FROM Category c WHERE c.name LIKE %?1% OR c.alias LIKE %?2%")
   java.lang.Iterable<Category> findByNameAndAlias(String name, String alias);
+
 }

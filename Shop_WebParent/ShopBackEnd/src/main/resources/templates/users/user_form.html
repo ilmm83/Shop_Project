@@ -124,20 +124,19 @@
               <label class="col-sm-4 col-form-label">Photos:</label>
               <div class="col-sm-8">
                 <input type="hidden" th:field="*{photos}">
-                  <input 
-                    name="image"
-                    class="mb-3"
-                    type="file"
-                    onchange="showThumbnail(this, 102400) "
-                    value="Choose File"
-                    accept="image/png, image/jpeg"
-                  />
-                  <br>
                 <img 
-                  id="thumbnail" 
-                  class="img-fluid rounded-3"
-                  style="width: 100px"
-                  th:src="@{${user.photosImagePath}}" alt="">
+                id="thumbnail" 
+                class="img-fluid rounded-3"
+                style="width: 100px"
+                th:src="@{${user.photosImagePath}}" alt="">
+                <input 
+                  name="image"
+                  class="mt-3"
+                  type="file"
+                  onchange="showThumbnail('#thumbnail', this, 102400) "
+                  value="Choose File"
+                  accept="image/png, image/jpeg"
+                />
               </div>
             </div>
 
