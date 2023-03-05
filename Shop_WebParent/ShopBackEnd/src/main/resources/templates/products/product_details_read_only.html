@@ -1,0 +1,23 @@
+<div th:fragment="content" th:remove="tag">
+  <div>
+    <table class="text-center table table-bordered table-striped table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th style="width: 40%">Names</th>
+          <th>Values</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="detail : ${productDTO.details}">
+          <td>
+            <span>[[${detail.value}]]</span>
+          </td>
+          <td>
+            <span>[[${detail.value}]]</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

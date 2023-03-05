@@ -31,10 +31,13 @@ public class BrandRestController {
     return service.checkNameUnique(id, name);
   }
 
-  @GetMapping("/{id}/categories")
+  @GetMapping("/categories/{id}")
   public List<CategoryDTO> listCategoriesByBrand(@PathVariable("id") Long brandId) throws BrandNotFoundRestException {
-    if (brandId == 0) return Collections.emptyList();
+    if (brandId == 0)
+      return Collections.emptyList();
     var listCategories = new ArrayList<CategoryDTO>();
+
+    // Todo: instead of write a bunch of the try-catch blocks, do simple constructions using Optional.
     try {
       var brand = service.findById(brandId);
       brand.getCategories().forEach(cat -> listCategories.add(convertToCategoryDTO(cat)));

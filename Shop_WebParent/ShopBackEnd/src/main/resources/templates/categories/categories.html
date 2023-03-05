@@ -42,7 +42,7 @@
 
       <!-- Filter bar -->
       <form
-        class="row g-3 ms-2 mt-2 align-items-center"
+        class="row g-3 mt-2 container-fluid ps-3"
         th:action="@{/api/v1/categories/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
@@ -81,7 +81,7 @@
       <div class="text-center alert alert-success" th:if="${message != null}">
         [[${message}]]
       </div>
-      
+
       <div class="full-details">
         <table
           class="text-center table table-bordered table-striped table-hover"

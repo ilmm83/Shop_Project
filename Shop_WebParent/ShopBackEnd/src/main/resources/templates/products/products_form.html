@@ -32,7 +32,7 @@
 
     <!-- Registration form -->
     <form
-      th:action="@{/api/v1/products/new}"
+      th:action="@{/api/v1/products/save}"
       method="post"
       th:object="${productDTO}"
       style="max-width: 650px; margin: 25px auto"
@@ -115,16 +115,46 @@
             <div th:replace="~{products/product_overview :: content}"></div>
           </div>
           <div class="tab-pane" id="description" role="tabpanel" tabindex="0">
-            <div th:replace="~{products/product_description :: content}"></div>
+            <th:block sec:authorize="hasAuthority('Salesperson')">
+              <div
+                th:replace="~{products/product_description_read_only :: content}"
+              ></div>
+            </th:block>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+              <div
+                th:replace="~{products/product_description :: content}"
+              ></div>
+            </th:block>
           </div>
           <div class="tab-pane" id="images" role="tabpanel" tabindex="0">
-            <div th:replace="~{products/product_images :: content}"></div>
+            <th:block sec:authorize="hasAuthority('Salesperson')">
+              <div
+                th:replace="~{products/product_images_read_only :: content}"
+              ></div>
+            </th:block>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+              <div th:replace="~{products/product_images :: content}"></div>
+            </th:block>
           </div>
           <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
-            <div th:replace="~{products/product_details :: content}"></div>
+            <th:block sec:authorize="hasAuthority('Salesperson')">
+              <div
+                th:replace="~{products/product_details_read_only :: content}"
+              ></div>
+            </th:block>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+              <div th:replace="~{products/product_details :: content}"></div>
+            </th:block>
           </div>
           <div class="tab-pane" id="shipping" role="tabpanel" tabindex="0">
-            <div th:replace="~{products/product_shipping :: content}"></div>
+            <th:block sec:authorize="hasAuthority('Salesperson')">
+              <div
+                th:replace="~{products/product_shipping_read_only :: content}"
+              ></div>
+            </th:block>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+              <div th:replace="~{products/product_shipping :: content}"></div>
+            </th:block>
           </div>
         </div>
       </div>
@@ -178,11 +208,15 @@
     <script>
       const moduleURL = "[[@{/api/v1/products}]]";
       const brandModuleURL = "[[@{/api/v1/brands}]]";
+      const brandCats = "[[${brandCats}]]";
     </script>
     <script type="text/javascript" th:src="@{/scripts/checkName.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/richText.js}"></script>
-    <script type="text/javascript" th:src="@{/scripts/addMoreDetail.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/addMoreDetail.js}"
+    ></script>
     <script
       type="text/javascript"
       th:src="@{/scripts/getCategoriesForProducForm.js}"

@@ -25,25 +25,27 @@
 
       <div class="ms-4">
         <h2>Manage Products</h2>
-        <a
-          class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Create new Product"
-          th:href="@{/api/v1/products/new}"
-        ></a>
-        &nbsp;&nbsp;
-        <a
-          class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Export to CSV"
-          th:href="@{/api/v1/products/export/csv}"
-        ></a>
+        <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+          <a
+            class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
+            style="text-decoration: none"
+            title="Create new Product"
+            th:href="@{/api/v1/products/new}"
+          ></a>
+          &nbsp;&nbsp;
+          <a
+            class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+            style="text-decoration: none"
+            title="Export to CSV"
+            th:href="@{/api/v1/products/export/csv}"
+          ></a>
+        </th:block>
       </div>
 
       <!-- Filter bar -->
       <form
         id="searchForm"
-        class="row g-3 ms-2 mt-2 align-items-center"
+        class="row g-3 mt-2 container-fluid ps-3"
         th:action="@{/api/v1/products/1}"
       >
         <input type="hidden" name="sortField" th:value="${sortField}" />
@@ -116,30 +118,32 @@
                 ></span>
               </th>
               <th>Main image</th>
-              <th
-                th:replace="~{fragments :: column_link('products', 'name', 'Product Name', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('products', 'category', 'Category', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('products', 'brand', 'Brand', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('products', 'enabled', 'Enabled', 'none')}"
-              ></th>
+              <th>
+                <span
+                  th:replace="~{fragments :: column_link('products', 'name', 'Product Name', 'tag')}"
+                ></span>
+              </th>
+              <th class="hideable-column">
+                <span
+                  th:replace="~{fragments :: column_link('products', 'category', 'Category', 'tag')}"
+                ></span>
+              </th>
+              <th class="hideable-column">
+                <span
+                  th:replace="~{fragments :: column_link('products', 'brand', 'Brand', 'tag')}"
+                ></span>
+              </th>
+              <th sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                <span
+                  th:replace="~{fragments :: column_link('products', 'enabled', 'Enabled', 'tag')}"
+                ></span>
+              </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="product : ${products}">
-              <td
-                class="text-center hideable-column"
-                id="productId"
-                th:productId="${product.id}"
-              >
-                [[${product.id}]]
-              </td>
+              <td class="text-center hideable-column">[[${product.id}]]</td>
               <td class="text-center">
                 <img
                   class="img-fluid rounded-3"
@@ -150,20 +154,12 @@
                 />
               </td>
               <td class="text-center">[[${product.name}]]</td>
-              <td class="text-center">
-                <span th:if="${product.category != null}"
-                  >[[${product.category.name}]]</span
-                >
-              </td>
-              <td class="text-center">
-                <span th:if="${product.brand != null}"
-                  >[[${product.brand.name}]]</span
-                >
-              </td>
-              <td>
-                <div
+              <td class="text-center hideable-column">[[${product.category.name}]]</td>
+              <td class="text-center hideable-column">[[${product.brand.name}]]</td>
+              <td sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                <span
                   th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
-                ></div>
+                ></span>
               </td>
               <td class="text-center">
                 <span
@@ -175,17 +171,65 @@
                   data-bs-target="#detailModal"
                 ></span>
                 <span class="m-3"></span>
-                <a
-                  th:replace="~{fragments :: edit('products', ${product}, 'product')}"
-                ></a>
+                <th:block
+                  sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
+                >
+                  <a
+                    th:replace="~{fragments :: edit('products', ${product}, 'product')}"
+                  ></a>
+                </th:block>
                 <span class="m-3"></span>
-                <a
-                  th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
-                ></a>
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                  <a
+                    th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
+                  ></a>
+                </th:block>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <div class="less-details">
+      <div th:each="product : ${products}" class="row m-1">
+        <div class="col-auto">
+          <span
+            th:if="${product.mainImage == null}"
+            class="fa-solid fa-image-portrait fa-2x"
+          ></span>
+          <img
+            class="img-fluid rounded-3"
+            style="width: 100px"
+            th:if="${product.mainImage != null}"
+            th:src="@{${product.mainImagesPath}}"
+            alt=""
+          />
+        </div>
+        <div class="col-auto">
+          <div>[[${product.name}]]</div>
+          <div>&nbsp;</div>
+          <div>
+            <th:block
+              sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
+            >
+              <div
+                th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
+              ></div>
+              <span class="m-1"></span>
+              <a
+                th:replace="~{fragments :: edit('products', ${product}, 'product')}"
+              ></a>
+            </th:block>
+            <span class="m-1"></span>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+              <a
+                th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
+              ></a>
+            </th:block>
+          </div>
+        </div>
+        <div>&nbsp;&nbsp;</div>
       </div>
     </div>
 

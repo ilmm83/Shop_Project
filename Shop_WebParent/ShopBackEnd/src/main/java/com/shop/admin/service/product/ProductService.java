@@ -62,6 +62,16 @@ public class ProductService {
   }
 
   @Transactional
+  public void saveProductPrice(Product productFromForm) {
+    var productInDB = repository.findById(productFromForm.getId());
+    productInDB.setPrice(productFromForm.getPrice());
+    productInDB.setCost(productFromForm.getCost());
+    productInDB.setDiscountPercent(productFromForm.getDiscountPercent());
+
+    repository.save(productInDB);
+  }
+
+  @Transactional
   public void clearProductDetails(Long id) {
     repository.clearProductDetails(id);
   }

@@ -1,0 +1,21 @@
+<div th:fragment="content" th:remove="tag">
+  <div class="tab-pane" id="description" role="tabpanel" tabindex="0">
+    <div class="form-group p-2 row">
+      <div class="form-group row">
+        <label class="form-label m-2">Short description:</label>
+        <pre
+          class="ms-2 form-control border"
+          th:utext="${productDTO.shortDescription}"
+          readonly
+        ></pre>
+
+        <label class="form-label m-2">Full description:</label>
+        <pre
+          class="ms-2 form-control"
+          th:utext="${productDTO.fullDescription}"
+          readonly
+        ></pre>
+      </div>
+    </div>
+  </div>
+</div>

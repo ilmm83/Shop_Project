@@ -11,9 +11,9 @@ $(document).ready(function () {
 
 function getCategories(dropdownBrands, dropdownCategories, brandModuleURL) {
   const brandId = dropdownBrands.val();
-  if (brandId === 0) return;
+  if (brandId === undefined) return;
 
-  const url = brandModuleURL + "/" + brandId + "/categories";
+  const url = brandModuleURL + "/categories/" + brandId ;
 
   $.get(url, (response) => {
     $.each(response, (index, category) => {

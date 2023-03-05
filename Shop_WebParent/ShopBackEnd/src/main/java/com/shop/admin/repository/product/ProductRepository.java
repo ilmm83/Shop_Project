@@ -11,6 +11,8 @@ import com.shop.model.Product;
 
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
+    
+    // todo: change all repo's methods to return Optional<> and refactor the attached code.
 
   Product save(Product product);
 

@@ -1,0 +1,29 @@
+<div th:fragment="content" th:remove="tag">
+  <div class="p-2 col text-center">
+    <div class="m-2">
+      <img
+        height="250px"
+        width="250px"
+        alt=""
+        class="img-fluid"
+        th:src="@{${productDTO.mainImagesPath}}"
+      />
+    </div>
+  </div>
+
+  <div class="row text-center ps-3 pe-3">
+    <th:block th:each="image: ${productDTO.images}">
+      <div class="p-2 col">
+        <div class="m-2">
+          <img
+            height="200px"
+            width="200px"
+            class="img-fluid"
+            th:src="@{${image.extraImagePath}}"
+            alt=""
+          />
+        </div>
+      </div>
+    </th:block>
+  </div>
+</div>

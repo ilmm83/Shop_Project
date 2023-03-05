@@ -131,14 +131,14 @@ public class UserController {
         return REDIRECT_API_V1_USERS;
     }
 
-    @GetMapping("/{id}/enabled/true")
+    @GetMapping("/enabled/true/{id}")
     public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Enabled.");
         service.changeEnableState(id, true);
         return REDIRECT_API_V1_USERS;
     }
 
-    @GetMapping("/{id}/enabled/false")
+    @GetMapping("/enabled/false/{id}")
     public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
         service.changeEnableState(id, false);

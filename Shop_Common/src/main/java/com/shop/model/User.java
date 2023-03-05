@@ -10,7 +10,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Table(name = "users")
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -45,28 +46,39 @@ public class User {
         this.roles.add(role);
     }
 
-    
     @Override
     public String toString() {
         var listOfRoleNames = roles.stream().map(Role::getName).toList();
         return "User: \n"
-        + "  " + id + ", \n"
-        + "  " + email + ", \n"
-        + "  " + password + ", \n"
-        + "  " + firstName + ", \n"
-        + "  " + lastName + ", \n"
-        + "  " + enabled + ", \n"
-        + "  " + listOfRoleNames + ";\n";
+                + "  " + id + ", \n"
+                + "  " + email + ", \n"
+                + "  " + password + ", \n"
+                + "  " + firstName + ", \n"
+                + "  " + lastName + ", \n"
+                + "  " + enabled + ", \n"
+                + "  " + listOfRoleNames + ";\n";
     }
 
     @Transient
     public String getPhotosImagePath() {
-        if (this.id == null || this.photos == null) return null;
+        if (this.id == null || this.photos == null)
+            return null;
         return "/images/user-images/" + this.id + "/" + this.photos;
     }
 
     @Transient
     public String getFullName() {
         return this.firstName + " " + this.lastName;
+    }
+
+    public boolean hasRole(String roleName) {
+        var iterator = roles.iterator();
+        
+        while (iterator.hasNext()) {
+            var role = iterator.next();
+            if (role.getName().equals(roleName))
+                return true;
+        }
+        return false;
     }
 }

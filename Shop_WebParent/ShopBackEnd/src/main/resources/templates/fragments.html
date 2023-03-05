@@ -50,16 +50,14 @@
         th:if="${enabled == true}"
         style="text-decoration: none"
         class="fa-regular fa-circle-check fa-2x text-success"
-        th:href="@{'/api/v1/' + ${entityUrl} + '/' +
-        ${entity.id} + '/enabled/false'}"
+        th:href="@{'/api/v1/' + ${entityUrl} + '/enabled/false/' + ${entity.id}}"
       >
       </a>
       <a
         th:if="${enabled == false}"
         style="text-decoration: none"
         class="fa-regular fa-circle-xmark fa-2x text-danger"
-        th:href="@{'/api/v1/' + ${entityUrl} + '/' +
-        ${entity.id} + '/enabled/true'}"
+        th:href="@{'/api/v1/' + ${entityUrl}  + '/enabled/true/' + ${entity.id}}"
       >
       </a>
     </div>
@@ -136,7 +134,7 @@
       class="navbar navbar-expand-lg navbar-light sticky-top"
       style="background-color: rgb(116, 49, 250)"
     >
-      <div class="container-xxl ">
+      <div class="navbar">
         <a class="navbar-brand m-2" th:href="@{/}">
           <img
             th:src="@{/images/Shop-logo-big.png}"
@@ -273,13 +271,17 @@
               >
             </li>
             <li class="nav-item dropdown">
-              <a
+              <span
                 class="nav-link fw-bold fas fa-user fa-2x text-white"
                 data-bs-toggle="dropdown"
-                aria-expanded="false"
-                th:href="@{/api/v1/account}"
-              ></a>
+                aria-expanded="true"
+              ></span>
               <div class="dropdown-menu">
+                <a
+                  class="dropdown-item"
+                  id="Account"
+                  th:href="@{/api/v1/account}"
+                >Account</a>
                 <a class="dropdown-item" id="LogoutLink" href="#">Logout</a>
               </div>
             </li>

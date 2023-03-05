@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shop.admin.exception.brand.BrandNotFoundException;
 import com.shop.admin.exception.category.CategoryNotFoundException;
 import com.shop.admin.exception.product.ProductNotFoundException;
+import com.shop.admin.security.user.ShopUserDetails;
 import com.shop.admin.service.brand.BrandService;
 import com.shop.admin.service.category.CategoryService;
 import com.shop.admin.service.product.ProductService;
@@ -62,24 +64,32 @@ public class ProductController {
     return "products/products_form";
   }
 
-  @PostMapping("/new")
+  @PostMapping("/save")
   public String createNewProduct(ProductDTO dto,
-      @RequestParam("fileImage") MultipartFile mainImageMultipart,
-      @RequestParam(name = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
+      @RequestParam(value = "fileImage", required = false) MultipartFile mainImageMultipart,
+      @RequestParam(value = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
       @RequestParam(name = "detailName", required = false) String[] detailNames,
       @RequestParam(name = "detailValue", required = false) String[] detailValues,
+      @AuthenticationPrincipal ShopUserDetails loggedUser,
       Model model, RedirectAttributes attributs) {
 
     try {
+
       var product = convertToProduct(dto);
       productService.save(product);
+
+      if (loggedUser.hasRole("Salesperson")) {
+        productService.saveProductPrice(product);
+        attributs.addFlashAttribute("message", "The product has been saved successfully.");
+        return "redirect:/api/v1/products";
+      }
 
       setAndSaveMainImage(mainImageMultipart, product);
       setAndSaveNewExtraImages(extraImagesMultipart, product);
       setProductDetails(detailNames, detailValues, product);
 
-      attributs.addFlashAttribute("message", "The product has been saved successfully.");
       productService.save(product);
+      attributs.addFlashAttribute("message", "The product has been saved successfully.");
 
     } catch (BrandNotFoundException | CategoryNotFoundException | IOException | ProductNotFoundException e) {
       attributs.addFlashAttribute("message", e.getMessage());
@@ -108,11 +118,15 @@ public class ProductController {
       var product = productService.findById(id);
       var brands = brandService.findAllByNameAsc();
       var categories = categoryService.listCategoriesHierarchal();
+      var category = product.getCategory();
+      var brand = product.getBrand();
+
       model.addAttribute("brands", brands);
+      model.addAttribute("brand", brand);
       model.addAttribute("categories", categories);
+      model.addAttribute("category", category);
       model.addAttribute("productDTO", convertToProductDTO(product));
       model.addAttribute("imagesAmount", product.getImages().size());
-
     } catch (ProductNotFoundException e) {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
@@ -142,7 +156,7 @@ public class ProductController {
     return "redirect:/api/v1/products";
   }
 
-  @GetMapping("/{id}/enabled/false")
+  @GetMapping("/enabled/false/{id}")
   public String changeToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
     productService.changeProductState(id, false);
     attributes.addFlashAttribute("message", "The product with ID: " + id + " is now disabled.");
@@ -166,7 +180,7 @@ public class ProductController {
     return "redirect:/api/v1/products";
   }
 
-  @GetMapping("/{id}/enabled/true")
+  @GetMapping("/enabled/true/{id}")
   public String changeToEnableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
     productService.changeProductState(id, true);
     attributes.addFlashAttribute("message", "The product with ID: " + id + " is now enabled.");
@@ -210,7 +224,7 @@ public class ProductController {
   }
 
   private void setAndSaveMainImage(MultipartFile mainImage, Product product) throws IOException {
-    if (mainImage.isEmpty())
+    if (mainImage.getOriginalFilename() == "")
       return;
 
     var fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());

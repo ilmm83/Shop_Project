@@ -20,13 +20,33 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests()
-                    .requestMatchers("/images/**", "/scripts/**", "/webjars/**").permitAll()
-                    .requestMatchers("/api/v1/users/**", "/api/v1/settings/**").hasAuthority("Admin")
-                    .requestMatchers("/api/v1/categories/**", "/api/v1/brands/**", "/api/v1/articles/**", "/api/v1/menus/**").hasAnyAuthority("Admin", "Editor")
-                    .requestMatchers("/api/v1/products/**").hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
-                    .requestMatchers("/api/v1/questions/**", "/api/v1/reviews/**").hasAnyAuthority("Admin", "Assistant")
-                    .requestMatchers("/api/v1/customers/**", "/api/v1/shipping/**", "/api/v1/reports/**").hasAnyAuthority("Admin", "Salesperson")
-                    .requestMatchers("/api/v1/orders/**").hasAnyAuthority("Admin", "Salesperson", "Shipper")
+                    .requestMatchers("/images/**", "/scripts/**", "/webjars/**", "/api/v1/brands/categories/**")
+                                        .permitAll()
+                                        
+                    .requestMatchers("/api/v1/users/**", "/api/v1/settings/**")
+                                        .hasAuthority("Admin")
+
+                    .requestMatchers("/api/v1/categories/**", "/api/v1/brands/**", "/api/v1/articles/**", "/api/v1/menus/**",
+                                    "/api/v1/products/new", "/api/v1/products/delete/**", "/api/v1/products/enabled/true/**",
+                                    "/api/v1/products/enabled/false/**")
+                                        .hasAnyAuthority("Admin", "Editor")
+                                        
+                    .requestMatchers("/api/v1/questions/**", "/api/v1/reviews/**")
+                                        .hasAnyAuthority("Admin", "Assistant")
+                    
+                    .requestMatchers("/api/v1/products/edit/**", "/api/v1/products/save", "/api/v1/products/check_name", 
+                                    "/api/v1/products/remove_image")
+                                        .hasAnyAuthority("Admin", "Editor", "Salesperson")
+
+                    .requestMatchers("/api/v1/customers/**", "/api/v1/shipping/**", "/api/v1/reports/**")
+                                        .hasAnyAuthority("Admin", "Salesperson")
+
+                    .requestMatchers("/api/v1/orders/**")
+                                        .hasAnyAuthority("Admin", "Salesperson", "Shipper")
+
+                    .requestMatchers("/api/v1/products/detail/**")
+                                        .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+
                     .anyRequest().authenticated()    
                 .and()
                 .userDetailsService(userDetailsService())

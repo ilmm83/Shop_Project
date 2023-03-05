@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 public class ShopUserDetails implements UserDetails {
 
   private User user;
+  private static final long serialVersionUID = 1l;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -65,4 +66,7 @@ public class ShopUserDetails implements UserDetails {
     user.setLastName(lastName);
   }
 
+  public boolean hasRole(String roleName) {
+      return user.hasRole(roleName);
+  }
 }

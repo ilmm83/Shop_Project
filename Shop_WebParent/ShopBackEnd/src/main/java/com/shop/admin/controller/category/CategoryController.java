@@ -108,14 +108,14 @@ public class CategoryController {
     return "categories/categories_form";
   }
 
-  @GetMapping("/{id}/enabled/true")
+  @GetMapping("enabled/true/{id}")
   public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
     redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Enabled.");
     service.changeEnableState(id, true);
     return REDIRECT_API_V1_CATEGORIES;
   }
 
-  @GetMapping("/{id}/enabled/false")
+  @GetMapping("/enabled/false/{id}")
   public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
     redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Disabled.");
     service.changeEnableState(id, false);
