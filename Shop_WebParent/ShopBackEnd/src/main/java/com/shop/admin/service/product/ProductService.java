@@ -3,6 +3,7 @@ package com.shop.admin.service.product;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class ProductService {
 
   public Page<Product> findAllProductsSortedBy(String keyword, int pageNum, String field, String direction,
       Long categoryId) {
+
     Sort sort = Sort.by(field);
     sort = direction.equals("asc") ? sort.ascending() : sort.descending();
 
@@ -36,7 +38,7 @@ public class ProductService {
     if (keyword != null && !keyword.isEmpty()) {
       if (categoryId != null && categoryId > 0) {
         var categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
-        return repository.searchInCategory(categoryId, categoryIdMatch,keyword, pageable);
+        return repository.searchInCategory(categoryId, categoryIdMatch, keyword, pageable);
       } else
         return repository.findAll(keyword, pageable);
     } else if (categoryId != null && categoryId > 0) {
@@ -47,7 +49,7 @@ public class ProductService {
   }
 
   @Transactional
-  public Product save(Product product) {
+  public Optional<Product> save(Product product) {
     if (product.getId() == null)
       product.setCreatedAt(new Date());
 
@@ -63,7 +65,7 @@ public class ProductService {
 
   @Transactional
   public void saveProductPrice(Product productFromForm) {
-    var productInDB = repository.findById(productFromForm.getId());
+    var productInDB = repository.findById(productFromForm.getId()).get();
     productInDB.setPrice(productFromForm.getPrice());
     productInDB.setCost(productFromForm.getCost());
     productInDB.setDiscountPercent(productFromForm.getDiscountPercent());
@@ -83,10 +85,8 @@ public class ProductService {
 
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
-    var counted = repository.findById(id);
-    if (counted == null)
-      throw new ProductNotFoundException("Could not find the product with id: " + id);
-
+    repository.findById(id)
+        .orElseThrow(() -> new ProductNotFoundException("Could not found product with ID: " + id));
     repository.deleteById(id);
   }
 
@@ -98,33 +98,34 @@ public class ProductService {
     FileUtils.deleteQuietly(new File(uploadDir));
   }
 
-  public String checkNameUnique(Long id, String name) {
-    var products = repository.findByName(name);
+  public String checkNameAndAliasUnique(Long id, String name, String alias) {
+    var products = repository.findByNameAndAlias(name, alias);
     var response = "OK";
 
-    for (var product : products) {
+    for (var cat : products) {
       if (!response.equals("OK"))
         break;
-      if (product == null)
+      if (cat == null)
         continue;
-      response = isProductExistsByName(id, product, name);
+      response = isProductExistsByNameOrAlias(id, cat, name, alias);
     }
+
     return response;
   }
 
-  private String isProductExistsByName(Long id, Product product, String name) {
+  private String isProductExistsByNameOrAlias(Long id, Product product, String name, String alias) {
     if (product == null || product.getId() == id)
       return "OK";
     else if (product.getName().equals(name))
-      return "product";
+      return "Name";
+    else if (product.getAlias().equals(alias))
+      return "Alias";
     return "OK";
   }
 
   public Product findById(Long id) throws ProductNotFoundException {
-    var product = repository.findById(id);
-    if (product == null)
-      throw new ProductNotFoundException("Could not found product with ID: " + id);
-    return product;
+    return repository.findById(id)
+        .orElseThrow(() -> new ProductNotFoundException("Could not found product with ID: " + id));
   }
 
 }

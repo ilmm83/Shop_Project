@@ -1,5 +1,7 @@
 package com.shop.admin.repository.product;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,27 +14,25 @@ import com.shop.model.Product;
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
     
-    // todo: change all repo's methods to return Optional<> and refactor the attached code.
+  Optional<Product> save(Product product);
 
-  Product save(Product product);
+  Optional<Product> findById(long id);
 
-  Product findById(long id);
+  Optional<Product> delete(Product product);
 
-  Product delete(Product product);
-
-  Product deleteById(Long id);
+  Optional<Product> deleteById(Long id);
 
   java.lang.Iterable<Product> saveAll(java.lang.Iterable<Product> products);
 
   java.lang.Iterable<Product> findAll();
 
-  Long countById(Long id);
+  Optional<Long> countById(Long id);
 
   @Query("SELECT p FROM Product p WHERE CONCAT(p.id, ' ', p.name) LIKE %?1%")
   Page<Product> findAll(String keyword, Pageable pageable);
 
-  @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
-  java.lang.Iterable<Product> findByName(String name);
+  @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% OR p.alias LIKE %?2%")
+  java.lang.Iterable<Product> findByNameAndAlias(String name, String alias);
 
   @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
   @Modifying

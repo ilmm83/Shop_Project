@@ -12,8 +12,12 @@ $(document).ready(function () {
 function getCategories(dropdownBrands, dropdownCategories, brandModuleURL) {
   const brandId = dropdownBrands.val();
   if (brandId === undefined) return;
+  if (brandId == 0) {
+    $("<option>").val(0).text("No Category").appendTo(dropdownCategories);
+    return;
+  }
 
-  const url = brandModuleURL + "/categories/" + brandId ;
+  const url = brandModuleURL + "/categories/" + brandId;
 
   $.get(url, (response) => {
     $.each(response, (index, category) => {

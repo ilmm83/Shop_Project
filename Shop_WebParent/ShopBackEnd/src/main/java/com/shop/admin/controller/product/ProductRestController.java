@@ -16,9 +16,9 @@ public class ProductRestController {
 
   private final ProductService service;
 
-  @PostMapping("/check_name")
-  public String checkNameUnique(@Param("id") Long id, @Param("name") String name) {
-    return service.checkNameUnique(id, name);
+  @PostMapping("/check_name_and_alias")
+  public String checkNameAndAliasUnique(@Param("id") Long id, @Param("name") String name, @Param("alias") String alias) {
+    return service.checkNameAndAliasUnique(id, name, alias);
   }
 
   @PostMapping("/remove_image")

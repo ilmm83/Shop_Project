@@ -34,7 +34,7 @@ public class SecurityConfig{
                     .requestMatchers("/api/v1/questions/**", "/api/v1/reviews/**")
                                         .hasAnyAuthority("Admin", "Assistant")
                     
-                    .requestMatchers("/api/v1/products/edit/**", "/api/v1/products/save", "/api/v1/products/check_name", 
+                    .requestMatchers("/api/v1/products/edit/**", "/api/v1/products/save", "/api/v1/products/check_name_and_alias", 
                                     "/api/v1/products/remove_image")
                                         .hasAnyAuthority("Admin", "Editor", "Salesperson")
 

@@ -1,11 +1,17 @@
 function checkNameAndAliasUnique(form) {
   const url = moduleURL + "/check_name_and_alias";
   const name = $("#name").val();
-  const alias = $("#alias").val();
+  let alias = $("#alias").val();
   const id = $("#id").val();
   const csrf = $("input[name='_csrf']").val();
-  const params = { id: id, name: name, alias: alias, _csrf: csrf };
+  
+  if (alias == undefined || alias == null || alias.length == 0) {
+    alias = name;
+    alias.replace(' ', '-');
+  }
 
+  const params = { id: id, name: name, alias: alias, _csrf: csrf };
+  
   $.post(url, params, (response) => {
     if (response === "OK") {
       form.submit();

@@ -37,7 +37,7 @@
       th:object="${productDTO}"
       style="max-width: 650px; margin: 25px auto"
       enctype="multipart/form-data"
-      onsubmit="return checkName(this)"
+      onsubmit="return checkNameAndAliasUnique(this)"
     >
       <div class="m-3 text-center">
         <h2>Create New Product Form</h2>
@@ -161,12 +161,11 @@
       <div class="form-group row">
         <div class="text-center">
           <input type="submit" value="Save" class="btn btn-primary m-3" />
-          <input
+          <a
             type="button"
-            value="Cancel"
             class="btn btn-secondary"
-            id="buttonCancel"
-          />
+            th:href="@{/api/v1/products}"
+          >Cancel</a>
         </div>
       </div>
     </form>
@@ -210,7 +209,10 @@
       const brandModuleURL = "[[@{/api/v1/brands}]]";
       const brandCats = "[[${brandCats}]]";
     </script>
-    <script type="text/javascript" th:src="@{/scripts/checkName.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/scripts/checkNameAndAliasUnique.js}"
+    ></script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/richText.js}"></script>
     <script

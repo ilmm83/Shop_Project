@@ -76,7 +76,7 @@
                 </th:block>
               </select>
             </th:block>
-            
+
             <th:block sec:authorize="hasAuthority('Salesperson')">
               <span class="badge text-bg-primary" th:if="${category != null}"
                 >[[${category.name}]]</span
