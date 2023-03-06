@@ -37,10 +37,10 @@ public class BrandRestController {
       return Collections.emptyList();
     var listCategories = new ArrayList<CategoryDTO>();
 
-    // Todo: instead of write a bunch of the try-catch blocks, do simple constructions using Optional.
     try {
       var brand = service.findById(brandId);
       brand.getCategories().forEach(cat -> listCategories.add(convertToCategoryDTO(cat)));
+      
     } catch (BrandNotFoundException e) {
       e.printStackTrace();
       throw new BrandNotFoundRestException();

@@ -1,15 +1,18 @@
 package com.shop.admin.controller.product;
 
+import static com.shop.admin.controller.product.ProductSaveHelper.isDescriptionsEmpty;
+import static com.shop.admin.controller.product.ProductSaveHelper.setAndSaveMainImage;
+import static com.shop.admin.controller.product.ProductSaveHelper.setAndSaveNewExtraImages;
+import static com.shop.admin.controller.product.ProductSaveHelper.setProductDetails;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +28,8 @@ import com.shop.admin.security.user.ShopUserDetails;
 import com.shop.admin.service.brand.BrandService;
 import com.shop.admin.service.category.CategoryService;
 import com.shop.admin.service.product.ProductService;
-import com.shop.admin.utils.FileUploadUtil;
 import com.shop.dto.ProductDTO;
 import com.shop.model.Product;
-import com.shop.model.ProductDetail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,7 +87,7 @@ public class ProductController {
 
       setAndSaveMainImage(mainImageMultipart, product);
       setAndSaveNewExtraImages(extraImagesMultipart, product);
-      setProductDetails(detailNames, detailValues, product);
+      setProductDetails(detailNames, detailValues, product, productService);
 
       productService.save(product);
       attributs.addFlashAttribute("message", "The product has been saved successfully.");
@@ -188,51 +189,6 @@ public class ProductController {
     return "redirect:/api/v1/products";
   }
 
-  private void setProductDetails(String[] detailNames, String[] detailValues, Product product) {
-    if (detailNames == null)
-      return;
-
-    var details = new LinkedList<ProductDetail>();
-    for (int i = 0; i < detailNames.length; i++) {
-      var name = detailNames[i];
-      var value = detailValues[i];
-
-      if (!name.isEmpty() && !value.isEmpty())
-        details.add(new ProductDetail(name, value, product));
-    }
-    if (product.getId() != null)
-      productService.clearProductDetails(product.getId());
-    product.setDetails(details);
-  }
-
-  private void setAndSaveNewExtraImages(MultipartFile[] multipart, Product product) throws IOException {
-    if (multipart.length == 0)
-      return;
-
-    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\"
-        + product.getId() + "\\extras";
-    for (var image : multipart) {
-      if (image.isEmpty())
-        continue;
-      var fileName = StringUtils.cleanPath(image.getOriginalFilename());
-
-      if (product.containsImageName(fileName))
-        continue;
-      FileUploadUtil.saveFileWithoutClearingForlder(uploadDir, fileName, image);
-      product.addExtraImage(fileName);
-    }
-  }
-
-  private void setAndSaveMainImage(MultipartFile mainImage, Product product) throws IOException {
-    if (mainImage.getOriginalFilename() == "")
-      return;
-
-    var fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());
-    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + product.getId();
-    FileUploadUtil.saveFile(uploadDir, fileName, mainImage);
-    product.setMainImage(fileName);
-  }
-
   private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, String sortField,
       String sortDir, String keyword, Long categoryId) {
 
@@ -315,12 +271,4 @@ public class ProductController {
 
     return product;
   }
-
-  private void isDescriptionsEmpty(Product product, String empty) {
-    if (product.getFullDescription().equals(empty))
-      product.setFullDescription("No description.");
-    if (product.getShortDescription().equals(empty))
-      product.setShortDescription("No description.");
-  }
-
 }

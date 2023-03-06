@@ -31,6 +31,7 @@ public class AccountController {
   @GetMapping
   public String viewDetails(@AuthenticationPrincipal ShopUserDetails loggedUser, Model model)
       throws UserNotFoundException {
+        
     String email = loggedUser.getUsername();
     User user = service.getByEmail(email);
 

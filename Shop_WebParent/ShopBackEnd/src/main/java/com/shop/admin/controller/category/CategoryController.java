@@ -51,7 +51,7 @@ public class CategoryController {
   }
 
   @GetMapping("/new")
-  public String createForm(Model model) {
+  public String createCategoryForm(Model model) {
 
     model.addAttribute("categories", service.listCategoriesHierarchal());
     model.addAttribute("categoryDTO", new CategoryDTO());

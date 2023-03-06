@@ -41,8 +41,8 @@ public class UserService {
     public Page<User> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
 
         Sort sort = Sort.by(sortField);
-        if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an 
-            sort = Sort.by("firstName");
+        // if (sortField.equals("roles") && keyword != null) // ! when the condition is true, hibernate is throwing an
+        //     sort = Sort.by("firstName");
 
         sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
 
@@ -55,10 +55,8 @@ public class UserService {
     }
 
     public User findById(Long id) throws UserNotFoundException {
-        Optional<User> found = userRepository.findById(id);
-        if (found.isEmpty())
-            throw new UserNotFoundException("Could not find the user with id " + id);
-        return found.get();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
     }
 
     public List<Role> findAllRoles() {
@@ -66,10 +64,8 @@ public class UserService {
     }
 
     public User getByEmail(String email) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty())
-            throw new UserNotFoundException("User doesn't exist");
-        return user.get();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Could not find the user with email " + email));
     }
 
     public boolean isEmailUnique(Long id, String email) {
@@ -100,12 +96,9 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUserAccount(User formUser) throws UserNotFoundException {
-        Optional<User> optional = userRepository.findById(formUser.getId());
-        if (optional.isEmpty())
-            throw new UserNotFoundException("Could not find a user with ID : " + formUser.getId());
+    public User updateUserAccount(User formUser) {
+        var dbUser = userRepository.findById(formUser.getId()).get();
 
-        User dbUser = optional.get();
         if (!formUser.getPassword().isEmpty())
             dbUser.setPassword(encoder.encode(formUser.getPassword()));
         if (formUser.getFirstName() != null)
@@ -122,9 +115,8 @@ public class UserService {
 
     @Transactional
     public void delete(Long id) throws UserNotFoundException {
-        Long counted = userRepository.countById(id);
-        if (counted == null || counted == 0)
-            throw new UserNotFoundException("Could not find user with this ID " + id);
+        userRepository.countById(id)
+                .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
         userRepository.deleteById(id);
     }
 

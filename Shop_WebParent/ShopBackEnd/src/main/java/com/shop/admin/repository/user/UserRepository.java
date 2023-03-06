@@ -17,7 +17,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    Long countById(Long id);
+    Optional<Long> countById(Long id);
 
     @Query("UPDATE User u SET u.enabled = ?2 WHERE u.id = ?1")
     @Modifying

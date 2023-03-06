@@ -70,19 +70,17 @@ public class CategoryService {
     }
 
     public Category findById(Long id) throws CategoryNotFoundException {
-        Category found = categoryRepository.findById(id);
-        if (found == null)
-            throw new CategoryNotFoundException("Could not find the user with id " + id);
-        return found;
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
     }
 
     @Transactional
     public Category save(Category catFromForm) {
         var parentProxy = catFromForm.getParent();
         if (parentProxy != null) {
-            var parent = categoryRepository.findById(parentProxy.getId());
+            var parent = categoryRepository.findById(parentProxy.getId()).get();
             var allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
-            allParentIds += String.valueOf(parent.getId()) + "-";   
+            allParentIds += String.valueOf(parent.getId()) + "-";
             catFromForm.setAllParentIDs(allParentIds);
         }
 
@@ -91,9 +89,8 @@ public class CategoryService {
 
     @Transactional
     public void delete(Long id) throws CategoryNotFoundException {
-        Long counted = categoryRepository.countById(id);
-        if (counted == null || counted == 0)
-            throw new CategoryNotFoundException("Could not find category with this ID " + id);
+        categoryRepository.countById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
         categoryRepository.deleteById(id);
     }
 

@@ -1,6 +1,7 @@
 package com.shop.admin.service.brand;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,29 +25,27 @@ public class BrandService {
   public static final int PAGE_SIZE = 4;
 
   @Transactional
-  public Brand save(Brand brand) {
+  public Optional<Brand> save(Brand brand) {
     return repository.save(brand);
   }
 
   @Transactional
   public Brand deleteById(Long id) throws BrandNotFoundException {
-    Long counted = repository.countById(id);
-    if (counted == null || counted == 0)
-        throw new BrandNotFoundException("Could not find brand with this ID " + id);
+    repository.countById(id)
+        .orElseThrow(() -> new BrandNotFoundException("Could not find brand with this ID " + id));
+
     return repository.deleteById(id);
   }
 
   public Brand findById(Long id) throws BrandNotFoundException {
-    var counted = repository.countById(id);
-    if (counted == null || counted == 0)
-        throw new BrandNotFoundException("Could not find brand with this ID " + id);
-    return repository.findById(id);
+    return repository.findById(id)
+        .orElseThrow(() -> new BrandNotFoundException("Could not find brand with this ID " + id));
   }
-  
+
   public List<Brand> findAllByNameAsc() {
     return (List<Brand>) repository.findAllByNameAsc();
   }
-  
+
   public Page<Brand> findAllBrandsSortedBy(String keyword, int pageNum, String field, String direction) {
     Sort sort = Sort.by(field);
     sort = direction.equals("asc") ? sort.ascending() : sort.descending();

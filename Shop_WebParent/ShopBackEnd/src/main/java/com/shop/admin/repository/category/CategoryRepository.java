@@ -1,5 +1,7 @@
 package com.shop.admin.repository.category;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +19,7 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 
   java.lang.Iterable<Category> saveAll(java.lang.Iterable<Category> categories);
 
-  Category findById(long id);
+  Optional<Category> findById(long id);
   
   java.lang.Iterable<Category> findAll();
 
@@ -25,7 +27,7 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
   
   Page<Category> findAll(Pageable pageable);
   
-  Long countById(Long id);
+  Optional<Long> countById(Long id);
   
   void deleteById(Long id);
 

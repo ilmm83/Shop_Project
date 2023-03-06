@@ -1,5 +1,7 @@
 package com.shop.admin.repository.brand;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +13,11 @@ import com.shop.model.Brand;
 @Repository
 public interface BrandRepository extends PagingAndSortingRepository<Brand, Long> {
 
-  Brand save(Brand brand);
+  Optional<Brand> save(Brand brand);
 
-  Brand findById(long id);
+  Optional<Brand> findById(long id);
 
-  Brand delete(Brand brand);
+  Optional<Brand> delete(Brand brand);
 
   Brand deleteById(Long id);
 
@@ -23,7 +25,7 @@ public interface BrandRepository extends PagingAndSortingRepository<Brand, Long>
 
   java.lang.Iterable<Brand> findAll();
 
-  Long countById(Long id);
+  Optional<Long> countById(Long id);
 
   @Query("SELECT b FROM Brand b WHERE CONCAT(b.id, ' ', b.name) LIKE %?1%")
   Page<Brand> findAll(String keyword, Pageable pageable);

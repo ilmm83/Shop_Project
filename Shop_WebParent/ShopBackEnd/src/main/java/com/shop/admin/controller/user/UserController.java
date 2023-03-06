@@ -1,6 +1,7 @@
 package com.shop.admin.controller.user;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,7 @@ import com.shop.admin.utils.FileUploadUtil;
 import com.shop.admin.utils.exporter.user.UserCsvExporter;
 import com.shop.admin.utils.exporter.user.UserExcelExporter;
 import com.shop.admin.utils.exporter.user.UserPDFExporter;
+import com.shop.model.Role;
 import com.shop.model.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,7 +74,7 @@ public class UserController {
         return "users/users";
     }
 
-    @GetMapping("/user_form")
+    @GetMapping("/new")
     public String signIn(Model model) {
         User user = new User();
         user.setEnabled(true);
@@ -83,7 +85,7 @@ public class UserController {
         return "users/user_form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/save")
     public String createNewUser(User user, RedirectAttributes redirect, @RequestParam("image") MultipartFile file)
             throws IOException {
 
@@ -145,12 +147,10 @@ public class UserController {
         return REDIRECT_API_V1_USERS;
     }
 
-
     private void changingDisplayUsersPage(int pageNum, Model model, Page<User> page, String sortField, String sortDir,
             String keyword) {
 
         String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-
         model.addAttribute("keyword", keyword);
         model.addAttribute("users", page.getContent());
         model.addAttribute("sortDir", sortDir);

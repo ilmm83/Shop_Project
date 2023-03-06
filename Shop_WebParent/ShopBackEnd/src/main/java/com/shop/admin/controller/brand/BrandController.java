@@ -66,14 +66,16 @@ public class BrandController {
 
     @PostMapping("/new")
     public String createNewBrand(BrandDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
-            RedirectAttributes attributes) throws IOException, CategoryNotFoundException {
+            RedirectAttributes attributes) throws IOException, CategoryNotFoundException, BrandNotFoundException {
 
         var brand = convertToBrand(dto);
         if (!multipart.isEmpty()) {
             var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
             brand.setLogo(fileName);
 
-            var saved = brandService.save(brand);
+            var saved = brandService.save(brand)
+                     .orElseThrow(() -> new BrandNotFoundException("Brand was not saved."));
+
             var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipart);
         } else
