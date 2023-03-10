@@ -1,278 +1,239 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head
-    th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
-  ></head>
+<head
+        th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
+></head>
 
-  <body>
+<body>
+<div>
     <div>
-      <div>
         <form
-          th:action="@{/logout}"
-          th:hidden="true"
-          method="post"
-          name="LogoutForm"
+                th:action="@{/logout}"
+                th:hidden="true"
+                method="post"
+                name="LogoutForm"
         >
-          <input type="submit" />
+            <input type="submit"/>
         </form>
 
         <nav th:replace="~{fragments :: navbar()}"></nav>
-      </div>
+    </div>
 
-      <div class="ms-4">
+    <div class="ms-4">
         <h2>Manage Brands</h2>
         <a
-          class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Create new Brand"
-          th:href="@{/api/v1/brands/new}"
+                class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
+                style="text-decoration: none"
+                title="Create new Brand"
+                th:href="@{/api/v1/brands/new}"
         ></a>
         &nbsp;&nbsp;
         <a
-          class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Export to CSV"
-          th:href="@{/api/v1/brands/export/csv}"
+                class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+                style="text-decoration: none"
+                title="Export to CSV"
+                th:href="@{/api/v1/brands/export/csv}"
         ></a>
-      </div>
+    </div>
 
-      <!-- Category has been saved successfuly -->
-      <br />
-      <div class="text-center alert alert-success" th:if="${message != null}">
+    <!-- Category has been saved successfuly -->
+    <br/>
+    <div class="text-center alert alert-success" th:if="${message != null}">
         [[${message}]]
-      </div>
+    </div>
 
-      <!-- Filter bar -->
-      <form
-        class="row g-3 container-fluid ps-3"
-        th:action="@{/api/v1/brands/1}"
-      >
-        <input type="hidden" name="sortField" th:value="${sortField}" />
-        <input type="hidden" name="sortDir" th:value="${sortDir}" />
+    <!-- Filter bar -->
+    <form
+            class="row g-3 container-fluid ps-3"
+            th:action="@{/api/v1/brands/1}"
+    >
+        <input type="hidden" name="sortField" th:value="${sortField}"/>
+        <input type="hidden" name="sortDir" th:value="${sortDir}"/>
 
         <div class="col-auto">
-          <div class="input-group">
-            <div class="input-group-text">Filter</div>
-            <input
-              class="form-control"
-              type="text"
-              name="keyword"
-              th:value="${keyword}"
-              required
-            />
-          </div>
+            <div class="input-group">
+                <div class="input-group-text">Filter</div>
+                <input
+                        class="form-control"
+                        type="text"
+                        name="keyword"
+                        th:value="${keyword}"
+                        required
+                />
+            </div>
         </div>
 
         <div class="col-auto">
-          <button class="btn btn-primary" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-          &nbsp;
-          <button
-            class="btn btn-secondary"
-            type="button"
-            id="btnClear"
-            onclick="clearSearch()"
-          >
-            <i class="fas fa-eraser"></i>
-          </button>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+            &nbsp;
+            <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="btnClear"
+                    onclick="clearSearch()"
+            >
+                <i class="fas fa-eraser"></i>
+            </button>
         </div>
         <div>&nbsp;</div>
-      </form>
+    </form>
 
-      <div class="full-details">
+    <div class="full-details">
         <table
-          class="text-center table table-bordered table-striped table-hover"
+                class="text-center table table-bordered table-striped table-hover"
         >
-          <thead>
+            <thead>
             <tr>
-              <th class="hideable-column">
+                <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('brands', 'id', 'ID', 'tag')}"
+                        th:replace="~{fragments :: column_link('brands', 'id', 'ID', 'tag')}"
                 ></span>
-              </th>
-              <th>Logo</th>
-              <th
-                th:replace="~{fragments :: column_link('brands', 'name', 'Brand Name', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('brands', 'categories', 'Categories', 'none')}"
-              ></th>
-              <th></th>
+                </th>
+                <th>Logo</th>
+                <th
+                        th:replace="~{fragments :: column_link('brands', 'name', 'Brand Name', 'none')}"
+                ></th>
+                <th
+                        th:replace="~{fragments :: column_link('brands', 'categories', 'Categories', 'none')}"
+                ></th>
+                <th></th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <tr th:each="brand : ${brands}">
-              <td class="text-center hideable-column">[[${brand.id}]]</td>
-              <td class="text-center">
-                <div th:if="${brand.logo == null}">
-                  <i class="fa-solid fa-laptop"></i>
-                </div>
-                <img
-                  class="img-fluid rounded-3"
-                  style="width: 100px"
-                  th:if="${brand.logo != null}"
-                  th:src="@{${brand.photosImagePath}}"
-                  alt=""
-                />
-              </td>
-              <td class="text-center">[[${brand.name}]]</td>
-              <td>
-                <th:block
-                  class="text-center"
-                  th:each="catName : ${brand.categoriesNames}"
-                >
+                <td class="text-center hideable-column">[[${brand.id}]]</td>
+                <td class="text-center">
+                    <div th:if="${brand.logo == null}">
+                        <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <img
+                            class="img-fluid rounded-3"
+                            style="width: 100px"
+                            th:if="${brand.logo != null}"
+                            th:src="@{${brand.photosImagePath}}"
+                            alt=""
+                    />
+                </td>
+                <td class="text-center">[[${brand.name}]]</td>
+                <td>
+                    <th:block
+                            class="text-center"
+                            th:each="catName : ${brand.categoriesNames}"
+                    >
                   <span
-                    class="badge text-bg-secondary"
-                    th:text="${catName}"
+                          class="badge text-bg-secondary"
+                          th:text="${catName}"
                   ></span>
-                </th:block>
-              </td>
-              <td class="text-center">
-                <a
-                  th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
-                ></a>
-                <span class="m-3"></span>
-                <a
-                  th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
-                ></a>
-              </td>
+                    </th:block>
+                </td>
+                <td class="text-center">
+                    <a
+                            th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
+                    ></a>
+                    <span class="m-3"></span>
+                    <a
+                            th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
+                    ></a>
+                </td>
             </tr>
-          </tbody>
+            </tbody>
         </table>
-      </div>
     </div>
+</div>
 
-    <div class="less-details">
-      <div th:each="brand : ${brands}" class="row m-1">
+<div class="less-details">
+    <div th:each="brand : ${brands}" class="row m-1">
         <div class="col-auto">
           <span
-            th:if="${brand.logo == null}"
-            class="fa-solid fa-image-portrait fa-2x"
+                  th:if="${brand.logo == null}"
+                  class="fa-solid fa-image-portrait fa-2x"
           ></span>
-          <img
-            class="img-fluid rounded-3"
-            style="width: 100px"
-            th:if="${brand.logo != null}"
-            th:src="@{${brand.photosImagePath}}"
-            alt=""
-          />
+            <img
+                    class="img-fluid rounded-3"
+                    style="width: 100px"
+                    th:if="${brand.logo != null}"
+                    th:src="@{${brand.photosImagePath}}"
+                    alt=""
+            />
         </div>
         <div class="col-auto">
-          <div>[[${brand.name}]]</div>
-          <div class="m-1"></div>
-          <div class="mb-3"></div>
-          <div>
-            <a
-              th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
-            ></a>
-            &nbsp;
-            <a
-              th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
-            ></a>
-          </div>
+            <div>[[${brand.name}]]</div>
+            <div class="m-1"></div>
+            <div class="mb-3"></div>
+            <div>
+                <a
+                        th:replace="~{fragments :: edit('brands', ${brand}, 'brand')}"
+                ></a>
+                &nbsp;
+                <a
+                        th:replace="~{fragments :: delete('brands', ${brand}, 'brand', false)}"
+                ></a>
+            </div>
         </div>
         <div>&nbsp;&nbsp;</div>
-      </div>
     </div>
+</div>
 
-    <!-- custom model for checking email window -->
-    <div class="modal fade" id="confirmModal">
-      <div class="modal-dialog">
+<!-- custom model for checking email window -->
+<div class="modal fade" id="confirmModal">
+    <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Delete Confirmation</h4>
-            <button
-              id="modalCancelBtnX"
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirmation</h4>
+                <button
+                        id="modalCancelBtnX"
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                ></button>
+            </div>
 
-          <div class="modal-body">
-            <p id="modalBody"></p>
-          </div>
+            <div class="modal-body">
+                <p id="modalBody"></p>
+            </div>
 
-          <div class="modal-footer">
-            <a id="yesBtn" class="btn btn-success" href="">Yes</a>
-            <button
-              id="ConfirmationBtn"
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-            >
-              No
-            </button>
-          </div>
+            <div class="modal-footer">
+                <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+                <button
+                        id="ConfirmationBtn"
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-dismiss="modal"
+                >
+                    No
+                </button>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <br />
-    <!-- pagination bar -->
-    <div class="text-center mt-3">
-      <span th:if="${totalBrands <= 0}">No Brands found.</span>
-      <nav th:if="${totalBrands > 0}">
-        <ul class="pagination justify-content-center flex-wrap">
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('brands', 'First', 1)}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('brands', '&laquo;', ${currentPage - 1})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-            th:each="i : ${#numbers.sequence(1, lastPage)}"
-            class="page-item"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('brands', ${i}, ${i})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('brands', '&raquo;', ${currentPage + 1})}"
-            >
-            </a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('brands', 'Last', ${lastPage})}"
-            ></a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+<br/>
+<!-- pagination bar -->
+<div th:replace="~{fragments :: pagination_bar('brands', 'Brands')}"></div>
 
-    <br />
-    <div th:replace="~{fragments :: footer()}"></div>
+<br/>
+<div th:replace="~{fragments :: footer()}"></div>
 
-    <script>
+<script>
       moduleURL = "[[@{/api/v1/brands}]]";
-    </script>
-    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
-    <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
-    <script
-      type="text/javascript"
-      th:src="@{/scripts/showModalConfirmationDialog.js}"
-    ></script>
-  </body>
+
+
+
+</script>
+<script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
+<script
+        type="text/javascript"
+        th:src="@{/scripts/showModalConfirmationDialog.js}"
+></script>
+
+</div>
+</body>
 </html>

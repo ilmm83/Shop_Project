@@ -201,7 +201,7 @@ public class ProductController {
     model.addAttribute("reverseSortOrder", reverseSortOrder);
     model.addAttribute("currentPage", pageNum);
     model.addAttribute("lastPage", (page.getTotalElements() / ProductService.PAGE_SIZE) + 1);
-    model.addAttribute("totalProducts", page.getTotalElements());
+    model.addAttribute("totalPages", page.getTotalElements());
     model.addAttribute("categories", categoryService.listCategoriesHierarchal());
 
     if (categoryId != null)

@@ -1,344 +1,300 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head
-    th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
-  ></head>
+<head
+        th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
+></head>
 
-  <body>
+<body>
+<div>
     <div>
-      <div>
         <form
-          th:action="@{/logout}"
-          th:hidden="true"
-          method="post"
-          name="LogoutForm"
+                th:action="@{/logout}"
+                th:hidden="true"
+                method="post"
+                name="LogoutForm"
         >
-          <input type="submit" />
+            <input type="submit"/>
         </form>
 
         <nav th:replace="~{fragments :: navbar()}"></nav>
-      </div>
+    </div>
 
-      <div class="ms-4">
+    <div class="ms-4">
         <h2>Manage Products</h2>
         <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-          <a
-            class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
-            style="text-decoration: none"
-            title="Create new Product"
-            th:href="@{/api/v1/products/new}"
-          ></a>
-          &nbsp;&nbsp;
-          <a
-            class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
-            style="text-decoration: none"
-            title="Export to CSV"
-            th:href="@{/api/v1/products/export/csv}"
-          ></a>
+            <a
+                    class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
+                    style="text-decoration: none"
+                    title="Create new Product"
+                    th:href="@{/api/v1/products/new}"
+            ></a>
+            &nbsp;&nbsp;
+            <a
+                    class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+                    style="text-decoration: none"
+                    title="Export to CSV"
+                    th:href="@{/api/v1/products/export/csv}"
+            ></a>
         </th:block>
-      </div>
+    </div>
 
-      <!-- Filter bar -->
-      <form
-        id="searchForm"
-        class="row g-3 mt-2 container-fluid ps-3"
-        th:action="@{/api/v1/products/1}"
-      >
-        <input type="hidden" name="sortField" th:value="${sortField}" />
-        <input type="hidden" name="sortDir" th:value="${sortDir}" />
+    <!-- Filter bar -->
+    <form
+            id="searchForm"
+            class="row g-3 mt-2 container-fluid ps-3"
+            th:action="@{/api/v1/products/1}"
+    >
+        <input type="hidden" name="sortField" th:value="${sortField}"/>
+        <input type="hidden" name="sortDir" th:value="${sortDir}"/>
 
         <div class="col-auto">
-          <div class="input-group">
-            <div class="input-group-text">Filter</div>
-            <select
-              class="form-control"
-              name="categoryId"
-              id="dropdownCategory"
-            >
-              <option th:value="0">All Categories</option>
-              <th:block th:each="cat : ${categories}">
-                <option
-                  th:value="${cat.id}"
-                  th:selected="(${categoryId} == ${cat.id})"
+            <div class="input-group">
+                <div class="input-group-text">Filter</div>
+                <select
+                        class="form-control"
+                        name="categoryId"
+                        id="dropdownCategory"
                 >
-                  [[${cat.name}]]
-                </option>
-              </th:block>
-            </select>
-          </div>
+                    <option th:value="0">All Categories</option>
+                    <th:block th:each="cat : ${categories}">
+                        <option
+                                th:value="${cat.id}"
+                                th:selected="(${categoryId} == ${cat.id})"
+                        >
+                            [[${cat.name}]]
+                        </option>
+                    </th:block>
+                </select>
+            </div>
         </div>
 
         <div class="col-auto">
-          <div class="input-group">
-            <div class="input-group-text">Filter</div>
-            <input
-              class="form-control"
-              type="text"
-              name="keyword"
-              th:value="${keyword}"
-              required
-            />
-          </div>
+            <div class="input-group">
+                <div class="input-group-text">Filter</div>
+                <input
+                        class="form-control"
+                        type="text"
+                        name="keyword"
+                        th:value="${keyword}"
+                        required
+                />
+            </div>
         </div>
 
         <div class="col-auto">
-          <button class="btn btn-primary" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-          &nbsp;
-          <button
-            class="btn btn-secondary"
-            type="button"
-            id="btnClear"
-            onclick="clearSearch()"
-          >
-            <i class="fas fa-eraser"></i>
-          </button>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+            &nbsp;
+            <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="btnClear"
+                    onclick="clearSearch()"
+            >
+                <i class="fas fa-eraser"></i>
+            </button>
         </div>
         <div>&nbsp;</div>
-      </form>
+    </form>
 
-      <div class="text-center alert alert-success" th:if="${message != null}">
+    <div class="text-center alert alert-success" th:if="${message != null}">
         [[${message}]]
-      </div>
+    </div>
 
-      <div class="full-details">
+    <div class="full-details">
         <table
-          class="text-center table table-bordered table-striped table-hover"
+                class="text-center table table-bordered table-striped table-hover"
         >
-          <thead>
+            <thead>
             <tr>
-              <th class="hideable-column">
+                <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('products', 'id', 'ID', 'tag')}"
+                        th:replace="~{fragments :: column_link('products', 'id', 'ID', 'tag')}"
                 ></span>
-              </th>
-              <th>Main image</th>
-              <th>
+                </th>
+                <th>Main image</th>
+                <th>
                 <span
-                  th:replace="~{fragments :: column_link('products', 'name', 'Product Name', 'tag')}"
+                        th:replace="~{fragments :: column_link('products', 'name', 'Product Name', 'tag')}"
                 ></span>
-              </th>
-              <th class="hideable-column">
+                </th>
+                <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('products', 'category', 'Category', 'tag')}"
+                        th:replace="~{fragments :: column_link('products', 'category', 'Category', 'tag')}"
                 ></span>
-              </th>
-              <th class="hideable-column">
+                </th>
+                <th class="hideable-column">
                 <span
-                  th:replace="~{fragments :: column_link('products', 'brand', 'Brand', 'tag')}"
+                        th:replace="~{fragments :: column_link('products', 'brand', 'Brand', 'tag')}"
                 ></span>
-              </th>
-              <th sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                </th>
+                <th sec:authorize="hasAnyAuthority('Admin', 'Editor')">
                 <span
-                  th:replace="~{fragments :: column_link('products', 'enabled', 'Enabled', 'tag')}"
+                        th:replace="~{fragments :: column_link('products', 'enabled', 'Enabled', 'tag')}"
                 ></span>
-              </th>
-              <th></th>
+                </th>
+                <th></th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <tr th:each="product : ${products}">
-              <td class="text-center hideable-column">[[${product.id}]]</td>
-              <td class="text-center">
-                <img
-                  class="img-fluid rounded-3"
-                  style="width: 100px"
-                  th:if="${product.mainImage != null}"
-                  th:src="@{${product.mainImagesPath}}"
-                  alt=""
-                />
-              </td>
-              <td class="text-center">[[${product.name}]]</td>
-              <td class="text-center hideable-column">
+                <td class="text-center hideable-column">[[${product.id}]]</td>
+                <td class="text-center">
+                    <img
+                            class="img-fluid rounded-3"
+                            style="width: 100px"
+                            th:if="${product.mainImage != null}"
+                            th:src="@{${product.mainImagesPath}}"
+                            alt=""
+                    />
+                </td>
+                <td class="text-center">[[${product.name}]]</td>
+                <td class="text-center hideable-column">
                 <span th:if="${product.category != null}"
-                  >[[${product.category.name}]]</span
+                >[[${product.category.name}]]</span
                 >
-              </td>
-              <td class="text-center hideable-column">
+                </td>
+                <td class="text-center hideable-column">
                 <span th:if="${product.brand != null}">
                   [[${product.brand.name}]]
                 </span>
-              </td>
-              <td sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                </td>
+                <td sec:authorize="hasAnyAuthority('Admin', 'Editor')">
                 <span
-                  th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
+                        th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
                 ></span>
-              </td>
-              <td class="text-center">
+                </td>
+                <td class="text-center">
                 <span
-                  class="fas fa-file-alt fa-2x text-success"
-                  th:href="@{'/api/v1/products/detail/' + ${product.id}}"
-                  title="View details of this product"
-                  onclick="showDetailsModal($(this).attr('href'))"
-                  data-bs-toggle="modal"
-                  data-bs-target="#detailModal"
+                        class="fas fa-file-alt fa-2x text-success"
+                        th:href="@{'/api/v1/products/detail/' + ${product.id}}"
+                        title="View details of this product"
+                        onclick="showDetailsModal($(this).attr('href'))"
+                        data-bs-toggle="modal"
+                        data-bs-target="#detailModal"
                 ></span>
-                <span class="m-3"></span>
-                <th:block
-                  sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
-                >
-                  <a
-                    th:replace="~{fragments :: edit('products', ${product}, 'product')}"
-                  ></a>
-                </th:block>
-                <span class="m-3"></span>
-                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-                  <a
-                    th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
-                  ></a>
-                </th:block>
-              </td>
+                    <span class="m-3"></span>
+                    <th:block
+                            sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
+                    >
+                        <a
+                                th:replace="~{fragments :: edit('products', ${product}, 'product')}"
+                        ></a>
+                    </th:block>
+                    <span class="m-3"></span>
+                    <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                        <a
+                                th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
+                        ></a>
+                    </th:block>
+                </td>
             </tr>
-          </tbody>
+            </tbody>
         </table>
-      </div>
     </div>
+</div>
 
-    <div class="less-details">
-      <div th:each="product : ${products}" class="row m-1">
+<div class="less-details">
+    <div th:each="product : ${products}" class="row m-1">
         <div class="col-auto">
           <span
-            th:if="${product.mainImage == null}"
-            class="fa-solid fa-image-portrait fa-2x"
+                  th:if="${product.mainImage == null}"
+                  class="fa-solid fa-image-portrait fa-2x"
           ></span>
-          <img
-            class="img-fluid rounded-3"
-            style="width: 100px"
-            th:if="${product.mainImage != null}"
-            th:src="@{${product.mainImagesPath}}"
-            alt=""
-          />
+            <img
+                    class="img-fluid rounded-3"
+                    style="width: 100px"
+                    th:if="${product.mainImage != null}"
+                    th:src="@{${product.mainImagesPath}}"
+                    alt=""
+            />
         </div>
         <div class="col-auto">
-          <div>[[${product.name}]]</div>
-          <div>&nbsp;</div>
-          <div>
-            <th:block
-              sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
-            >
-              <div
-                th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
-              ></div>
-              <span class="m-1"></span>
-              <a
-                th:replace="~{fragments :: edit('products', ${product}, 'product')}"
-              ></a>
-            </th:block>
-            <span class="m-1"></span>
-            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-              <a
-                th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
-              ></a>
-            </th:block>
-          </div>
+            <div>[[${product.name}]]</div>
+            <div>&nbsp;</div>
+            <div>
+                <th:block
+                        sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')"
+                >
+                    <div
+                            th:replace="~{fragments :: status(${product.enabled}, ${product}, 'products')}"
+                    ></div>
+                    <span class="m-1"></span>
+                    <a
+                            th:replace="~{fragments :: edit('products', ${product}, 'product')}"
+                    ></a>
+                </th:block>
+                <span class="m-1"></span>
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <a
+                            th:replace="~{fragments :: delete('products', ${product}, 'product', false)}"
+                    ></a>
+                </th:block>
+            </div>
         </div>
         <div>&nbsp;&nbsp;</div>
-      </div>
     </div>
+</div>
 
-    <div class="modal fade" id="confirmModal">
-      <div class="modal-dialog">
+<div class="modal fade" id="confirmModal">
+    <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Delete Confirmation</h4>
-            <button
-              id="modalCancelBtnX"
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirmation</h4>
+                <button
+                        id="modalCancelBtnX"
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                ></button>
+            </div>
 
-          <div class="modal-body">
-            <p id="modalBody"></p>
-          </div>
+            <div class="modal-body">
+                <p id="modalBody"></p>
+            </div>
 
-          <div class="modal-footer">
-            <a id="yesBtn" class="btn btn-success" href="">Yes</a>
-            <button
-              id="ConfirmationBtn"
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-            >
-              No
-            </button>
-          </div>
+            <div class="modal-footer">
+                <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+                <button
+                        id="ConfirmationBtn"
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-dismiss="modal"
+                >
+                    No
+                </button>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="modal fade" tabindex="-1" id="detailModal">
-      <div class="modal-dialog modal-xl">
+<div class="modal fade" tabindex="-1" id="detailModal">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content"></div>
-      </div>
     </div>
+</div>
 
-    <!-- pagination bar -->
-    <br />
-    <div class="text-center mt-3">
-      <span th:if="${totalProducts <= 0}">No Products found.</span>
-      <nav th:if="${totalProducts > 0}">
-        <ul class="pagination justify-content-center flex-wrap">
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('products', 'First', 1)}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('products', '&laquo;', ${currentPage - 1})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-            th:each="i : ${#numbers.sequence(1, lastPage)}"
-            class="page-item"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('products', ${i}, ${i})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('products', '&raquo;', ${currentPage + 1})}"
-            >
-            </a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('products', 'Last', ${lastPage})}"
-            ></a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+<!-- pagination bar -->
+<br>
+<div th:replace="~{fragments :: pagination_bar('products', 'Products')}"></div>
+<br/>
+<div th:replace="~{fragments :: footer()}"></div>
 
-    <br />
-    <div th:replace="~{fragments :: footer()}"></div>
-
-    <script>
+<script>
       moduleURL = "[[@{/api/v1/products}]]";
-    </script>
-    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
-    <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
-    <script
-      type="text/javascript"
-      th:src="@{/scripts/showModalConfirmationDialog.js}"
-    ></script>
-  </body>
+
+</script>
+<script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
+<script
+        type="text/javascript"
+        th:src="@{/scripts/showModalConfirmationDialog.js}"
+></script>
+</body>
 </html>

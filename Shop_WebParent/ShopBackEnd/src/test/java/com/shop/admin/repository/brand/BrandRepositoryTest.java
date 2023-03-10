@@ -35,22 +35,22 @@ public class BrandRepositoryTest {
     var hd = (List<Category>) categoryRepository.findByNameAndAlias("Internal Hard Drives","Internal Hard Drives");
 
     
-    var acer = Brand.builder()
-        .name("Acer")
+    var huawei = Brand.builder()
+        .name("Huawei")
         .logo("default.png")
         .categories(Set.of(laptops.get(0)))
         .build();
-    var apple = Brand.builder()
-        .name("Apple")
+    var mi = Brand.builder()
+        .name("MI")
         .logo("default.png")
         .categories(Set.of(cellPhones.get(0), tablets.get(0)))
         .build();
-    var samsung = Brand.builder()
-        .name("Samsung")
+    var nokia = Brand.builder()
+        .name("Nokia")
         .logo("default.png")
         .categories(Set.of(hd.get(0)))
         .build();
-    var brands = (List<Brand>) brandRepository.saveAll(List.of(acer, apple, samsung));
+    var brands = (List<Brand>) brandRepository.saveAll(List.of(huawei, mi, nokia));
 
     assertThat(brands.size()).isEqualTo(3L);
 
@@ -65,7 +65,7 @@ public class BrandRepositoryTest {
 
   @Test
   void canFindById() {
-    var acer = brandRepository.findById(14L);
+    var acer = brandRepository.findById(14L).get();
     assertThat(acer.getName()).isEqualTo("Acer");
   }
 

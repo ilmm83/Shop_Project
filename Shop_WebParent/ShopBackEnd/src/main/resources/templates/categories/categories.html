@@ -215,51 +215,7 @@
 
     <br />
     <!-- pagination bar -->
-    <div class="text-center mt-3">
-      <span th:if="${totalCategories <= 0}">No Categories found.</span>
-      <nav th:if="${totalCategories > 0}">
-        <ul class="pagination justify-content-center flex-wrap">
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('categories', 'First', 1)}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('categories', '&laquo;', ${currentPage - 1})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-            th:each="i : ${#numbers.sequence(1, lastPage)}"
-            class="page-item"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('categories', ${i}, ${i})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('categories', '&raquo;', ${currentPage + 1})}"
-            >
-            </a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('categories', 'Last', ${lastPage})}"
-            ></a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <div th:replace="~{fragments :: pagination_bar('categories', 'Categories')}"></div>
 
     <br />
     <div th:replace="~{fragments :: footer()}"></div>

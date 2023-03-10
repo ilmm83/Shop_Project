@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      th:replace="~{fragments :: page_head('Not Found - Shop', 'none')}"
+    ></title>
+  </head>
+  <body>
+    <nav th:replace="~{fragments ::  header_navbar}"></nav>
+    <div class="container-fluid">
+      <div class="text-center">
+        <h2>Sorry, the requested page cannot be found!</h2>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer_navbar}"></div>
+  </body>
+</html>

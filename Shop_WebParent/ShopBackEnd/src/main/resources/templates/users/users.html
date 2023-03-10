@@ -234,52 +234,9 @@
       </div>
     </div>
 
-    <br />
     <!-- pagination bar -->
-    <div class="text-center">
-      <span th:if="${totalUsers <= 0}"> No Users found. </span>
-      <nav th:if="${totalUsers > 0}">
-        <ul class="pagination justify-content-center flex-wrap">
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('users', 'First', 1)}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('users', '&laquo;', ${currentPage - 1})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-            th:each="i : ${#numbers.sequence(1, lastPage)}"
-            class="page-item"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('users', ${i}, ${i})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('users', '&raquo;', ${currentPage + 1})}"
-            ></a>
-          </li>
-          <li
-            th:class="${currentPage < lastPage ? 'page-item' : 'page-item disabled'}"
-          >
-            <a
-              th:replace="~{fragments :: pagination_button('users', 'Last', ${lastPage})}"
-            ></a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <br>
+    <div th:replace="~{fragments :: pagination_bar('users', 'Users')}"></div>
 
     <!-- custom model for checking email window -->
     <div class="modal fade" id="confirmModal">

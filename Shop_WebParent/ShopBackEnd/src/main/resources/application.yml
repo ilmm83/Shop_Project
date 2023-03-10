@@ -5,6 +5,9 @@ server:
 
 
 spring:
+  devtools:
+    livereload:
+      port: 35730
   datasource:
     url: jdbc:mysql://localhost:3306/shop
     username: root

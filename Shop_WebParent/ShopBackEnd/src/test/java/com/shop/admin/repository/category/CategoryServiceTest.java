@@ -20,61 +20,71 @@ import com.shop.model.Category;
 @ExtendWith(SpringExtension.class)
 public class CategoryServiceTest {
 
-  @Mock
-  private CategoryRepository repository;
+    @Mock
+    private CategoryRepository repository;
 
-  @InjectMocks
-  private CategoryService service;
+    @InjectMocks
+    private CategoryService service;
 
-  private Category cat;
+    private Category category;
 
-  @BeforeEach
-  public void BeforeAll() {
-    service = new CategoryService(repository);
-    cat = Category.builder()
-        .id(7L)
-        .name("Computer")
-        .alias("sjdfghsdh")
-        .build();
-  }
+    @BeforeEach
+    public void BeforeAll() {
+        service = new CategoryService(repository);
 
-  @Test
-  public void canSaveTheCategory() {
-    when(repository.findByNameAndAlias(cat.getName(), cat.getAlias())).thenReturn(List.of(cat));
+        // given
+        category = Category.builder()
+                .id(7L)
+                .name("Computer")
+                .alias("sjdfghsdh")
+                .build();
+    }
 
-    String response = service.checkNameAndAliasUnique(cat.getId(), cat.getName(), cat.getAlias());
+    @Test
+    public void canSaveTheCategory() {
+        // when
+        when(repository.findByNameAndAlias(category.getName(), category.getAlias())).thenReturn(List.of(category));
 
-    assertThat(response).isEqualTo("OK");
-  }
+        String response = service.checkNameAndAliasUnique(category.getId(), category.getName(), category.getAlias());
 
-  @Test
-  public void canCheckUniqueInNewModelReturnDuplicateNameOrAlias() {
-    var catWithDuplName = Category.builder()
-        .id(8L)
-        .name("Computer")
-        .alias("alias")
-        .build();
+        // then
+        assertThat(response).isEqualTo("OK");
+    }
 
-    when(repository.findByNameAndAlias(cat.getName(), cat.getAlias())).thenReturn(List.of(catWithDuplName));
+    @Test
+    public void canCheckUniqueInNewModelReturnDuplicateNameOrAlias() {
+        // given
+        var catWithDuplName = Category.builder()
+                .id(8L)
+                .name("Computer")
+                .alias("alias")
+                .build();
 
-    var response = service.checkNameAndAliasUnique(cat.getId(), cat.getName(), cat.getAlias());
+        // when
+        when(repository.findByNameAndAlias(category.getName(), category.getAlias())).thenReturn(List.of(catWithDuplName));
 
-    assertThat(response).isEqualTo("Name");
-  }
+        var response = service.checkNameAndAliasUnique(category.getId(), category.getName(), category.getAlias());
 
-  @Test
-  public void canEditAndCheckUniqueInNewModelReturnDuplicateNameOrAlias() {
-    var updatedCat = Category.builder()
-        .id(7L)
-        .name("Computer")
-        .alias("Computer")
-        .build();
+        // then
+        assertThat(response).isEqualTo("Name");
+    }
 
-    when(repository.findByNameAndAlias(cat.getName(), cat.getAlias())).thenReturn(List.of(updatedCat));
+    @Test
+    public void canEditAndCheckUniqueInNewModelReturnDuplicateNameOrAlias() {
+        // given
+        var updatedCat = Category.builder()
+                .id(7L)
+                .name("Computer")
+                .alias("Computer")
+                .build();
 
-    var response = service.checkNameAndAliasUnique(cat.getId(), cat.getName(), cat.getAlias());
+        // when
+        when(repository.findByNameAndAlias(category.getName(), category.getAlias())).thenReturn(List.of(updatedCat));
 
-    assertThat(response).isEqualTo("OK");
-  }
+        var response = service.checkNameAndAliasUnique(category.getId(), category.getName(), category.getAlias());
+
+        // then
+        assertThat(response).isEqualTo("OK");
+    }
 
 }

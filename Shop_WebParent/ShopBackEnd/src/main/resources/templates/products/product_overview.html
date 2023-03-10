@@ -116,7 +116,6 @@
             <input
               class="form-control"
               th:field="*{cost}"
-              type="number"
               placeholder="0.0"
               required
               th:readonly="${#authorization.expression('hasAuthority(''Salesperson'')')}"

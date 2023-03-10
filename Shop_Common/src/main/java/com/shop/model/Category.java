@@ -83,7 +83,7 @@ public class Category {
         + "  parent - " + parent + ", \n"
         + "  enabled - " + enabled + ", \n"
         + "  childrens\n\t" + children.stream()
-            .map(kid -> kid.getName())
+            .map(Category::getName)
             .collect(Collectors.toList())
         + ";\n";
   }

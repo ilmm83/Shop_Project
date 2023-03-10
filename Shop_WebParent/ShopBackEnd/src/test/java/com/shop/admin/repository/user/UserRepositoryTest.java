@@ -12,9 +12,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.shop.model.User;
+import org.springframework.test.annotation.Rollback;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = NONE)
+@Rollback(true)
 class UserRepositoryTest {
 
     @Autowired
@@ -39,7 +41,7 @@ class UserRepositoryTest {
     @Test
     public void canCountUserId() {
         Long id = 10l;
-        Long counted = userRepository.countById(id);
+        var counted = userRepository.countById(id).get();
 
         assertThat(counted).isPositive();
     }

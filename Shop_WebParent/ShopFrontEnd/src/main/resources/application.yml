@@ -1,4 +1,38 @@
 server:
-  port: 8080
+  port: 8081
   servlet:
     context-path: /Shop
+
+
+spring:
+  devtools:
+    livereload:
+      port: 35731
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/shop
+    username: root
+    password: 51423
+  jpa:
+    properties:
+     hibernate:
+       dialect: org.hibernate.dialect.MySQLDialect
+       format_sql: true
+       highlight_sql: true
+    hibernate:
+      ddl-auto: update
+    show_sql: false
+
+logging:
+  level:
+    root: warn
+#   file:
+#     name: logs/Shop-backend.log
+#   logback:
+#     rollingpolicy:
+#       file-name-pattern: logs/Shop-backend-%d{yyyy-MM-dd}.%i.log
+#       max-file-size: 100KB
+#       total-size-cap: 1MB
+#       max-history: 14
+#       clean-history-on-start: true

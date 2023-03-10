@@ -158,6 +158,6 @@ public class UserController {
         model.addAttribute("reverseSortOrder", reverseSortOrder);
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("lastPage", (page.getTotalElements() / UserService.PAGE_SIZE) + 1);
-        model.addAttribute("totalUsers", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalElements());
     }
 }

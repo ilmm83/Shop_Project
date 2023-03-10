@@ -52,7 +52,7 @@ public class CategoryRepositoryTest {
 
   @Test
   public void canCreateSubCategory() {
-    var parent = Category.builder().id(13l).build();
+    var parent = repository.findById(1L).get();
 
     var category = Category.builder()
         .name("Iphone")
@@ -61,6 +61,7 @@ public class CategoryRepositoryTest {
         .enabled(true)
         .parent(parent)
         .build();
+
     var categories = (List<Category>) repository.saveAll(List.of(category));
 
     assertThat(categories.size()).isPositive();

@@ -23,78 +23,79 @@ import com.shop.model.Product;
 @Rollback(true)
 public class ProductRepositoryTest {
 
-  @Autowired
-  private ProductRepository repository;
+    @Autowired
+    private ProductRepository repository;
 
-  @Autowired
-  private TestEntityManager manager;
+    @Autowired
+    private TestEntityManager manager;
 
-  @Test
-  void canCreateProducts() {
-    var brand = manager.find(Brand.class, 16);
-    var categegory = manager.find(Category.class, 8);
-    var product = Product.builder()
-        .name("Samsung Galaxy A31")
-        .alias("Samsung")
-        .shortDescription("short description")
-        .fullDescription("full description")
-        .brand(brand)
-        .category(categegory)
-        .enabled(true)
-        .inStock(true)
-        .price(new BigDecimal(456))
-        .discountPercent(new BigDecimal(0))
-        .cost(new BigDecimal(456))
-        .createdAt(new Date())
-        .updatedAt(new Date())
-        .build();
-    var saved = repository.save(product);
+    @Test
+    void canCreateProducts() {
+        var brand = manager.find(Brand.class, 16);
+        var categegory = manager.find(Category.class, 8);
+        var product = Product.builder()
+                .name("Samsung Galaxy A32")
+                .alias("Samsung A32")
+                .shortDescription("short description")
+                .fullDescription("full description")
+                .brand(brand)
+                .category(categegory)
+                .enabled(true)
+                .inStock(true)
+                .mainImage("mainImage.png")
+                .price(new BigDecimal(456))
+                .discountPercent(new BigDecimal(0))
+                .cost(new BigDecimal(456))
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .build();
+        var saved = repository.save(product).get();
 
-    assertThat(product).isNotNull();
-    assertThat(product).isEqualTo(saved);
-  }
+        assertThat(product).isNotNull();
+        assertThat(product).isEqualTo(saved);
+    }
 
-  @Test
-  void canFindAll() {
-    var brands = (List<Product>) repository.findAll();
+    @Test
+    void canFindAll() {
+        var brands = (List<Product>) repository.findAll();
 
-    assertThat(brands).isNotNull();
-  }
+        assertThat(brands).isNotNull();
+    }
 
-  @Test
-  void canFindById() {
-    var product = repository.findById(3L);
-    assertThat(product.getName()).isEqualTo("Samsung Galaxy A31");
-  }
+    @Test
+    void canFindById() {
+        var product = repository.findById(3L).get();
+        assertThat(product.getName()).isEqualTo("Samsung Galaxy A31");
+    }
 
-  @Test
-  void canUpdateProduct() {
-    var product = repository.findById(3L);
-    product.setAlias("Samsung A31");
-    var saved = repository.save(product);
+    @Test
+    void canUpdateProduct() {
+        var product = repository.findById(3L).get();
+        product.setAlias("Samsung A31");
+        var saved = repository.save(product).get();
 
-    assertThat(saved.getAlias()).isEqualTo("Samsung A31");
-  }
+        assertThat(saved.getAlias()).isEqualTo("Samsung A31");
+    }
 
-  @Test
-  void canSaveProductWithImages() {
-    var product = repository.findById(3L);
-    product.setMainImage("main Image");
-    product.addExtraImage("main image 2");
+    @Test
+    void canSaveProductWithImages() {
+        var product = repository.findById(3L).get();
+        product.setMainImage("mainImage.png");
+        product.addExtraImage("extraImage.png");
 
-    var saved = repository.save(product);
+        var saved = repository.save(product).get();
 
-    assertThat(saved.getImages().size()).isEqualTo(1);
-    assertThat(saved.getMainImage()).isEqualTo("main Image");
-  }
+        assertThat(saved.getImages().size()).isEqualTo(4);
+        assertThat(saved.getMainImage()).isEqualTo("mainImage.png");
+    }
 
-  @Test
-  void canSaveProductWithDetails() {
-    var product = repository.findById(3L);
-    product.addDetail("Device Memory", "128 GB");
+    @Test
+    void canSaveProductWithDetails() {
+        var product = repository.findById(3L).get();
+        product.addDetail("Device Memory", "128 GB");
 
-    var saved = repository.save(product);
+        var saved = repository.save(product).get();
 
-    assertThat(saved.getDetails().size()).isEqualTo(1);
-  }
+        assertThat(saved.getDetails().size()).isEqualTo(8);
+    }
 }

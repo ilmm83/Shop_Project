@@ -127,7 +127,7 @@ public class BrandController {
         model.addAttribute("reverseSortOrder", reverseSortOrder);
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("lastPage", (page.getTotalElements() / BrandService.PAGE_SIZE) + 1);
-        model.addAttribute("totalBrands", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalElements());
     }
 
     private Brand convertToBrand(BrandDTO dto) throws CategoryNotFoundException {

@@ -1,17 +1,14 @@
 package com.shop.admin.controller.product;
 
-import java.io.IOException;
-import java.util.LinkedList;
-
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.shop.admin.service.product.ProductService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.model.Product;
 import com.shop.model.ProductDetail;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.LinkedList;
 
 public class ProductSaveHelper {
  
