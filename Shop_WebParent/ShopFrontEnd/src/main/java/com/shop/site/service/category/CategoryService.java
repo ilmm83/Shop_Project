@@ -33,7 +33,7 @@ public class CategoryService {
     public List<Category> getCategoryParents(Category child) {
         var parents = new ArrayList<Category>();
 
-        var parent = child.getParent();
+        var parent = child == null ? null : child.getParent();
         while (parent != null) {
             parents.add(0, parent);
             parent = parent.getParent();

@@ -122,9 +122,13 @@ public class Product {
     }
 
     @Transient
-    public BigDecimal getClearPrice() {
+    public String getDiscPercent() {
+        var sb = new StringBuilder(String.valueOf(discountPercent));
+        int s = sb.indexOf("."), e = sb.length();
 
-        return this.price.stripTrailingZeros();
+        while (e-- > s) { sb.deleteCharAt(e); }
+
+        return sb.toString();
     }
 
     public boolean containsImageName(String fileName) {

@@ -1,288 +1,290 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head
+<head
     th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
-  ></head>
+></head>
 
-  <body>
-    <div>
-      <div>
-        <form
-          th:action="@{/logout}"
-          th:hidden="true"
-          method="post"
-          name="LogoutForm"
-        >
-          <input type="submit" />
-        </form>
+<body>
+<div>
+  <div>
+    <form
+        th:action="@{/logout}"
+        th:hidden="true"
+        method="post"
+        name="LogoutForm"
+    >
+      <input type="submit"/>
+    </form>
 
-        <nav th:replace="~{fragments :: navbar()}"></nav>
-      </div>
+    <nav th:replace="~{fragments :: navbar()}"></nav>
+  </div>
 
-      <div class="ms-4">
-        <h2>Manage Users</h2>
-        <a
-          class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Create new User"
-          th:href="@{/api/v1/users/new}"
-        ></a>
-        &nbsp;&nbsp;
-        <a
-          class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Export to CSV"
-          th:href="@{/api/v1/users/export/csv}"
-        ></a>
-        &nbsp;&nbsp;
-        <a
-          class="fa-solid fa-file-excel fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Export to Excel"
-          th:href="@{/api/v1/users/export/excel}"
-        ></a>
-        &nbsp;&nbsp;
-        <a
-          class="fa-solid fa-file-pdf fa-2x text-secondary mt-2"
-          style="text-decoration: none"
-          title="Export to PDF"
-          th:href="@{/api/v1/users/export/pdf}"
-        ></a>
-      </div>
+  <div class="ms-4">
+    <h2>Manage Users</h2>
+    <a
+        class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
+        style="text-decoration: none"
+        title="Create new User"
+        th:href="@{/api/v1/users/new}"
+    ></a>
+    &nbsp;&nbsp;
+    <a
+        class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+        style="text-decoration: none"
+        title="Export to CSV"
+        th:href="@{/api/v1/users/export/csv}"
+    ></a>
+    &nbsp;&nbsp;
+    <a
+        class="fa-solid fa-file-excel fa-2x text-secondary mt-2"
+        style="text-decoration: none"
+        title="Export to Excel"
+        th:href="@{/api/v1/users/export/excel}"
+    ></a>
+    &nbsp;&nbsp;
+    <a
+        class="fa-solid fa-file-pdf fa-2x text-secondary mt-2"
+        style="text-decoration: none"
+        title="Export to PDF"
+        th:href="@{/api/v1/users/export/pdf}"
+    ></a>
+  </div>
 
-      <!-- Filter bar -->
-      <form
-        class="row g-3 mt-2 container-fluid ps-3"
-        th:action="@{/api/v1/users/1}"
-      >
-        <input type="hidden" name="sortField" th:value="${sortField}" />
-        <input type="hidden" name="sortDir" th:value="${sortDir}" />
+  <!-- Filter bar -->
+  <form
+      class="row g-3 mt-2 container-fluid ps-3"
+      th:action="@{/api/v1/users/1}"
+  >
+    <input type="hidden" name="sortField" th:value="${sortField}"/>
+    <input type="hidden" name="sortDir" th:value="${sortDir}"/>
 
-        <div class="col-auto">
-          <div class="input-group">
-            <div class="input-group-text">Filter</div>
-            <input
-              class="form-control"
-              type="text"
-              name="keyword"
-              th:value="${keyword}"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="col-auto">
-          <button class="btn btn-primary" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-          &nbsp;
-          <button
-            class="btn btn-secondary"
-            type="button"
-            id="btnClear"
-            onclick="clearSearch()"
-          >
-            <i class="fas fa-eraser"></i>
-          </button>
-        </div>
-        <div>&nbsp;</div>
-      </form>
-
-      <div class="text-center alert alert-success" th:if="${message != null}">
-        [[${message}]]
-      </div>
-
-      <div class="full-details">
-        <table
-          class="text-center table table-bordered table-striped table-hover table-responsive-xl"
-        >
-          <thead>
-            <tr>
-              <th class="hideable-column">
-                <span
-                  th:replace="~{fragments :: column_link('users', 'id', 'User ID', 'tag')}"
-                ></span>
-              </th>
-
-              <th>Photos</th>
-
-              <th class="hideable-column">
-                <span
-                  th:replace="~{fragments :: column_link('users', 'email', 'E-mail', 'tag')}"
-                ></span>
-              </th>
-
-              <th
-                th:replace="~{fragments :: column_link('users', 'firstName', 'First Name', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('users', 'lastName', 'Last Name', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('users', 'roles', 'Roles', 'none')}"
-              ></th>
-              <th
-                th:replace="~{fragments :: column_link('users', 'enabled', 'Enabled', 'none')}"
-              ></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="user : ${users}">
-              <td class="text-center hideable-column">[[${user.id}]]</td>
-              <td class="text-center">
-                <span
-                  th:if="${user.photos == null}"
-                  class="fa-solid fa-image-portrait fa-2x"
-                ></span>
-                <img
-                  class="img-fluid rounded-3"
-                  style="width: 100px"
-                  th:if="${user.photos != null}"
-                  th:src="@{${user.photosImagePath}}"
-                  alt=""
-                />
-              </td>
-              <td class="text-center hideable-column">[[${user.email}]]</td>
-              <td class="text-center">[[${user.firstName}]]</td>
-              <td class="text-center">[[${user.lastName}]]</td>
-              <td class="text-center">[[${user.roles}]]</td>
-              <td class="text-center">
-                <div
-                  th:replace="~{fragments :: status(${user.enabled}, ${user}, 'users')}"
-                ></div>
-              </td>
-              <td class="text-center">
-                <a
-                  th:replace="~{fragments :: edit('users', ${user}, 'user')}"
-                ></a>
-                <span class="m-3"></span>
-                <span
-                  th:replace="~{fragments :: delete('users', ${user}, 'user', false)}"
-                ></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="col-auto">
+      <div class="input-group">
+        <div class="input-group-text">Filter</div>
+        <input
+            class="form-control"
+            type="text"
+            name="keyword"
+            th:value="${keyword}"
+            required
+        />
       </div>
     </div>
 
-    <div class="less-details">
-      <div th:each="user : ${users}" class="row m-1">
-        <div class="col-auto">
-          <span
-            th:if="${user.photos == null}"
-            class="fa-solid fa-image-portrait fa-2x"
-          ></span>
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">
+        <i class="fas fa-search"></i>
+      </button>
+      &nbsp;
+      <button
+          class="btn btn-secondary"
+          type="button"
+          id="btnClear"
+          onclick="clearSearch()"
+      >
+        <i class="fas fa-eraser"></i>
+      </button>
+    </div>
+    <div>&nbsp;</div>
+  </form>
+
+  <div class="text-center alert alert-success" th:if="${message != null}">
+    [[${message}]]
+  </div>
+
+  <div class="full-details">
+    <table
+        class="text-center table table-bordered table-striped table-hover table-responsive-xl"
+    >
+      <thead>
+      <tr>
+        <th class="hideable-column">
+                <span
+                    th:replace="~{fragments :: column_link('users', 'id', 'User ID', 'tag')}"
+                ></span>
+        </th>
+
+        <th>Photos</th>
+
+        <th class="hideable-column">
+                <span
+                    th:replace="~{fragments :: column_link('users', 'email', 'E-mail', 'tag')}"
+                ></span>
+        </th>
+
+        <th
+            th:replace="~{fragments :: column_link('users', 'firstName', 'First Name', 'none')}"
+        ></th>
+        <th
+            th:replace="~{fragments :: column_link('users', 'lastName', 'Last Name', 'none')}"
+        ></th>
+        <th
+            th:replace="~{fragments :: column_link('users', 'roles', 'Roles', 'none')}"
+        ></th>
+        <th
+            th:replace="~{fragments :: column_link('users', 'enabled', 'Enabled', 'none')}"
+        ></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${users}">
+        <td class="text-center hideable-column">[[${user.id}]]</td>
+        <td class="text-center">
+                <span
+                    th:if="${user.photos == null}"
+                    class="fa-solid fa-image-portrait fa-2x"
+                ></span>
           <img
-            class="img-fluid rounded-3"
-            style="width: 100px"
-            th:if="${user.photos != null}"
-            th:src="@{${user.photosImagePath}}"
-            alt=""
+              class="img-fluid rounded-3"
+              style="width: 100px"
+              th:if="${user.photos != null}"
+              th:src="@{${user.photosImagePath}}"
+              alt=""
           />
-        </div>
-        <div class="col-auto">
-          <div>[[${user.fullName}]]</div>
-          <div>[[${user.roles}]]</div>
-          <div>&nbsp;</div>
-          <div>
-            <a
-              style="
+        </td>
+        <td class="text-center hideable-column">[[${user.email}]]</td>
+        <td class="text-center">[[${user.firstName}]]</td>
+        <td class="text-center">[[${user.lastName}]]</td>
+        <td class="text-center">[[${user.roles}]]</td>
+        <td class="text-center">
+          <div
+              th:replace="~{fragments :: status(${user.enabled}, ${user}, 'users')}"
+          ></div>
+        </td>
+        <td class="text-center">
+          <a
+              th:replace="~{fragments :: edit('users', ${user}, 'user')}"
+          ></a>
+          <span class="m-3"></span>
+          <span
+              th:replace="~{fragments :: delete('users', ${user}, 'user', false)}"
+          ></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="less-details">
+  <div th:each="user : ${users}" class="row m-1">
+    <div class="col-auto">
+          <span
+              th:if="${user.photos == null}"
+              class="fa-solid fa-image-portrait fa-2x"
+          ></span>
+      <img
+          class="img-fluid rounded-3"
+          style="width: 100px"
+          th:if="${user.photos != null}"
+          th:src="@{${user.photosImagePath}}"
+          alt=""
+      />
+    </div>
+    <div class="col-auto">
+      <div>[[${user.fullName}]]</div>
+      <div>[[${user.roles}]]</div>
+      <div>&nbsp;</div>
+      <div>
+        <a
+            style="
                 text-decoration: none;
                 font-size: 1.6em;
                 vertical-align: -0.1em;
               "
-              th:if="${user.enabled}"
-              class="fa-solid fa-check text-success"
-              th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/false'}"
-            ></a>
-            <a
-              style="
+            th:if="${user.enabled}"
+            class="fa-solid fa-check text-success"
+            th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/false'}"
+        ></a>
+        <a
+            style="
                 text-decoration: none;
                 font-size: 1.8em;
                 vertical-align: -0.1em;
               "
-              th:unless="${user.enabled}"
-              class="fa-solid fa-xmark text-danger m-1"
-              th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/true'}"
-            ></a>
-            <a
-              style="text-decoration: none; font-size: 1.5em"
-              class="fa-solid fa-pen text-success"
-              th:href="@{'/api/v1/users/edit/' + ${user.id}}"
-              th:userId="${user.id}"
-              title="Edit this user"
-            ></a>
-            <a
-              style="text-decoration: none; font-size: 1.5em"
-              class="fa-solid fa-trash-can text-secondary"
-              th:href="@{'/api/v1/users/delete/' + ${user.id}}"
-              data-bs-toggle="modal"
-              data-bs-target="#confirmModal"
-              onclick="showModalConfirmationDialog($(this), 'user', $(this).attr('userId'))"
-              th:userId="${user.id}"
-              title="Delete this user"
-            ></a>
-          </div>
-        </div>
-        <div>&nbsp;&nbsp;</div>
+            th:unless="${user.enabled}"
+            class="fa-solid fa-xmark text-danger m-1"
+            th:href="@{'/api/v1/users/' + ${user.id} + '/enabled/true'}"
+        ></a>
+        <a
+            style="text-decoration: none; font-size: 1.5em"
+            class="fa-solid fa-pen text-success"
+            th:href="@{'/api/v1/users/edit/' + ${user.id}}"
+            th:userId="${user.id}"
+            title="Edit this user"
+        ></a>
+        <a
+            style="text-decoration: none; font-size: 1.5em"
+            class="fa-solid fa-trash-can text-secondary"
+            th:href="@{'/api/v1/users/delete/' + ${user.id}}"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmModal"
+            onclick="showModalConfirmationDialog($(this), 'user', $(this).attr('userId'))"
+            th:userId="${user.id}"
+            title="Delete this user"
+        ></a>
       </div>
     </div>
+    <div>&nbsp;&nbsp;</div>
+  </div>
+</div>
 
-    <!-- pagination bar -->
-    <br>
-    <div th:replace="~{fragments :: pagination_bar('users', 'Users')}"></div>
+<!-- pagination bar -->
+<br>
+<div th:replace="~{fragments :: pagination_bar('users', 'Users')}"></div>
 
-    <!-- custom model for checking email window -->
-    <div class="modal fade" id="confirmModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Delete Confirmation</h4>
-            <button
-              id="modalCancelBtnX"
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
+<!-- custom model for checking email window -->
+<div class="modal fade" id="confirmModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Confirmation</h4>
+        <button
+            id="modalCancelBtnX"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+        ></button>
+      </div>
 
-          <div class="modal-body">
-            <p id="modalBody"></p>
-          </div>
+      <div class="modal-body">
+        <p id="modalBody"></p>
+      </div>
 
-          <div class="modal-footer">
-            <a id="yesBtn" class="btn btn-success" href="">Yes</a>
-            <button
-              id="ConfirmationBtn"
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-            >
-              No
-            </button>
-          </div>
-        </div>
+      <div class="modal-footer">
+        <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+        <button
+            id="ConfirmationBtn"
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+        >
+          No
+        </button>
       </div>
     </div>
+  </div>
+</div>
 
-    <br />
-    <div th:replace="~{fragments :: footer()}"></div>
+<br/>
+<div th:replace="~{fragments :: footer()}"></div>
 
-    <script>
+<script>
       const moduleURL = "[[@{/api/v1/users}]]";
-    </script>
-    <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
-    <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
-    <script
-      type="text/javascript"
-      th:src="@{/scripts/showModalConfirmationDialog.js}"
-    ></script>
-  </body>
+
+
+</script>
+<script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
+<script
+    type="text/javascript"
+    th:src="@{/scripts/showModalConfirmationDialog.js}"
+></script>
+</body>
 </html>

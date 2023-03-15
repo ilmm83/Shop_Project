@@ -1,90 +1,89 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
-  <head
+<head
     th:replace="~{fragments :: html_head('Create new Product', 'none')}"
-  ></head>
+></head>
 
-  <body>
-    <div th:fragment="content" th:remove="tag">
-      <div>
-        <div class="container" id="divDetailsContainer">
-          <th:block
-            th:if="${productDTO.details != null}"
-            th:each="detail : ${productDTO.details}"
-          >
-            <div
-              class="row ps-3 pt-3 border border-bottom-0 border-top-0"
-              th:id="'extraDetail' + ${detail.id}"
-            >
-              <div class="col col-sm-1">
-                <label>Name:</label>
-              </div>
-              <div class="col col-sm-4">
-                <input
-                  class="form-control"
-                  type="text"
-                  th:value="${detail.name}"
-                  name="detailName"
-                  maxlength="255"
-                />
-              </div>
-              <div class="col col-sm-1">
-                <label>Value:</label>
-              </div>
-              <div class="col col-sm-4">
-                <input
-                  class="form-control"
-                  th:value="${detail.value}"
-                  type="text"
-                  name="detailValue"
-                  maxlength="255"
-                />
-              </div>
-              <div class="col col-auto">
-                <button
-                  class="btn fas fa-times-circle fa-2xl text-secondary float-end m-2 pt-2"
-                  th:detailId="${detail.id}"
-                  onclick="removeExtraDetail($(this).attr('detailId'))"
-                ></button>
-              </div>
-            </div>
-          </th:block>
-
-          <div class="row ps-3 pt-3 border border-bottom-0 border-top-0">
-            <div class="col col-sm-1">
-              <label>Name:</label>
-            </div>
-            <div class="col col-sm-4">
-              <input
+<body>
+<div th:fragment="content" th:remove="tag">
+  <div>
+    <div class="container" id="divDetailsContainer">
+      <th:block th:if="${productDTO.details != null}"
+                th:each="detail : ${productDTO.details}"
+      >
+        <div
+            class="row ps-3 pt-3 border border-bottom-0 border-top-0"
+            th:id="'extraDetail' + ${detail.id}"
+        >
+          <div class="col col-sm-1">
+            <label>Name:</label>
+          </div>
+          <div class="col col-sm-4">
+            <input
                 class="form-control"
                 type="text"
+                th:value="${detail.name}"
                 name="detailName"
                 maxlength="255"
-              />
-            </div>
-            <div class="col col-sm-1">
-              <label>Value:</label>
-            </div>
-            <div class="col col-sm-4">
-              <input
+            />
+          </div>
+          <div class="col col-sm-1">
+            <label>Value:</label>
+          </div>
+          <div class="col col-sm-4">
+            <input
                 class="form-control"
+                th:value="${detail.value}"
                 type="text"
                 name="detailValue"
                 maxlength="255"
-              />
-            </div>
+            />
+          </div>
+          <div class="col col-auto">
+            <button
+                class="btn fas fa-times-circle fa-2xl text-secondary float-end m-2 pt-2"
+                th:detailId="${detail.id}"
+                onclick="removeExtraDetail($(this).attr('detailId'))"
+            ></button>
           </div>
         </div>
-        <div class="ps-2 pt-4 text-start">
-          <span class="btn btn-secondary" onclick="addMoreDetail()">
-            Add more detail
-          </span>
+      </th:block>
+
+      <div class="row ps-3 pt-3 border border-bottom-0 border-top-0">
+        <div class="col col-sm-1">
+          <label>Name:</label>
+        </div>
+        <div class="col col-sm-4">
+          <input
+              class="form-control"
+              type="text"
+              name="detailName"
+              maxlength="255"
+          />
+        </div>
+        <div class="col col-sm-1">
+          <label>Value:</label>
+        </div>
+        <div class="col col-sm-4">
+          <input
+              class="form-control"
+              type="text"
+              name="detailValue"
+              maxlength="255"
+          />
         </div>
       </div>
     </div>
-  </body>
+    <div class="ps-2 pt-4 text-start">
+          <span class="btn btn-secondary" onclick="addMoreDetail()">
+            Add more detail
+          </span>
+    </div>
+  </div>
+</div>
+</body>
 </html>

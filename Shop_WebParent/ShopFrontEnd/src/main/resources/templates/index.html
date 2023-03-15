@@ -5,20 +5,22 @@
 <div th:replace="~{fragments :: header_navbar}"></div>
 
 <div>
-    <h1 class="p-2 pb-2">Shopping by Categories</h1>
+  <h1 class="p-2 pb-2">Shopping by Categories</h1>
 </div>
+<div class="container-fluid">
+  <div th:replace="~{fragments :: search_bar}"></div>
 
-<div class="row container-fluid p-5">
+  <div class="row p-5">
     <div class="col" th:each="category : ${categories}">
-        <div class="text-center">
-            <img th:src="@{${category.photosImagePath}}" style="max-width: 80px"/>
-            <div>
-                <a th:href="@{'/c/' + ${category.alias}}" style="text-decoration: none">[[${category.name}]]</a>
-            </div>
+      <div class="text-center">
+        <img th:src="@{${category.photosImagePath}}" style="max-width: 80px"/>
+        <div>
+          <a th:href="@{'/c/' + ${category.alias}}" style="text-decoration: none">[[${category.name}]]</a>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
 <div th:replace="~{fragments :: footer_navbar}"></div>
 </body>
 </html>
