@@ -74,7 +74,7 @@ public class Category {
         + "  image - " + image + ", \n"
         + "  parent - " + parent + ", \n"
         + "  enabled - " + enabled + ", \n"
-        + "  childrens\n\t" + children.stream()
+        + "  children\n\t" + children.stream()
             .map(Category::getName)
             .collect(Collectors.toList())
         + ";\n";

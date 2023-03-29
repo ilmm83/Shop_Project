@@ -26,44 +26,44 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/account")
 public class AccountController {
 
-  private final UserService service;
+    private final UserService service;
 
-  @GetMapping
-  public String viewDetails(@AuthenticationPrincipal ShopUserDetails loggedUser, Model model)
-      throws UserNotFoundException {
-        
-    String email = loggedUser.getUsername();
-    User user = service.getByEmail(email);
+    @GetMapping
+    public String viewDetails(@AuthenticationPrincipal ShopUserDetails loggedUser, Model model)
+            throws UserNotFoundException {
 
-    model.addAttribute("user", user);
+        String email = loggedUser.getUsername();
+        User user = service.getByEmail(email);
 
-    return "users/account_form";
-  }
+        model.addAttribute("user", user);
 
-  @PostMapping("/update")
-  public String createNewUser(User user, RedirectAttributes redirect,
-      @RequestParam("image") MultipartFile file, @AuthenticationPrincipal ShopUserDetails userDetails)
-      throws IOException, UserNotFoundException {
-
-    if (!file.isEmpty()) {
-      String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-      user.setPhotos(fileName);
-      User saved = service.updateUserAccount(user);
-      String uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\ShopBackEnd\\src\\main\\resources\\static\\images\\user-images\\"
-          + saved.getId();
-      FileUploadUtil.saveFile(uploadDir, fileName, file);
-    } else {
-      if (user.getPhotos().isEmpty())
-        user.setPhotos(null);
-      service.updateUserAccount(user);
+        return "users/account_form";
     }
 
-    userDetails.setFirstName(user.getFirstName());
-    userDetails.setLastName(user.getLastName());
+    @PostMapping("/update")
+    public String createNewUser(User user, RedirectAttributes redirect,
+                                @RequestParam("image") MultipartFile file, @AuthenticationPrincipal ShopUserDetails userDetails)
+            throws IOException, UserNotFoundException {
 
-    redirect.addFlashAttribute("message", "The user has been updated successfuly.");
+        if (!file.isEmpty()) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            user.setPhotos(fileName);
+            User saved = service.updateUserAccount(user);
+            String uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\ShopBackEnd\\src\\main\\resources\\static\\images\\user-images\\"
+                    + saved.getId();
+            FileUploadUtil.saveFile(uploadDir, fileName, file);
+        } else {
+            if (user.getPhotos().isEmpty())
+                user.setPhotos(null);
+            service.updateUserAccount(user);
+        }
 
-    return "redirect:/api/v1/account";
-  }
+        userDetails.setFirstName(user.getFirstName());
+        userDetails.setLastName(user.getLastName());
+
+        redirect.addFlashAttribute("message", "The user has been updated successfully.");
+
+        return "redirect:/api/v1/account";
+    }
 
 }

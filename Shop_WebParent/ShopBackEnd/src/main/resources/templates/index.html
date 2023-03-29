@@ -10,31 +10,31 @@
 
 <body>
 <div>
-    <div>
-        <form
-                th:action="@{/logout}"
-                th:hidden="true"
-                method="post"
-                name="LogoutForm"
-        >
-            <input type="submit"/>
-        </form>
-        <nav th:replace="~{fragments :: navbar()}"></nav>
-    </div>
+  <div>
+    <form
+            th:action="@{/logout}"
+            th:hidden="true"
+            method="post"
+            name="LogoutForm"
+    >
+      <input type="submit"/>
+    </form>
+    <nav th:replace="~{fragments :: navbar()}"></nav>
+  </div>
 
-    <div class="ms-4">
-        <h2>Shop Control Panel</h2>
-        <div>
-            Welcome
-            <a
-                    sec:authentication="principal.fullName"
-                    th:href="@{/api/v1/account}"
-            >
-            </a>
-            &nbsp;
-            <span sec:authentication="principal.authorities"></span>
-        </div>
+  <div class="ms-4">
+    <h2>Shop Control Panel</h2>
+    <div>
+      Welcome
+      <a
+              sec:authentication="principal.fullName"
+              th:href="@{/api/v1/account}"
+      >
+      </a>
+      &nbsp;
+      <span sec:authentication="principal.authorities"></span>
     </div>
+  </div>
 </div>
 
 <div th:replace="~{fragments :: footer()}"></div>

@@ -14,43 +14,43 @@ import com.shop.admin.security.user.ShopUserDetailsService;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig{
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests()
-                    .requestMatchers("/images/**", "/scripts/**", "/webjars/**", "/api/v1/brands/categories/**")
-                                        .permitAll()
-                                        
-                    .requestMatchers("/api/v1/users/**", "/api/v1/settings/**")
-                                        .hasAuthority("Admin")
+                .requestMatchers("/images/**", "/scripts/**", "/webjars/**", "/api/v1/brands/categories/**")
+                        .permitAll()
 
-                    .requestMatchers("/api/v1/categories/**", "/api/v1/brands/**", "/api/v1/articles/**", "/api/v1/menus/**",
-                                    "/api/v1/products/new", "/api/v1/products/delete/**", "/api/v1/products/enabled/true/**",
-                                    "/api/v1/products/enabled/false/**")
-                                        .hasAnyAuthority("Admin", "Editor")
-                                        
-                    .requestMatchers("/api/v1/questions/**", "/api/v1/reviews/**")
-                                        .hasAnyAuthority("Admin", "Assistant")
-                    
-                    .requestMatchers("/api/v1/products/edit/**", "/api/v1/products/save", "/api/v1/products/check_name_and_alias", 
-                                    "/api/v1/products/remove_image")
-                                        .hasAnyAuthority("Admin", "Editor", "Salesperson")
+                .requestMatchers("/api/v1/users/**", "/api/v1/settings/**", "/api/v1/countries/**", "/api/v1/states/**")
+                        .hasAuthority("Admin")
 
-                    .requestMatchers("/api/v1/customers/**", "/api/v1/shipping/**", "/api/v1/reports/**")
-                                        .hasAnyAuthority("Admin", "Salesperson")
+                .requestMatchers("/api/v1/categories/**", "/api/v1/brands/**", "/api/v1/articles/**", "/api/v1/menus/**",
+                        "/api/v1/products/new", "/api/v1/products/delete/**", "/api/v1/products/enabled/true/**",
+                        "/api/v1/products/enabled/false/**")
+                        .hasAnyAuthority("Admin", "Editor")
 
-                    .requestMatchers("/api/v1/orders/**")
-                                        .hasAnyAuthority("Admin", "Salesperson", "Shipper")
+                .requestMatchers("/api/v1/questions/**", "/api/v1/reviews/**")
+                        .hasAnyAuthority("Admin", "Assistant")
 
-                    .requestMatchers("/api/v1/products/detail/**")
-                                        .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+                .requestMatchers("/api/v1/products/edit/**", "/api/v1/products/save", "/api/v1/products/check_name_and_alias",
+                        "/api/v1/products/remove_image")
+                        .hasAnyAuthority("Admin", "Editor", "Salesperson")
 
-                    .anyRequest().authenticated()    
+                .requestMatchers("/api/v1/customers/**", "/api/v1/shipping/**", "/api/v1/reports/**")
+                        .hasAnyAuthority("Admin", "Salesperson")
+
+                .requestMatchers("/api/v1/orders/**")
+                        .hasAnyAuthority("Admin", "Salesperson", "Shipper")
+
+                .requestMatchers("/api/v1/products/detail/**")
+                        .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+
+                .anyRequest().authenticated()
                 .and()
                 .userDetailsService(userDetailsService())
-                .authenticationProvider(authenticatonProvider())
+                .authenticationProvider(authenticationProvider())
                 .formLogin()
                     .usernameParameter("email")
                     .loginPage("/login").permitAll()
@@ -73,11 +73,11 @@ public class SecurityConfig{
 
     @Bean
     public UserDetailsService userDetailsService() {
-       return new ShopUserDetailsService(); 
+        return new ShopUserDetailsService();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticatonProvider() {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());

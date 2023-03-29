@@ -2,15 +2,17 @@ package com.shop.site.service.category;
 
 import com.shop.model.Category;
 import com.shop.site.exception.category.CategoryNotFoundException;
-import com.shop.site.repository.CategoryRepository;
+import com.shop.site.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryService {
 
     private final CategoryRepository repository;

@@ -1,5 +1,6 @@
 package com.shop.site.repository;
 
+import com.shop.site.repository.product.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

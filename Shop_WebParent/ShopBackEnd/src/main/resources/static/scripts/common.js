@@ -19,6 +19,7 @@ $(document).ready(function () {
     showChosenCategories(dropdownCategories, divChosenCategories);
   });
 
+  window.onpopstate = () => customizeTabs(); // per url change
 });
 
 function showChosenCategories(dropdownCategories, divChosenCategories) {
@@ -30,6 +31,18 @@ function showChosenCategories(dropdownCategories, divChosenCategories) {
       "<span class='badge text-bg-secondary m-1'>" + catName + "</span>"
     );
   });
+}
+
+function customizeTabs() {
+  const url = document.location.toString();
+  if (url.match('#')) {
+    const tabName = url.split('#')[1];
+    const triggerEl = document.querySelector('#settingTab button[data-bs-target="#' + tabName + '"]');
+    const tab = new bootstrap.Tab(triggerEl);
+    tab.show();
+  }
+
+  $('.nav-tabs a').on('shown.bs.tab', function(e) { window.location.hash = e.target.hash });
 }
 
 function customizeDropDownMenu() {

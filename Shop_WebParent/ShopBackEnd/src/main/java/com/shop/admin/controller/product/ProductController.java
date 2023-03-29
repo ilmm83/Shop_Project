@@ -61,6 +61,7 @@ public class ProductController {
     model.addAttribute("brands", brands);
     model.addAttribute("categories", categories);
     model.addAttribute("productDTO", dto);
+    model.addAttribute("pageTitle", "Create new Product");
 
     return "products/products_form";
   }
@@ -71,17 +72,15 @@ public class ProductController {
       @RequestParam(value = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
       @RequestParam(name = "detailName", required = false) String[] detailNames,
       @RequestParam(name = "detailValue", required = false) String[] detailValues,
-      @AuthenticationPrincipal ShopUserDetails loggedUser,
-      Model model, RedirectAttributes attributs) {
+      @AuthenticationPrincipal ShopUserDetails loggedUser, RedirectAttributes attributes) {
 
     try {
-
       var product = convertToProduct(dto);
       productService.save(product);
 
       if (loggedUser.hasRole("Salesperson")) {
         productService.saveProductPrice(product);
-        attributs.addFlashAttribute("message", "The product has been saved successfully.");
+        attributes.addFlashAttribute("message", "The product has been saved successfully.");
         return "redirect:/api/v1/products";
       }
 
@@ -90,10 +89,10 @@ public class ProductController {
       setProductDetails(detailNames, detailValues, product, productService);
 
       productService.save(product);
-      attributs.addFlashAttribute("message", "The product has been saved successfully.");
+      attributes.addFlashAttribute("message", "The product has been saved successfully.");
 
     } catch (BrandNotFoundException | CategoryNotFoundException | IOException | ProductNotFoundException e) {
-      attributs.addFlashAttribute("message", e.getMessage());
+      attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();
     }
     return "redirect:/api/v1/products";
@@ -128,6 +127,8 @@ public class ProductController {
       model.addAttribute("category", category);
       model.addAttribute("productDTO", convertToProductDTO(product));
       model.addAttribute("imagesAmount", product.getImages().size());
+      model.addAttribute("pageTitle", "Manage Product with ID: " + id);
+
     } catch (ProductNotFoundException e) {
       attributes.addFlashAttribute("message", e.getMessage());
       e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.shop.site.repository;
+package com.shop.site.repository.category;
 
 import java.util.List;
 import java.util.Optional;

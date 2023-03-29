@@ -6,7 +6,7 @@
 >
   <head>
     <head
-      th:replace="~{fragments :: html_head('Create new Product', 'tag')}"
+      th:replace="~{fragments :: html_head(${pageTitle}, 'tag')}"
     ></head>
     <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
     <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
@@ -39,8 +39,8 @@
       enctype="multipart/form-data"
       onsubmit="return checkNameAndAliasUnique(this)"
     >
-      <div class="m-3 text-center">
-        <h2>Create New Product Form</h2>
+      <div class="p-3 text-center">
+        <h2>[[${pageTitle}]]</h2>
       </div>
 
       <input type="hidden" th:field="*{id}" />
@@ -221,7 +221,7 @@
     ></script>
     <script
       type="text/javascript"
-      th:src="@{/scripts/getCategoriesForProducForm.js}"
+      th:src="@{/scripts/getCategoriesForProductForm.js}"
     ></script>
     <script
       type="text/javascript"

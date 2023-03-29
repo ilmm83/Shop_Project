@@ -9,6 +9,7 @@
 
     <artifactId>Shop_Common</artifactId>
     <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
 
     <name>Shop_Common</name>
     <url>http://maven.apache.org</url>

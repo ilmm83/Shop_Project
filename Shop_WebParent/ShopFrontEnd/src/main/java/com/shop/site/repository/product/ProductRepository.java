@@ -1,4 +1,4 @@
-package com.shop.site.repository;
+package com.shop.site.repository.product;
 
 import com.shop.model.Product;
 import org.springframework.data.domain.Page;

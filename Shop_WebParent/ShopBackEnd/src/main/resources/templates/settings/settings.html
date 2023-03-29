@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html
+   lang="en"
+   xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+<head>
+  <head
+     th:replace="~{fragments :: html_head('Site Settings', 'tag')}"
+  ></head>
+  <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}"/>
+  <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+
+<body>
+<form
+   th:action="@{/logout}"
+   th:hidden="true"
+   method="post"
+   name="LogoutForm"
+>
+  <input type="submit"/>
+</form>
+
+<div>
+  <nav th:replace="~{fragments :: navbar()}"></nav>
+</div>
+
+<div class="container-fluid">
+  <div class="m-3 text-center">
+    <h2>Site Settings</h2>
+  </div>
+
+  <div class="text-center alert alert-success mt-3" th:if="${message != null}">
+    [[${message}]]
+  </div>
+
+  <div>
+    <ul class="nav nav-tabs justify-content-center" id="settingTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link active"
+           data-bs-toggle="tab"
+           data-bs-target="#general"
+           type="button"
+           role="tab"
+        >
+          General
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link"
+           data-bs-toggle="tab"
+           data-bs-target="#countries"
+           type="button"
+           role="tab"
+        >
+          Countries
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link"
+           data-bs-toggle="tab"
+           data-bs-target="#states"
+           type="button"
+           role="tab"
+        >
+          States
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link"
+           data-bs-toggle="tab"
+           data-bs-target="#mail_servers"
+           type="button"
+           role="tab"
+        >
+          Mail Server
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link"
+           data-bs-toggle="tab"
+           data-bs-target="#mail_templates"
+           type="button"
+           role="tab"
+        >
+          Mail Templates
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+           class="nav-link"
+           data-bs-toggle="tab"
+           data-bs-target="#payment"
+           type="button"
+           role="tab"
+        >
+          Payment
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="general" role="tabpanel" >
+        <div th:replace="~{settings/general :: content}"></div>
+      </div>
+      <div class="tab-pane" id="countries" role="tabpanel" >
+        <div th:replace="~{settings/countries :: content}"></div>
+      </div>
+      <div class="tab-pane" id="states" role="tabpanel">
+        <div th:replace="~{settings/states :: content}"></div>
+      </div>
+      <div class="tab-pane" id="mail_servers" role="tabpanel">
+      </div>
+      <div class="tab-pane" id="mail_templates" role="tabpanel">
+      </div>
+      <div class="tab-pane" id="payment" role="tabpanel">
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
+      <div class="toast-body text-center">
+        <span id="toastMessage" class="fw-bolder text-secondary"></span>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{fragments :: footer()}"></div>
+</div>
+
+<script>
+  const moduleURL = "[[@{/api/v1/settings}]]";
+  const contextPath = "[[@{/api/v1/countries}]]";
+  const statesPath = "[[@{/api/v1/states}]]"
+  const csrfHeaderName = "[[${_csrf.headerName}]]";
+  const csrfValue = "[[${_csrf.token}]]";
+
+</script>
+<script type="text/javascript" th:src="@{/scripts/showThumbnail.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/countries_setting.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/states_setting.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+</body>
+</html>

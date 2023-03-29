@@ -2,68 +2,71 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: page_head(${pageTitle}, 'tag')}"></head>
 <body>
-    <div th:replace="~{fragments :: header_navbar}"></div>
+<div th:replace="~{fragments :: header_navbar}"></div>
 
 <div class="container-fluid">
-    <div class="border border-primary border-opacity-25 border-start-0 border-end-0">
-        <div class="ps-2 pt-2">
-            <div th:if="${parents != null && !parents.empty}">
-                <div class="row ">
-                    <div class="col">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <a th:href="@{/}" style="text-decoration: none">Home</a>
-                                </li>
-                                <th:block th:each="parent : ${parents}">
-                                    <li class="breadcrumb-item active">
-                                        <a th:href="@{'/c/' + ${parent.alias}}"
-                                           style="text-decoration: none">
-                                            [[${parent.name}]]</a>
-                                    </li>
-                                </th:block>
-                                <span th:if="${category.children.size != 0}" class="ps-5 text-secondary pe-2">Related Categories: </span>
-                                <th:block th:each="cat : ${category.children}">
-                                    <li class="breadcrumb-item active">
-                                        <a th:href="@{'/c/' + ${cat.alias}}"
-                                           style="text-decoration: none">
-                                            [[${cat.name}]]</a>
-                                    </li>
-                                </th:block>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+  <div class="border border-primary border-opacity-25 border-start-0 border-end-0">
+    <div class="ps-2 pt-2">
+      <div th:if="${parents != null && !parents.empty}">
+        <div class="row ">
+          <div class="col">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                  <a th:href="@{/}" style="text-decoration: none">Home</a>
+                </li>
+                <th:block th:each="parent : ${parents}">
+                  <li class="breadcrumb-item active">
+                    <a th:href="@{'/c/' + ${parent.alias}}"
+                       style="text-decoration: none">
+                      [[${parent.name}]]</a>
+                  </li>
+                </th:block>
+                <span th:if="${category.children.size != 0}"
+                      class="ps-5 text-secondary pe-2">Related Categories: </span>
+                <th:block th:each="cat : ${category.children}">
+                  <li class="breadcrumb-item active">
+                    <a th:href="@{'/c/' + ${cat.alias}}"
+                       style="text-decoration: none">
+                      [[${cat.name}]]</a>
+                  </li>
+                </th:block>
+              </ol>
+            </nav>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="row p-5">
-        <th:block th:each="product : ${products}">
-            <div class="col">
-                <div class="text-center">
-                    <a th:href="@{'/p/' + ${product.alias}}" style="text-decoration: none">
-                        <img th:src="@{${product.mainImagesPath}}" style="max-width: 150px"/>
-                        <br>
-                        <b>[[${product.name}]]</b>
-                    </a>
-                    <div th:if="${product.discountPercent <= 0}">$ [[${product.price}]]</div>
-                    <div th:if="${product.discountPercent > 0}">
-                        <span class="text-danger fw-bold"
-                              style="font-size: larger">$ [[${product.discountPrice}]]</span>
-                        <del><span class="text-black">$ [[${product.price}]]</span></del>
-                    </div>
-                </div>
-            </div>
-        </th:block>
-    </div>
+  <div class="row p-5">
+    <th:block th:each="product : ${products}">
+      <div class="col">
+        <div class="text-center">
+          <a th:href="@{'/p/' + ${product.alias}}" style="text-decoration: none">
+            <img th:src="@{${product.mainImagesPath}}" style="max-width: 150px"/>
+            <br>
+            <b>[[${product.name}]]</b>
+          </a>
+          <div th:if="${product.discountPercent <= 0}">
+            <span th:replace="~{fragments :: price(${product.price}, 'false')}"></span>
+          </div>
+          <div th:if="${product.discountPercent > 0}">
+            <span th:replace="~{fragments :: price(${product.discountPrice}, 'true')}"></span>
+            <del>
+              <span th:replace="~{fragments :: price(${product.price}, 'false')}"></span>
+            </del>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
 
+  <!-- pagination bar -->
+  <br>
+  <div th:replace="~{fragments :: pagination_bar('/c/' + ${category.alias}, 'Products')}"></div>
 
-    <!-- pagination bar -->
-    <br>
-    <div th:replace="~{fragments :: pagination_bar('/c/' + ${category.alias}, 'Products')}"></div>
-
-    <div th:replace="~{fragments :: footer_navbar}"></div>
+  <div th:replace="~{fragments :: footer_navbar}"></div>
 </div>
 </body>
 </html>

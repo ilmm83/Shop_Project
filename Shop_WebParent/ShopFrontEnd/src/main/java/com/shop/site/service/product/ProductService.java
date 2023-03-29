@@ -2,16 +2,17 @@ package com.shop.site.service.product;
 
 import com.shop.model.Product;
 import com.shop.site.exception.product.ProductNotFoundException;
-import com.shop.site.repository.ProductRepository;
+import com.shop.site.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository repository;

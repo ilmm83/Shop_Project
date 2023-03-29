@@ -18,7 +18,7 @@ import com.shop.model.Category;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@Rollback(true)
+@Rollback
 public class BrandRepositoryTest {
 
   @Autowired

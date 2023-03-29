@@ -28,15 +28,15 @@
       <span class="fs-5 fw-semibold" th:utext="${product.shortDescription}"></span>
       <div class="pt-3">
         <span th:utext="'Brand: ' + ${product.brand.name}"></span>
-
-        <div th:if="${product.discountPercent <= 0}">$ [[${product.price}]]</div>
         <br>
         <span>List Price: </span>
-        <span class="text-black">$ [[${product.price}]]</span>
+        <span class="text-black">
+            <span th:replace="~{fragments :: price(${product.price}, 'false')}"></span>
+        </span>
         <br>
         <div th:if="${product.discountPercent > 0}">
           <span>Price: </span>
-          <span class="text-danger fw-bold" style="font-size: larger">$ [[${product.discountPrice}]]</span>
+          <span th:replace="~{fragments :: price(${product.discountPrice}, 'true')}"></span>
           <span>( [[${product.discPercent}]]% off )</span>
         </div>
       </div>
