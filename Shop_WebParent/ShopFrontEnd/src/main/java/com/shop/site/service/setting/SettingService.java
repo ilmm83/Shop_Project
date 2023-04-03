@@ -2,6 +2,7 @@ package com.shop.site.service.setting;
 
 import com.shop.model.Setting;
 import com.shop.model.SettingCategory;
+import com.shop.site.repository.customer.EmailSettingBag;
 import com.shop.site.repository.setting.SettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,8 @@ public class SettingService {
 
     private final SettingRepository repository;
 
-    public List<Setting> findAllSettings() {
-        return (List<Setting>) repository.findAll();
-    }
 
-    public List<Setting> getGeneralSettings() {
-        return  (List<Setting>) repository.findByCategory(SettingCategory.GENERAL);
-    }
-
-    public List<Setting> getAllSettings() {
+    public List<Setting> getGeneralAndCurrencySettings() {
         var general = (List<Setting>) repository.findByCategory(SettingCategory.GENERAL);
         var currency = (List<Setting>) repository.findByCategory(SettingCategory.CURRENCY);
 
@@ -35,8 +29,7 @@ public class SettingService {
         return settings;
     }
 
-    @Transactional
-    public void saveAll(Iterable<Setting> settings) {
-        repository.saveAll(settings);
+    public EmailSettingBag getEmailSettings() {
+        return new EmailSettingBag((List<Setting>) repository.findByTwoCategories(SettingCategory.MAIL_SERVER, SettingCategory.MAIL_TEMPLATES));
     }
 }

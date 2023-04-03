@@ -106,28 +106,30 @@
     </ul>
 
     <div class="tab-content">
-      <div class="tab-pane active" id="general" role="tabpanel" >
+      <div class="tab-pane active" id="general" role="tabpanel">
         <div th:replace="~{settings/general :: content}"></div>
       </div>
-      <div class="tab-pane" id="countries" role="tabpanel" >
+      <div class="tab-pane" id="countries" role="tabpanel">
         <div th:replace="~{settings/countries :: content}"></div>
       </div>
       <div class="tab-pane" id="states" role="tabpanel">
         <div th:replace="~{settings/states :: content}"></div>
       </div>
       <div class="tab-pane" id="mail_servers" role="tabpanel">
+        <div th:replace="~{settings/mail_servers :: content}"></div>
       </div>
       <div class="tab-pane" id="mail_templates" role="tabpanel">
+        <div th:replace="~{settings/mail_templates/mail_templates :: content}"></div>
       </div>
       <div class="tab-pane" id="payment" role="tabpanel">
       </div>
     </div>
-  </div>
 
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
-      <div class="toast-body text-center">
-        <span id="toastMessage" class="fw-bolder text-secondary"></span>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="toast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="toast-body text-center">
+          <span id="toastMessage" class="fw-bolder text-secondary"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -141,11 +143,11 @@
   const statesPath = "[[@{/api/v1/states}]]"
   const csrfHeaderName = "[[${_csrf.headerName}]]";
   const csrfValue = "[[${_csrf.token}]]";
-
 </script>
 <script type="text/javascript" th:src="@{/scripts/showThumbnail.js}"></script>
 <script type="text/javascript" th:src="@{/scripts/countries_setting.js}"></script>
 <script type="text/javascript" th:src="@{/scripts/states_setting.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/richText.js}"></script>
 <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
 </body>
 </html>

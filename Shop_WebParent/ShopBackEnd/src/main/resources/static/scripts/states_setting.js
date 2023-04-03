@@ -6,17 +6,15 @@ const fieldStateName = $("#fieldStateName");
 const countriesSelectForStates = $("#countriesSelectForStates");
 const loadButtonForStates = $("#loadButtonForStates");
 const statesSelect = $("#statesSelect");
-
+const statesFields = document.getElementById('statesFields');
 
 $(document).ready(function () {
     loadButtonForStates.click(() => loadCountriesForStates());
     countriesSelectForStates.change(() => loadStates());
     statesSelect.change(() => changeFormStateToSelectedState());
     addState.click(() => {
-       if (addState.val() == 'Add')
-          addNewState();
-       else
-          changeFormStateToNew();
+       if (addState.val() == 'Add') addNewState();
+       else changeFormStateToNewForStates();
     });
     updateState.click(() => updateSelectedState());
 
@@ -36,10 +34,14 @@ function deleteSelectedState() {
       selectedState.remove();
       fieldStateName.val("");
   });
-
 }
 
 function updateSelectedState() {
+   if (!statesFields.checkValidity()) {
+      statesFields.reportValidity();
+      return;
+   }
+
   const stateName = fieldStateName.val();
   const selectedCountryId = $("#countriesSelectForStates option:selected").val();
   const url = statesPath + "/update/" + $("#statesSelect option:selected").val().split("-")[0];
@@ -58,6 +60,11 @@ function updateSelectedState() {
 }
 
 function addNewState() {
+   if (!statesFields.checkValidity()) {
+      statesFields.reportValidity();
+      return;
+   }
+
   const url = statesPath + "/save";
   const stateName = fieldStateName.val();
   const selectedCountryId = $("#countriesSelectForStates option:selected").val();
@@ -85,7 +92,7 @@ function selectNewState(stateId, stateName) {
   fieldStateName.val("").focus();
 }
 
-function changeFormStateToNew() {
+function changeFormStateToNewForStates() {
   addState.val("Add");
   updateState.prop("disabled", true);
   deleteState.prop("disabled", true);

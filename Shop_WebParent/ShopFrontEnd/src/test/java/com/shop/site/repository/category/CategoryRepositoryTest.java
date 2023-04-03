@@ -1,4 +1,4 @@
-package com.shop.site.repository;
+package com.shop.site.repository.category;
 
 import com.shop.model.Category;
 import com.shop.site.repository.category.CategoryRepository;

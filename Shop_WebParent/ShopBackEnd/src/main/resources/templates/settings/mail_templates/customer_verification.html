@@ -1,0 +1,26 @@
+<div th:fragment="content" th:remove="tag">
+  <div class="form-group row p-3 border border-top-0 border-opacity-50">
+    <label class="col-sm-4 col-form-label pt-3">E-mail Subject:</label>
+    <div class="col-sm-8 pt-1">
+      <input
+         type="text"
+         class="form-control"
+         th:value="${CUSTOMER_VERIFY_SUBJECT}"
+         name="CUSTOMER_VERIFY_SUBJECT"
+         placeholder="Please verify your registration to continue shopping"
+         required
+      />
+    </div>
+
+      <div class="pt-3">
+        <label class="form-label">Email Content:</label>
+        <textarea
+           id="customerVerificationContent"
+           class="form-control"
+           name="CUSTOMER_VERIFY_CONTENT"
+           rows="5"
+           required
+        >[[${CUSTOMER_VERIFY_CONTENT}]]</textarea>
+      </div>
+  </div>
+</div>

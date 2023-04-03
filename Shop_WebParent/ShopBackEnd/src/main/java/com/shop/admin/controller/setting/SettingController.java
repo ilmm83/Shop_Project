@@ -34,7 +34,6 @@ public class SettingController {
 
     @GetMapping
     public String viewAllSettings(Model model) {
-
         model.addAttribute("currencies", currencyService.findAllByOrderByIdAsc());
         model.addAttribute("countries", countryService.listAllCountriesOrderByNameAsc());
 
@@ -49,11 +48,29 @@ public class SettingController {
     @PostMapping("/save_general")
     public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipart, HttpServletRequest request,
                                       RedirectAttributes attributes) {
-        var settingBag = settingService.getAllSettings();
+        var settingBag = settingService.getGeneralSettings();
         saveLogo(multipart, settingBag);
         saveCurrencySymbol(request, settingBag);
         updateSettingValues(request, settingBag.getSettings());
         attributes.addFlashAttribute("message", "General settings have been saved.");
+
+        return "redirect:/api/v1/settings";
+    }
+
+    @PostMapping("/save_mail_server")
+    public String saveMailServerSettings(RedirectAttributes attributes, HttpServletRequest request) {
+        var settingBag = settingService.getMainServerSettings();
+        updateSettingValues(request, settingBag.getSettings());
+        attributes.addFlashAttribute("message", "Mail Server settings have been saved.");
+
+        return "redirect:/api/v1/settings";
+    }
+
+    @PostMapping("/save_mail_templates")
+    public String saveMailTemplatesSettings(RedirectAttributes attributes, HttpServletRequest request) {
+        var settingBag = settingService.getMainTemplatesSettings();
+        updateSettingValues(request, settingBag.getSettings());
+        attributes.addFlashAttribute("message", "Mail Templates settings have been saved.");
 
         return "redirect:/api/v1/settings";
     }

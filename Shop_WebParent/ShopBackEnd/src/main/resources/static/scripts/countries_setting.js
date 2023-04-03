@@ -7,15 +7,14 @@ const fieldCountryName = $("#fieldCountryName");
 const fieldCountryCode = $("#fieldCountryCode");
 const countriesSelect = $("#countriesSelect");
 const loadButton = $("#loadButton");
+const countryFields = document.getElementById('countryFields');
 
 $(document).ready(function () {
     loadButton.click(() => loadCountries());
     countriesSelect.change(() => changeFormStateToSelectedCountry());
     addCountry.click(() => {
-       if (addCountry.val() == 'Add')
-          addNewCountry();
-       else
-          changeFormStateToNew();
+       if (addCountry.val() == 'Add') addNewCountry();
+       else changeFormStateToNew();
     });
     updateCountry.click(() => updateSelectedCountry(countriesSelect.val().split("-")[0]));
 
@@ -44,6 +43,11 @@ function deleteSelectedCountry(countryId) {
 }
 
 function updateSelectedCountry(countryId) {
+   if (!countryFields.checkValidity()) {
+      countryFields.reportValidity();
+      return;
+   }
+
   const url = contextPath + "/update/" + countryId;
   const countryName = fieldCountryName.val();
   const countryCode = fieldCountryCode.val();
@@ -62,6 +66,11 @@ function updateSelectedCountry(countryId) {
 }
 
 function addNewCountry() {
+   if (!countryFields.checkValidity()) {
+      countryFields.reportValidity();
+      return;
+   }
+
   const url = contextPath + "/save";
   const countryName = fieldCountryName.val();
   const countryCode = fieldCountryCode.val();

@@ -42,4 +42,7 @@ public class Country {
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
     private Set<State> states;
+
+    @OneToMany(mappedBy = "country")
+    private Set<Customer> customers;
 }

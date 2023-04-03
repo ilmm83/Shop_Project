@@ -33,17 +33,19 @@
         </select>
       </div>
       <div class="form-group row pt-2 ps-3">
-        <div class="row pt-3">
-          <label id="labelStateName" class="col-sm-3 col-form-label">State/Province Name:</label>
-          <div class="col-sm-9">
-            <input id="fieldStateName" class="form-control" type="text">
+        <form id="statesFields">
+          <div class="row pt-3">
+            <label id="labelStateName" class="col-sm-3 col-form-label">State/Province Name:</label>
+            <div class="col-sm-9">
+              <input id="fieldStateName" class="form-control" type="text" minlength="3" maxlength="45" autocomplete="off" required>
+            </div>
           </div>
-        </div>
-        <div class="text-end pt-4 ">
-          <input id="buttonAddState" class="btn btn-secondary me-1" type="button" value="New">
-          <input id="buttonUpdateState" class="btn btn-secondary me-1" type="button" value="Update" disabled="disabled">
-          <input id="buttonDeleteState" class="btn btn-secondary" type="button" value="Delete" disabled="disabled">
-        </div>
+          <div class="text-end pt-4 ">
+            <input id="buttonAddState" class="btn btn-secondary me-1" type="button" value="New">
+            <input id="buttonUpdateState" class="btn btn-secondary me-1" type="button" value="Update" disabled="disabled">
+            <input id="buttonDeleteState" class="btn btn-secondary" type="button" value="Delete" disabled="disabled">
+          </div>
+        </form>
       </div>
     </div>
   </div>

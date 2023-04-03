@@ -22,18 +22,20 @@ public class SettingService {
         return (List<Setting>) repository.findAll();
     }
 
-    public List<Setting> getGeneralSettings() {
-        return  (List<Setting>) repository.findByCategory(SettingCategory.GENERAL);
+    public GeneralSettingBag getMainServerSettings() {
+        return new GeneralSettingBag((List<Setting>) repository.findByCategory(SettingCategory.MAIL_SERVER));
     }
 
-    public GeneralSettingBag getAllSettings() {
+    public GeneralSettingBag getMainTemplatesSettings() {
+        return new GeneralSettingBag((List<Setting>) repository.findByCategory(SettingCategory.MAIL_TEMPLATES));
+    }
+
+    public GeneralSettingBag getGeneralSettings() {
         var general = (List<Setting>) repository.findByCategory(SettingCategory.GENERAL);
         var currency = (List<Setting>) repository.findByCategory(SettingCategory.CURRENCY);
 
-        var settings = new ArrayList<>(general);
-        settings.addAll(currency);
-
-        return new GeneralSettingBag(settings);
+        general.addAll(currency);
+        return new GeneralSettingBag(general);
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-package com.shop.site.repository;
+package com.shop.site.repository.product;
 
 import com.shop.site.repository.product.ProductRepository;
 import org.junit.jupiter.api.Test;

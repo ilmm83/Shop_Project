@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: page_head('Verification Succeed', 'tag')}"></head>
+<body>
+<div th:replace="~{fragments :: header_navbar}"></div>
+
+<div class="container-fluid">
+  <div class="text-center pt-3">
+    <h2>Verification Succeed!</h2>
+    <h4>Congratulations! Your account has been verified.</h4>
+    <p><a th:href="@{/login}" style="text-decoration: none">Login Now</a></p>
+  </div>
+</div>
+<div class="pt-3">
+  <div th:replace="~{fragments :: footer}"></div>
+</div>
+</body>
+</html>

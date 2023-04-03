@@ -16,8 +16,7 @@ public class SettingBag {
 
     public Setting get(String key) {
         int index = settings.indexOf(new Setting(key));
-        if (index >= 0) return settings.get(index);
-        return null;
+        return index >= 0 ? settings.get(index) : null;
     }
 
     public String getValue(String key) {

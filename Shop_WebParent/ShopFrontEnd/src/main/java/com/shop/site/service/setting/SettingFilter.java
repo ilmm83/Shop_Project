@@ -25,7 +25,7 @@ public class SettingFilter implements Filter {
             return;
         }
 
-        service.getAllSettings()
+        service.getGeneralAndCurrencySettings()
                 .forEach(setting -> request.setAttribute(setting.getKey(), setting.getValue()));
 
         filterChain.doFilter(request, response);

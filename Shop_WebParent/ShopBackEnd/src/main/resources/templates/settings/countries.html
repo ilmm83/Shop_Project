@@ -25,23 +25,25 @@
         </select>
       </div>
       <div class="form-group row pt-2 ps-3">
-        <div class="row pt-3">
-          <label id="labelCountryName" class="col-sm-3 col-form-label">Country Name:</label>
-          <div class="col-sm-9">
-            <input id="fieldCountryName" class="form-control" type="text">
+        <form id="countryFields">
+          <div class="row pt-3">
+            <label id="labelCountryName" class="col-sm-3 col-form-label">Country Name:</label>
+            <div class="col-sm-9">
+              <input id="fieldCountryName" class="form-control" type="text" minlength="3" autocomplete="off" maxlength="45" required>
+            </div>
           </div>
-        </div>
-        <div class="row pt-3">
-          <label id="labelCountryCode" class="col-sm-3 col-form-label">Country Code:</label>
-          <div class="col-sm-9">
-            <input id="fieldCountryCode" class="form-control" type="text">
+          <div class="row pt-3">
+            <label id="labelCountryCode" class="col-sm-3 col-form-label">Country Code:</label>
+            <div class="col-sm-9">
+              <input id="fieldCountryCode" class="form-control" type="text" minlength="2" maxlength="3" autocomplete="off" required>
+            </div>
           </div>
-        </div>
-        <div class="text-end pt-4 ">
-          <input id="buttonAddCountry" class="btn btn-secondary me-1" type="button" value="New">
-          <input id="buttonUpdateCountry" class="btn btn-secondary me-1" type="button" value="Update" disabled="disabled">
-          <input id="buttonDeleteCountry" class="btn btn-secondary" type="button" value="Delete" disabled="disabled">
-        </div>
+          <div class="text-end pt-4 ">
+            <input id="buttonAddCountry" class="btn btn-secondary me-1" type="button" value="New">
+            <input id="buttonUpdateCountry" class="btn btn-secondary me-1" type="button" value="Update" disabled="disabled">
+            <input id="buttonDeleteCountry" class="btn btn-secondary" type="button" value="Delete" disabled="disabled">
+          </div>
+        </form>
       </div>
     </div>
   </div>

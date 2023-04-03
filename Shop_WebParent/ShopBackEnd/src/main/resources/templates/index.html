@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html
-        lang="en"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+   lang="en"
+   xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
 <head
-        th:replace="~{fragments :: html_head('Home - Shop Admin', 'none')}"
+   th:replace="~{fragments :: html_head('Home - Shop Admin', 'none')}"
 ></head>
 
 <body>
 <div>
   <div>
     <form
-            th:action="@{/logout}"
-            th:hidden="true"
-            method="post"
-            name="LogoutForm"
+       th:action="@{/logout}"
+       th:hidden="true"
+       method="post"
+       name="LogoutForm"
     >
       <input type="submit"/>
     </form>
@@ -27,8 +27,8 @@
     <div>
       Welcome
       <a
-              sec:authentication="principal.fullName"
-              th:href="@{/api/v1/account}"
+         sec:authentication="principal.fullName"
+         th:href="@{/api/v1/account}"
       >
       </a>
       &nbsp;
