@@ -2,6 +2,7 @@ package com.shop.site.repository.customer;
 
 import com.shop.model.Country;
 import com.shop.model.Customer;
+import com.shop.site.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

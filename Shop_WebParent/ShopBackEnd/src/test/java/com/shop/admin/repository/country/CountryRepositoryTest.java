@@ -1,6 +1,6 @@
 package com.shop.admin.repository.country;
 
-import com.shop.admin.repository.country.CountryRepository;
+import com.shop.admin.country.CountryRepository;
 import com.shop.model.Country;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

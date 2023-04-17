@@ -1,6 +1,7 @@
 package com.shop.admin.repository.currency;
 
 
+import com.shop.admin.currency.CurrencyRepository;
 import com.shop.model.Currency;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

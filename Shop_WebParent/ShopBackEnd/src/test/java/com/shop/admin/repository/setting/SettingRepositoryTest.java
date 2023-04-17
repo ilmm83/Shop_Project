@@ -1,7 +1,7 @@
 package com.shop.admin.repository.setting;
 
+import com.shop.admin.setting.SettingRepository;
 import com.shop.model.Setting;
-import com.shop.model.SettingCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

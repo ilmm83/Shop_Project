@@ -1,6 +1,6 @@
 package com.shop.site.util;
 
-import com.shop.site.repository.customer.EmailSettingBag;
+import com.shop.site.customer.EmailSettingBag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 

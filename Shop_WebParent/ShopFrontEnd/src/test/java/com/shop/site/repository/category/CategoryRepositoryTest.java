@@ -1,7 +1,7 @@
 package com.shop.site.repository.category;
 
 import com.shop.model.Category;
-import com.shop.site.repository.category.CategoryRepository;
+import com.shop.site.category.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
