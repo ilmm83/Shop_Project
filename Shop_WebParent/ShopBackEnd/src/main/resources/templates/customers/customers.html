@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html
+   lang="en"
+   xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+<head
+   th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
+></head>
+
+<body>
+<div>
+  <div>
+    <form
+       th:action="@{/logout}"
+       th:hidden="true"
+       method="post"
+       name="LogoutForm"
+    >
+      <input type="submit"/>
+    </form>
+
+    <nav th:replace="~{fragments :: navbar()}"></nav>
+  </div>
+
+  <div class="ms-4">
+    <h2>Manage Customers</h2>
+    <a
+       class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
+       style="text-decoration: none"
+       title="Export to CSV"
+       th:href="@{/api/v1/customers/export/csv}"
+    ></a>
+  </div>
+
+  <!-- Filter bar -->
+  <form
+     class="row g-3 mt-2 container-fluid ps-3"
+     th:action="@{/api/v1/customers/1}"
+  >
+    <input type="hidden" name="sortField" th:value="${sortField}"/>
+    <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+
+    <div class="col-auto">
+      <div class="input-group">
+        <div class="input-group-text">Filter</div>
+        <input
+           class="form-control"
+           type="text"
+           name="keyword"
+           th:value="${keyword}"
+           required
+        />
+      </div>
+    </div>
+
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">
+        <i class="fas fa-search"></i>
+      </button>
+      &nbsp;
+      <button
+         class="btn btn-secondary"
+         type="button"
+         id="btnClear"
+         onclick="clearSearch()"
+      >
+        <i class="fas fa-eraser"></i>
+      </button>
+    </div>
+    <div>&nbsp;</div>
+  </form>
+
+  <div class="text-center alert alert-success" th:if="${message != null}">
+    [[${message}]]
+  </div>
+
+  <div class="full-details">
+    <table class="text-center table table-bordered table-striped table-hover table-responsive-xl">
+      <thead>
+      <tr>
+        <th class="hideable-column">
+          <span
+             th:replace="~{fragments :: column_link('customers', 'id', 'Customer ID', 'tag')}"
+          ></span>
+        </th>
+        <th class="hideable-column">
+          <span
+             th:replace="~{fragments :: column_link('customers', 'email', 'E-mail', 'tag')}"
+          ></span>
+        </th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'firstName', 'First Name', 'none')}"
+        ></th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'lastName', 'Last Name', 'none')}"
+        ></th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'city', 'City', 'none')}"
+        ></th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'State', 'State', 'none')}"
+        ></th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'country', 'Country', 'none')}"
+        ></th>
+        <th
+           th:replace="~{fragments :: column_link('customers', 'enabled', 'Enabled', 'none')}"
+        ></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customer : ${customers}">
+        <td class="text-center hideable-column">[[${customer.id}]]</td>
+        <td class="text-center hideable-column">[[${customer.email}]]</td>
+        <td class="text-center">[[${customer.firstName}]]</td>
+        <td class="text-center">[[${customer.lastName}]]</td>
+        <td class="text-center">[[${customer.city}]]</td>
+        <td class="text-center">[[${customer.state}]]</td>
+        <td class="text-center">
+          <span th:if="${customer.country != null}">[[${customer.country.name}]]</span>
+          <span th:if="${customer.country == null}">No Country</span>
+        </td>
+        <td class="text-center">
+          <div
+             th:replace="~{fragments :: status(${customer.enabled}, ${customer}, 'customers')}"
+          ></div>
+        </td>
+        <td class="text-center">
+          <span
+             class="fas fa-file-alt fa-2x text-success"
+             th:href="@{'/api/v1/customers/detail/' + ${customer.id}}"
+             title="View details of this customer"
+             onclick="showDetailsModal($(this).attr('href'))"
+             data-bs-toggle="modal"
+             data-bs-target="#detailModal"></span>
+          <span class="m-3"></span>
+          <a
+             th:replace="~{fragments :: edit('customers', ${customer}, 'customer')}"
+          ></a>
+          <span class="m-3"></span>
+          <span
+             th:replace="~{fragments :: delete('customers', ${customer}, 'customer', false)}"
+          ></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="less-details">
+  <div th:each="customer : ${customers}" class="row m-1">
+    <div class="col-auto">
+      <div>[[${customer.fullName}]]</div>
+      <div>[[${customer.email}]]</div>
+      <div>&nbsp;</div>
+      <div>
+        <a
+           style="
+                text-decoration: none;
+                font-size: 1.6em;
+                vertical-align: -0.1em;
+              "
+           th:if="${customer.enabled}"
+           class="fa-solid fa-check text-success"
+           th:href="@{'/api/v1/customers/' + ${customer.id} + '/enabled/false'}"
+        ></a>
+        <a
+           style="
+                text-decoration: none;
+                font-size: 1.8em;
+                vertical-align: -0.1em;
+              "
+           th:unless="${customer.enabled}"
+           class="fa-solid fa-xmark text-danger m-1"
+           th:href="@{'/api/v1/customers/' + ${customer.id} + '/enabled/true'}"
+        ></a>
+        <a
+           style="text-decoration: none; font-size: 1.5em"
+           class="fa-solid fa-pen text-success"
+           th:href="@{'/api/v1/customers/edit/' + ${customer.id}}"
+           th:userId="${customer.id}"
+           title="Edit this customer"
+        ></a>
+        <a
+           style="text-decoration: none; font-size: 1.5em"
+           class="fa-solid fa-trash-can text-secondary"
+           th:href="@{'/api/v1/customers/delete/' + ${customer.id}}"
+           data-bs-toggle="modal"
+           data-bs-target="#confirmModal"
+           onclick="showModalConfirmationDialog($(this), 'customer', $(this).attr('customerId'))"
+           th:customerId="${customer.id}"
+           title="Delete this customer"
+        ></a>
+      </div>
+    </div>
+    <div>&nbsp;&nbsp;</div>
+  </div>
+</div>
+
+<!-- pagination bar -->
+<br>
+<div th:replace="~{fragments :: pagination_bar('customers', 'Customers')}"></div>
+
+<!-- custom model for checking email window -->
+<div class="modal fade" id="confirmModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Confirmation</h4>
+        <button
+           id="modalCancelBtnX"
+           type="button"
+           class="btn-close"
+           data-bs-dismiss="modal"
+           aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <p id="modalBody"></p>
+      </div>
+
+      <div class="modal-footer">
+        <a id="yesBtn" class="btn btn-success" href="">Yes</a>
+        <button
+           id="ConfirmationBtn"
+           type="button"
+           class="btn btn-danger"
+           data-bs-dismiss="modal"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="detailModal">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+
+<br/>
+<div th:replace="~{fragments :: footer()}"></div>
+
+<script>
+      const moduleURL = "[[@{/api/v1/customers}]]";
+</script>
+<script type="text/javascript" th:src="@{/scripts/common.js}"></script>
+<script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>
+<script
+   type="text/javascript"
+   th:src="@{/scripts/showModalConfirmationDialog.js}"
+></script>
+</body>
+</html>

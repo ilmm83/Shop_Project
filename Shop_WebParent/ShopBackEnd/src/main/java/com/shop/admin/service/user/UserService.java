@@ -39,7 +39,6 @@ public class UserService {
     }
 
     public Page<User> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
-
         Sort sort = Sort.by(sortField);
         if (sortField.equals("roles") && keyword != null) // ! 
             sort = Sort.by("firstName");

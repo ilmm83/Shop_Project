@@ -69,7 +69,7 @@ public class CategoryController {
             category.setImage(fileName);
 
             var saved = service.save(category);
-            var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images\\" + saved.getId();
+            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images\\" + saved.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipart);
 
         } else

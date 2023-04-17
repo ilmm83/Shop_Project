@@ -11,19 +11,19 @@ public class MvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/resources/**");
 
-    var pathToCategoriesImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images";
+    var pathToCategoriesImages = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images";
     exposeDirectory(pathToCategoriesImages, "categories-images", registry);
 
-    var pathToBrandsImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images";
+    var pathToBrandsImages = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images";
     exposeDirectory(pathToBrandsImages, "brands-images", registry);
 
-    var pathToProductImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images";
+    var pathToProductImages = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images";
     exposeDirectory(pathToProductImages, "product-images", registry);
 
-    var pathToProductExtraImages = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\extras";
+    var pathToProductExtraImages = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\extras";
     exposeDirectory(pathToProductExtraImages, "extras", registry);
 
-    var pathToSiteLogo = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\site-logo";
+    var pathToSiteLogo = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\site-logo";
     exposeDirectory(pathToSiteLogo, "site-logo", registry);
   }
 

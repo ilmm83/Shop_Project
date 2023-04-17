@@ -1,4 +1,3 @@
-
 function showDetailsModal(link) {
   const modal = $("#detailModal");
   const cancelBtn = $("#closeDetailModal");

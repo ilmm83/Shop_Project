@@ -170,7 +170,7 @@ public class ProductController {
   public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
     try {
       productService.deleteProduct(id);
-      var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + id;
+      var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + id;
       FileUtils.deleteQuietly(new File(uploadDir));
 
       attributes.addFlashAttribute("message", "The product with ID: " + id + " has been deleted successfully.");

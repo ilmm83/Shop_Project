@@ -20,3 +20,24 @@
     });
     return false;
   }
+
+function checkCustomerEmailUnique(form) {
+    const url = contextPath + "/check_email";
+    const email = $("#email").val();
+    const csrfValue = $("input[name='_csrf']").val();
+    const id = $('#id').val();
+    const params = {id: id, email: email, _csrf: csrfValue};
+
+    $.post(url, params, (response) => {
+      if (response === "OK") {
+        form.submit();
+      } else if (response === "Duplicated") {
+        showModalDialog("Warning", "There is another user having the email : " + email)
+      } else {
+        showModalDialog("Error", "Unknown response from server!")
+      }
+    }).fail(() => {
+        showModalDialog("Error", "Could not connect to the server!")
+    });
+    return false;
+ }

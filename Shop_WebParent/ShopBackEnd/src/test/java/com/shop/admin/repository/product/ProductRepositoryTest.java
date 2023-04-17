@@ -20,7 +20,7 @@ import com.shop.model.Product;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@Rollback(true)
+@Rollback(false)
 public class ProductRepositoryTest {
 
     @Autowired
@@ -91,11 +91,11 @@ public class ProductRepositoryTest {
 
     @Test
     void canSaveProductWithDetails() {
-        var product = repository.findById(3L).get();
+        var product = repository.findById(1L).get();
         product.addDetail("Device Memory", "128 GB");
 
         var saved = repository.save(product).get();
 
-        assertThat(saved.getDetails().size()).isEqualTo(8);
+        assertThat(saved.getDetails().size()).isEqualTo(2);
     }
 }

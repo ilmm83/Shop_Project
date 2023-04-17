@@ -93,7 +93,7 @@ public class ProductService {
   @Transactional
   public void removeImage(Long productId, String fileName) {
     repository.removeImageByProductId(productId, fileName);
-    var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId
+    var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId
         + "\\extras\\" + fileName;
     FileUtils.deleteQuietly(new File(uploadDir));
   }

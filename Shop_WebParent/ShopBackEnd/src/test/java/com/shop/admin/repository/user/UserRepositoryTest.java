@@ -12,11 +12,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.shop.model.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = NONE)
-@Rollback(true)
+@Rollback(value = false)
 class UserRepositoryTest {
 
     @Autowired
@@ -24,6 +26,9 @@ class UserRepositoryTest {
 
     @Autowired
     private RoleRepository roleRepository;
+
+
+    private PasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @BeforeEach
     void beforeEach() {
@@ -48,23 +53,19 @@ class UserRepositoryTest {
 
     @Test
     public void canCreateUser() {
-        var editor = roleRepository.findById(3L).get();
-        var assistant = roleRepository.findById(5L).get();
-
-        var roles = Set.of(editor, assistant);
+        var admin = roleRepository.findById(1L).get();
+        var roles = Set.of(admin);
 
         User user = User.builder()
-                .email("user2@gmail.com")
+                .email("redsantosph@gmail.com")
                 .roles(roles)
-                .firstName("first name 2")
-                .lastName("last name 2")
+                .firstName("First Name")
+                .lastName("Last Name")
                 .enabled(true)
-                .password("password2")
-                .photos("photo")
+                .password(encoder.encode("12345678"))
+                .photos("")
                 .build();
 
-        roleRepository.save(editor);
-        roleRepository.save(assistant);
         User saved = userRepository.save(user);
         assertThat(saved).isEqualTo(user);
     }

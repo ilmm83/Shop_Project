@@ -76,7 +76,7 @@ public class BrandController {
             var saved = brandService.save(brand)
                      .orElseThrow(() -> new BrandNotFoundException("Brand was not saved."));
 
-            var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
+            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipart);
         } else
             brandService.save(brand);
@@ -105,7 +105,7 @@ public class BrandController {
     public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             brandService.deleteById(id);
-            var uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
+            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
             FileUploadUtil.folderCleaner(Path.of(uploadDir));
             attributes.addFlashAttribute("message", "The brand with ID: " + id + " has been deleted successfully!");
         } catch (BrandNotFoundException e) {

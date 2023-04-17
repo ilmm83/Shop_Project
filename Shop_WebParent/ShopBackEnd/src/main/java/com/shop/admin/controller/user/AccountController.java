@@ -49,7 +49,7 @@ public class AccountController {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             user.setPhotos(fileName);
             User saved = service.updateUserAccount(user);
-            String uploadDir = "F:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\ShopBackEnd\\src\\main\\resources\\static\\images\\user-images\\"
+            String uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\ShopBackEnd\\src\\main\\resources\\static\\images\\user-images\\"
                     + saved.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, file);
         } else {

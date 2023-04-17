@@ -20,7 +20,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = NONE)
-@Rollback
+@Rollback()
 class StateRepositoryTest {
 
     @Autowired

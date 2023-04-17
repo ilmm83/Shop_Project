@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = NONE)
-@Rollback(true)
+@Rollback()
 @Slf4j
 public class CategoryRepositoryTest {
 
@@ -77,7 +77,7 @@ public class CategoryRepositoryTest {
   }
 
   @Test
-  public void canPrintHierachicalCategories() {
+  public void canPrintHierarchicalCategories() {
     Iterable<Category> categories = repository.findAll();
 
     for (Category cat : categories) {
@@ -92,10 +92,10 @@ public class CategoryRepositoryTest {
   }
 
   private void printChildren(Category parent) {
-    Set<Category> children = parent.getChildren();
-    String dashes = "--";
+    var children = parent.getChildren();
+    var dashes = new StringBuilder("--");
     for (Category sub : children) {
-      for (int i = 0; i < children.size(); i++) dashes += "--";
+      dashes.append("--".repeat(children.size()));
       log.info(dashes + sub.getName());
       printChildren(sub);
       children.remove(sub);
