@@ -3,14 +3,13 @@ package com.shop.admin.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.shop.admin.paging.PagingAndSortingHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shop.admin.category.CategoryNotFoundException;
-import com.shop.admin.category.CategoryRepository;
 import com.shop.model.Category;
 
 import lombok.RequiredArgsConstructor;
@@ -20,13 +19,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository repository;
 
     public static final int PAGE_SIZE = 4;
 
-    public List<Category> listCategoriesHierarchal() {
+    public List<Category> listCategoriesHierarchical() {
         var catToForm = new ArrayList<Category>();
-        var catFromDB = categoryRepository.findAll(Sort.by("name").ascending());
+        var catFromDB = repository.findAll(Sort.by("name").ascending());
 
         for (var category : catFromDB) {
             if (category.getParent() == null) {
@@ -40,21 +39,13 @@ public class CategoryService {
         return catToForm;
     }
 
-    public Page<Category> findAllCategoriesSortedBy(String keyword, int pageNum, String field, String direction) {
-        Sort sort = Sort.by(field);
-        sort = direction.equals("asc") ? sort.ascending() : sort.descending();
-
-        PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-
-        if (keyword != null)
-            return categoryRepository.findAll(keyword, pageable);
-        else
-            return categoryRepository.findAll(pageable);
+    public void findAllCategoriesSortedBy(int pageNum, PagingAndSortingHelper helper) {
+        helper.searchEntities(pageNum, PAGE_SIZE, repository);
     }
 
     public List<Category> findAllCategoriesSortedByName() {
         Sort sort = Sort.by("name").ascending();
-        return (List<Category>) categoryRepository.findAll(sort);
+        return (List<Category>) repository.findAll(sort);
     }
 
     public Page<Category> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
@@ -64,13 +55,13 @@ public class CategoryService {
         PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
 
         if (keyword != null)
-            return categoryRepository.findAll(keyword, pageable);
+            return repository.findAll(keyword, pageable);
         else
-            return categoryRepository.findAll(pageable);
+            return repository.findAll(pageable);
     }
 
-    public Category findById(Long id) throws CategoryNotFoundException {
-        return categoryRepository.findById(id)
+    public Category findById(Long id)  {
+        return repository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
     }
 
@@ -78,33 +69,33 @@ public class CategoryService {
     public Category save(Category catFromForm) {
         var parentProxy = catFromForm.getParent();
         if (parentProxy != null) {
-            var parent = categoryRepository.findById(parentProxy.getId()).get();
+            var parent = repository.findById(parentProxy.getId()).get();
             var allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
             allParentIds += String.valueOf(parent.getId()) + "-";
             catFromForm.setAllParentIDs(allParentIds);
         }
 
-        return categoryRepository.save(catFromForm);
+        return repository.save(catFromForm);
     }
 
     @Transactional
-    public void delete(Long id) throws CategoryNotFoundException {
-        categoryRepository.countById(id)
+    public void delete(Long id)  {
+        repository.countById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
-        categoryRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Transactional
     public void changeEnableState(Long id, boolean isEnabled) {
-        categoryRepository.updateEnabledStatus(id, isEnabled);
+        repository.updateEnabledStatus(id, isEnabled);
     }
 
     public List<Category> findAll() {
-        return (List<Category>) categoryRepository.findAll();
+        return (List<Category>) repository.findAll();
     }
 
     public String checkNameAndAliasUnique(Long id, String name, String alias) {
-        var categories = categoryRepository.findByNameAndAlias(name, alias);
+        var categories = repository.findByNameAndAlias(name, alias);
         var response = "OK";
 
         for (var cat : categories) {

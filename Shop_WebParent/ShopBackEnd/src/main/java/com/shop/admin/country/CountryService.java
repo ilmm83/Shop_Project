@@ -32,7 +32,7 @@ public class CountryService {
     }
 
     @Transactional
-    public Integer update(Integer id, Country country) throws CountryNotFoundException {
+    public Integer update(Integer id, Country country)  {
         var found = repository.findById(id).orElseThrow(() -> new CountryNotFoundException("Could not found a country with ID: " + id));
         found.setName(country.getName());
         found.setCode(country.getCode());

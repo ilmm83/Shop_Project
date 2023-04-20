@@ -25,7 +25,7 @@ public class ProductService {
         return repository.listByCategory(categoryId, categoryIDMatch, pageable);
     }
 
-    public Product getProductByAlias(String alias) throws ProductNotFoundException {
+    public Product getProductByAlias(String alias)  {
         return repository.findByAlias(alias)
                 .orElseThrow(() -> new ProductNotFoundException("Could not find a product with alias: " + alias));
     }

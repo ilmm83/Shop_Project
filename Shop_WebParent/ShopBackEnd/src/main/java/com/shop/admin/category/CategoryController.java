@@ -2,8 +2,8 @@ package com.shop.admin.category;
 
 import java.io.IOException;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.paging.PagingAndSortingParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -32,28 +32,24 @@ public class CategoryController {
     private final CategoryService service;
 
     @GetMapping
-    public String categories(Model model) {
-        Page<Category> page = service.findAllCategoriesSortedBy(null, 1, "name", "asc");
-        changingDisplayCategoriesPage(1, model, page, "name", "asc", null);
-
-        return "categories/categories";
+    public String viewCategories() {
+        return "redirect:/api/v1/categories/1?sortField=id&sortDir=asc";
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
-                             @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
-
-        Page<Category> page = service.findAllCategoriesSortedBy(keyword, pageNum, sortField, sortDir);
-        changingDisplayCategoriesPage(pageNum, model, page, sortField, sortDir, keyword);
+    public String listByPage(@PagingAndSortingParam(listName = "categories", moduleURL = "/api/v1/categories") PagingAndSortingHelper helper,
+                             @PathVariable int pageNum) {
+        service.findAllCategoriesSortedBy(pageNum, helper);
         return "categories/categories";
     }
 
     @GetMapping("/new")
-    public String createCategoryForm(Model model) {
+    public String viewCategoryForm(Model model) {
 
-        model.addAttribute("categories", service.listCategoriesHierarchal());
+        model.addAttribute("categories", service.listCategoriesHierarchical());
         model.addAttribute("categoryDTO", new CategoryDTO());
         model.addAttribute("category", new Category());
+        model.addAttribute("moduleURL", "/api/v1/categories");
         return "categories/categories_form";
     }
 
@@ -77,8 +73,8 @@ public class CategoryController {
         return REDIRECT_API_V1_CATEGORIES;
     }
 
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") long id, RedirectAttributes attributes) {
+    @GetMapping("/delete/{id}")
+    public String deleteCategory(@PathVariable("id") long id, RedirectAttributes attributes) {
         try {
             service.delete(id);
             attributes.addFlashAttribute("message", "The category with ID: " + id + " has been deleted successfully!");
@@ -89,14 +85,15 @@ public class CategoryController {
         return REDIRECT_API_V1_CATEGORIES;
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var category = service.findById(id);
 
-            model.addAttribute("categories", service.listCategoriesHierarchal());
+            model.addAttribute("categories", service.listCategoriesHierarchical());
             model.addAttribute("categoryDTO", convertToCategoryDTO(category));
             model.addAttribute("category", category);
+            model.addAttribute("moduleURL", "/api/v1/categories");
 
         } catch (CategoryNotFoundException e) {
             attributes.addFlashAttribute("message", e.getMessage());
@@ -106,7 +103,7 @@ public class CategoryController {
         return "categories/categories_form";
     }
 
-    @GetMapping("enabled/true/{id}")
+    @GetMapping("/enabled/true/{id}")
     public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Enabled.");
         service.changeEnableState(id, true);
@@ -151,21 +148,5 @@ public class CategoryController {
         dto.setAllParentIDs(category.getAllParentIDs());
 
         return dto;
-    }
-
-    private void changingDisplayCategoriesPage(int pageNum, Model model, Page<Category> page, String sortField,
-                                               String sortDir,
-                                               String keyword) {
-
-        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("categories", page.getContent());
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("reverseSortOrder", reverseSortOrder);
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("lastPage", (page.getTotalElements() / CategoryService.PAGE_SIZE) + 1);
-        model.addAttribute("totalPages", page.getTotalElements());
     }
 }

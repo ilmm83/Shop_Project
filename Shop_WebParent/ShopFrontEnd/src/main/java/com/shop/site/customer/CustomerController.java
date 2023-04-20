@@ -36,15 +36,12 @@ public class CustomerController {
 
     @GetMapping("/verify")
     public String verifyAccount(@Param("code") String code, Model model) {
-        var answer = customerService.checkVerificationCode(code);
-
-        if (answer) return "customers/verify_success";
-        else return "customers/verify_fail";
+        return customerService.checkVerificationCode(code) ? "customers/verify_success" : "customers/verify_fail";
     }
 
     @PostMapping("customers/save")
     public String registerCustomer(Customer customer, HttpServletRequest request, Model model) throws MessagingException, UnsupportedEncodingException {
-        customerService.registerCustomer(customer);
+        customerService.save(customer);
         sendVerificationEmail(request, customer);
 
         model.addAttribute("pageTitle", "Registration Succeeded!");

@@ -27,7 +27,7 @@ public class StateService {
     }
 
     @Transactional
-    public Integer update(Integer id, State state) throws StateNotFoundException {
+    public Integer update(Integer id, State state)  {
         var found = repository.findById(id)
                 .orElseThrow(() -> new StateNotFoundException("Could not find state by ID: " + id));
 

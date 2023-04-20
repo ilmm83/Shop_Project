@@ -1,5 +1,7 @@
 package com.shop.admin.customer;
 
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.utils.exporter.customer.CustomerCSVExporter;
 import com.shop.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,18 +26,14 @@ public class CustomerController {
 
 
     @GetMapping
-    public String viewFirstPage(Model model) {
-        var page = customerService.listByPage(1, "id", "asc", null);
-        changingDisplayUsersPage(1, model, page, "id", "asc", null);
-        return "customers/customers";
+    public String viewFirstPage() {
+        return "redirect:/api/v1/customers/1?sortField=id&sortDir=asc";
     }
 
-    @GetMapping("/{page_num}")
-    public String viewByPage(@PathVariable int page_num, @Param("sortField") String sortField,
-                             @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
-
-        var page = customerService.listByPage(page_num, sortField, sortDir, keyword);
-        changingDisplayUsersPage(page_num, model, page, sortField, sortDir, keyword);
+    @GetMapping("/{pageNum}")
+    public String viewByPage(@PagingAndSortingParam(listName = "customers", moduleURL = "/api/v1/customers") PagingAndSortingHelper helper,
+                             @PathVariable int pageNum) {
+        customerService.listByPage(pageNum, helper);
         return "customers/customers";
     }
 
@@ -75,28 +73,24 @@ public class CustomerController {
 
         model.addAttribute("customer", found);
         model.addAttribute("pageTitle", "Edit Customer");
+        model.addAttribute("moduleURL", "/api/v1/customers");
         return "customers/customer_edit_form";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteCustomerById(@PathVariable long id, Model model) {
+        try {
+            customerService.deleteById(id);
+            model.addAttribute("message", "The customer with ID: " + id + " has deleted successfully.");
+        } catch (CustomerNotFoundException e) {
+            model.addAttribute("message", "The customer with ID: " + id + " does not exist.");
+        }
+        return "redirect:/api/v1/customers";
     }
 
     @PostMapping("/update")
     public String updateCustomer(Customer customer) {
         customerService.updateCustomer(customer);
-
         return "redirect:/api/v1/customers";
-    }
-
-
-    private void changingDisplayUsersPage(int pageNum, Model model, Page<Customer> page,
-                                          String sortField, String sortDir, String keyword) {
-
-        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("customers", page.getContent());
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("reverseSortOrder", reverseSortOrder);
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("lastPage", (page.getTotalElements() / CustomerService.PAGE_SIZE) + 1);
-        model.addAttribute("totalPages", page.getTotalElements());
     }
 }

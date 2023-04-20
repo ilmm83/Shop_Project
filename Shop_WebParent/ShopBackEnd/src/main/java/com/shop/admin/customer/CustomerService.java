@@ -1,7 +1,6 @@
 package com.shop.admin.customer;
 
-import com.shop.admin.customer.CustomerNotFoundException;
-import com.shop.admin.customer.CustomerRepository;
+import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,15 +23,8 @@ public class CustomerService {
     public static final int PAGE_SIZE = 10;
 
 
-    public Page<Customer> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
-        var sort = Sort.by(sortField);
-        sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-        var pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-
-        if (keyword != null)
-            return repository.findAll(keyword, pageable);
-        else
-            return repository.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.searchEntities(pageNum, PAGE_SIZE, repository);
     }
 
     public List<Customer> findAllUsersSortedByFirstName() {
@@ -71,8 +63,17 @@ public class CustomerService {
         found.setCity(customer.getCity());
         found.setCountry(customer.getCountry());
         found.setState(customer.getState());
+        found.setVerificationCode(customer.getVerificationCode());
+        found.setCreatedAt(customer.getCreatedAt());
+        found.setEnabled(customer.isEnabled());
 
         repository.save(found);
     }
 
+    @Transactional
+    public void deleteById(long id) {
+        repository.countById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
+        repository.deleteById(id);
+    }
 }

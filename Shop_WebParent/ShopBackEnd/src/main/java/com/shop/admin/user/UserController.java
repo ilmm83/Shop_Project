@@ -2,6 +2,8 @@ package com.shop.admin.user;
 
 import java.io.IOException;
 
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.paging.PagingAndSortingParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -34,50 +36,47 @@ public class UserController {
     private static final String REDIRECT_API_V1_USERS = "redirect:/api/v1/users";
 
     @GetMapping
-    public String listFirstPage(Model model) {
-        Page<User> page = service.listByPage(1, "id", "asc", null);
-        changingDisplayUsersPage(1, model, page, "id", "asc", null);
-        return "users/users";
+    public String listFirstPage() {
+        return "redirect:/api/v1/users/1?sortField=id&sortDir=asc";
     }
 
     @GetMapping("/export/csv")
     public void exportToCSV(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedByFirstName();
-        UserCsvExporter exporter = new UserCsvExporter();
+        var exporter = new UserCsvExporter();
         exporter.export(users, response);
     }
 
     @GetMapping("/export/excel")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedByFirstName();
-        UserExcelExporter exporter = new UserExcelExporter();
+        var exporter = new UserExcelExporter();
         exporter.export(users, response);
     }
 
     @GetMapping("/export/pdf")
     public void exportToPDF(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedById();
-        UserPDFExporter exporter = new UserPDFExporter();
+        var exporter = new UserPDFExporter();
         exporter.export(users, response);
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
-            @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
-
-        Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
-        changingDisplayUsersPage(pageNum, model, page, sortField, sortDir, keyword);
+    public String listByPage(@PagingAndSortingParam(listName = "users", moduleURL = "/api/v1/users") PagingAndSortingHelper helper,
+                             @PathVariable int pageNum) {
+        service.listByPage(pageNum, helper);
         return "users/users";
     }
 
     @GetMapping("/new")
-    public String signIn(Model model) {
+    public String viewUserFormPage(Model model) {
         User user = new User();
         user.setEnabled(true);
 
         model.addAttribute("roles", service.findAllRoles());
         model.addAttribute("user", user);
         model.addAttribute("pageTitle", "Create New User");
+        model.addAttribute("moduleURL", "/api/v1/users");
         return "users/user_form";
     }
 
@@ -110,6 +109,7 @@ public class UserController {
             model.addAttribute("user", service.findById(id));
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
             model.addAttribute("roles", service.findAllRoles());
+            model.addAttribute("moduleURL", "/api/v1/users");
             return "users/user_form";
         } catch (UserNotFoundException e) {
             e.printStackTrace();
@@ -141,19 +141,5 @@ public class UserController {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
         service.changeEnableState(id, false);
         return REDIRECT_API_V1_USERS;
-    }
-
-    private void changingDisplayUsersPage(int pageNum, Model model, Page<User> page, String sortField, String sortDir,
-            String keyword) {
-
-        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("users", page.getContent());
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("reverseSortOrder", reverseSortOrder);
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("lastPage", (page.getTotalElements() / UserService.PAGE_SIZE) + 1);
-        model.addAttribute("totalPages", page.getTotalElements());
     }
 }

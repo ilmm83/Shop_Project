@@ -27,7 +27,7 @@ public class CategoryService {
         return noChildren;
     }
 
-    public Category getCategoryByAlias(String alias) throws CategoryNotFoundException {
+    public Category getCategoryByAlias(String alias)  {
         return repository.findByAliasEnabled(alias)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find a category with alias: " + alias));
     }

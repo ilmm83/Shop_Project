@@ -34,6 +34,7 @@ public class SettingController {
     public String viewAllSettings(Model model) {
         model.addAttribute("currencies", currencyService.findAllByOrderByIdAsc());
         model.addAttribute("countries", countryService.listAllCountriesOrderByNameAsc());
+        model.addAttribute("moduleURL", "/api/v1/settings");
 
 
         settingService.findAllSettings()

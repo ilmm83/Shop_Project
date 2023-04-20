@@ -3,6 +3,7 @@ package com.shop.admin.user;
 import java.util.List;
 import java.util.Optional;
 
+import com.shop.admin.paging.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.shop.model.User;
 
 @Repository
-public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+public interface UserRepository extends SearchRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
@@ -30,8 +31,4 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     void deleteById(Long id);
 
     List<User> findAll();
-
-    @Query("SELECT u FROM User u WHERE CONCAT(u.id, ' ', u.firstName, ' ', u.lastName, ' ', u.email) LIKE %?1%")
-    Page<User> findAll(String keyword, Pageable pageable);
-    
 }

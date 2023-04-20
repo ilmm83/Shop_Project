@@ -2,6 +2,7 @@ package com.shop.admin.product;
 
 import java.util.Optional;
 
+import com.shop.admin.paging.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.shop.model.Product;
 
 @Repository
-public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
+public interface ProductRepository extends SearchRepository<Product, Long> {
     
   Optional<Product> save(Product product);
 
@@ -27,9 +28,6 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
   java.lang.Iterable<Product> findAll();
 
   Optional<Long> countById(Long id);
-
-  @Query("SELECT p FROM Product p WHERE CONCAT(p.id, ' ', p.name) LIKE %?1%")
-  Page<Product> findAll(String keyword, Pageable pageable);
 
   @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% OR p.alias LIKE %?2%")
   java.lang.Iterable<Product> findByNameAndAlias(String name, String alias);

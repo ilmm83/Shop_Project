@@ -5,7 +5,7 @@
    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
 <head
-   th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
+   th:replace="~{fragments :: html_head('Control Panel - Shop Admin', 'none')}"
 ></head>
 
 <body>
@@ -30,14 +30,14 @@
          class="fa-solid fa-user-plus fa-2x text-secondary mt-2"
          style="text-decoration: none"
          title="Create new Product"
-         th:href="@{/api/v1/products/new}"
+         th:href="@{${moduleURL} + '/new'}"
       ></a>
       &nbsp;&nbsp;
       <a
          class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
          style="text-decoration: none"
          title="Export to CSV"
-         th:href="@{/api/v1/products/export/csv}"
+         th:href="@{${moduleURL} + '/export/csv'}"
       ></a>
     </th:block>
   </div>
@@ -46,7 +46,7 @@
   <form
      id="searchForm"
      class="row g-3 mt-2 container-fluid ps-3"
-     th:action="@{/api/v1/products/1}"
+     th:action="@{${moduleURL} + '/1'}"
   >
     <input type="hidden" name="sortField" th:value="${sortField}"/>
     <input type="hidden" name="sortDir" th:value="${sortDir}"/>
@@ -171,7 +171,7 @@
         <td class="text-center">
           <span
              class="fas fa-file-alt fa-2x text-success"
-             th:href="@{'/api/v1/products/detail/' + ${product.id}}"
+             th:href="@{${moduleURL} + '/detail/' + ${product.id}}"
              title="View details of this product"
              onclick="showDetailsModal($(this).attr('href'))"
              data-bs-toggle="modal"
@@ -286,7 +286,7 @@
 <div th:replace="~{fragments :: footer()}"></div>
 
 <script>
-      moduleURL = "[[@{/api/v1/products}]]";
+      moduleURL = "[[@{${moduleURL}}]]";
 </script>
 <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
 <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>

@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.paging.PagingAndSortingParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shop.admin.category.CategoryNotFoundException;
 import com.shop.admin.category.CategoryService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.dto.BrandDTO;
@@ -34,37 +33,33 @@ import lombok.RequiredArgsConstructor;
 public class BrandController {
 
     private final BrandService brandService;
-    private final CategoryService catService;
+    private final CategoryService categoryService;
     private static final String REDIRECT_API_V1_BRANDS = "redirect:/api/v1/brands";
 
     @GetMapping
-    public String brandsPage(Model model) {
-        Page<Brand> page = brandService.findAllBrandsSortedBy(null, 1, "name", "asc");
-        changingDisplayBrandsPage(1, model, page, "name", "asc", null);
-
-        return "brands/brands";
+    public String brandsPage() {
+        return "redirect:/api/v1/brands/1?sortField=id&sortDir=asc";
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PathVariable("pageNum") int pageNum, @Param("sortField") String sortField,
-            @Param("sortDir") String sortDir, @Param("keyword") String keyword, Model model) {
-
-        Page<Brand> page = brandService.findAllBrandsSortedBy(keyword, pageNum, sortField, sortDir);
-        changingDisplayBrandsPage(pageNum, model, page, sortField, sortDir, keyword);
+    public String listByPage(@PagingAndSortingParam(listName = "brands", moduleURL = "/api/v1/brands")PagingAndSortingHelper helper,
+                             @PathVariable int pageNum) {
+        brandService.findAllBrandsSortedBy(pageNum, helper);
         return "brands/brands";
     }
 
     @GetMapping("/new")
     public String newBrandCreationPage(Model model) {
-        model.addAttribute("categories", catService.listCategoriesHierarchal());
+        model.addAttribute("categories", categoryService.listCategoriesHierarchical());
         model.addAttribute("brandDTO", new BrandDTO());
+        model.addAttribute("moduleURL", "/api/v1/brands");
 
         return "brands/brands_form";
     }
 
     @PostMapping("/new")
     public String createNewBrand(BrandDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
-            RedirectAttributes attributes) throws IOException, CategoryNotFoundException, BrandNotFoundException {
+            RedirectAttributes attributes) throws IOException {
 
         var brand = convertToBrand(dto);
         if (!multipart.isEmpty()) {
@@ -84,13 +79,13 @@ public class BrandController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes)
-            throws BrandNotFoundException {
+    public String viewEditPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var brand = brandService.findById(id);
 
             model.addAttribute("brandDTO", convertToBrandDTO(brand));
-            model.addAttribute("categories", catService.listCategoriesHierarchal());
+            model.addAttribute("categories", categoryService.listCategoriesHierarchical());
+            model.addAttribute("moduleURL", "/api/v1/brands");
         } catch (BrandNotFoundException e) {
             e.printStackTrace();
             throw new BrandNotFoundException(e.getMessage());
@@ -100,7 +95,7 @@ public class BrandController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    public String deleteBrand(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             brandService.deleteById(id);
             var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
@@ -113,28 +108,13 @@ public class BrandController {
         return REDIRECT_API_V1_BRANDS;
     }
 
-    private void changingDisplayBrandsPage(int pageNum, Model model, Page<Brand> page, String sortField, String sortDir,
-            String keyword) {
-
-        String reverseSortOrder = sortDir.equals("asc") ? "desc" : "asc";
-
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("brands", page.getContent());
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("reverseSortOrder", reverseSortOrder);
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("lastPage", (page.getTotalElements() / BrandService.PAGE_SIZE) + 1);
-        model.addAttribute("totalPages", page.getTotalElements());
-    }
-
-    private Brand convertToBrand(BrandDTO dto) throws CategoryNotFoundException {
+    private Brand convertToBrand(BrandDTO dto) {
         var brand = new Brand();
         var categories = new HashSet<Category>();
         for (var id : dto.getParentIds()) {
             if (id == 0)
                 continue;
-            var cat = catService.findById(id);
+            var cat = categoryService.findById(id);
             if (cat != null)
                 categories.add(cat);
         }

@@ -1,9 +1,9 @@
 package com.shop.admin.user;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.model.Role;
+import com.shop.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,13 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shop.admin.user.UserNotFoundException;
-import com.shop.admin.user.RoleRepository;
-import com.shop.admin.user.UserRepository;
-import com.shop.model.Role;
-import com.shop.model.User;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,22 +34,11 @@ public class UserService {
         return (List<User>) userRepository.findAll(Sort.by("id").ascending());
     }
 
-    public Page<User> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
-        Sort sort = Sort.by(sortField);
-        if (sortField.equals("roles") && keyword != null) // ! 
-            sort = Sort.by("firstName");
-
-        sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-
-        PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-
-        if (keyword != null)
-            return userRepository.findAll(keyword, pageable);
-        else
-            return userRepository.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.searchEntities(pageNum, PAGE_SIZE, userRepository);
     }
 
-    public User findById(Long id) throws UserNotFoundException {
+    public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
     }
@@ -62,7 +47,7 @@ public class UserService {
         return roleRepository.findAll();
     }
 
-    public User getByEmail(String email) throws UserNotFoundException {
+    public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Could not find the user with email " + email));
     }
@@ -113,7 +98,7 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(Long id) throws UserNotFoundException {
+    public void delete(Long id) {
         userRepository.countById(id)
                 .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
         userRepository.deleteById(id);

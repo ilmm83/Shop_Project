@@ -1,8 +1,12 @@
 package com.shop.admin.config;
 
+import com.shop.admin.paging.PagingAndSortingArgumentResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
@@ -25,6 +29,11 @@ public class MvcConfig implements WebMvcConfigurer {
 
     var pathToSiteLogo = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\site-logo";
     exposeDirectory(pathToSiteLogo, "site-logo", registry);
+  }
+
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(new PagingAndSortingArgumentResolver());
   }
 
   private void exposeDirectory(String fullPath, String folderName, ResourceHandlerRegistry registry) {

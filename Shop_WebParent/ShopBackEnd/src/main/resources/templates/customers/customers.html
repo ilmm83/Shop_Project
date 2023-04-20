@@ -5,7 +5,7 @@
    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
 <head
-   th:replace="~{fragments :: html_head('Conrol Panel - Shop Admin', 'none')}"
+   th:replace="~{fragments :: html_head('Control Panel - Shop Admin', 'none')}"
 ></head>
 
 <body>
@@ -29,14 +29,14 @@
        class="fa-solid fa-file-csv fa-2x text-secondary mt-2"
        style="text-decoration: none"
        title="Export to CSV"
-       th:href="@{/api/v1/customers/export/csv}"
+       th:href="@{${moduleURL}  + '/export/csv'}"
     ></a>
   </div>
 
   <!-- Filter bar -->
   <form
      class="row g-3 mt-2 container-fluid ps-3"
-     th:action="@{/api/v1/customers/1}"
+     th:action="@{${moduleURL}  + '/1'}"
   >
     <input type="hidden" name="sortField" th:value="${sortField}"/>
     <input type="hidden" name="sortDir" th:value="${sortDir}"/>
@@ -130,7 +130,7 @@
         <td class="text-center">
           <span
              class="fas fa-file-alt fa-2x text-success"
-             th:href="@{'/api/v1/customers/detail/' + ${customer.id}}"
+             th:href="@{${moduleURL}  + '/detail/' + ${customer.id}}"
              title="View details of this customer"
              onclick="showDetailsModal($(this).attr('href'))"
              data-bs-toggle="modal"
@@ -165,7 +165,7 @@
               "
            th:if="${customer.enabled}"
            class="fa-solid fa-check text-success"
-           th:href="@{'/api/v1/customers/' + ${customer.id} + '/enabled/false'}"
+           th:href="@{${moduleURL}  + '/' + ${customer.id} + '/enabled/false'}"
         ></a>
         <a
            style="
@@ -175,19 +175,19 @@
               "
            th:unless="${customer.enabled}"
            class="fa-solid fa-xmark text-danger m-1"
-           th:href="@{'/api/v1/customers/' + ${customer.id} + '/enabled/true'}"
+           th:href="@{${moduleURL}  + '/' + ${customer.id} + '/enabled/true'}"
         ></a>
         <a
            style="text-decoration: none; font-size: 1.5em"
            class="fa-solid fa-pen text-success"
-           th:href="@{'/api/v1/customers/edit/' + ${customer.id}}"
+           th:href="@{${moduleURL}  + '/edit/' + ${customer.id}}"
            th:userId="${customer.id}"
            title="Edit this customer"
         ></a>
         <a
            style="text-decoration: none; font-size: 1.5em"
            class="fa-solid fa-trash-can text-secondary"
-           th:href="@{'/api/v1/customers/delete/' + ${customer.id}}"
+           th:href="@{${moduleURL}  + '/delete/' + ${customer.id}}"
            data-bs-toggle="modal"
            data-bs-target="#confirmModal"
            onclick="showModalConfirmationDialog($(this), 'customer', $(this).attr('customerId'))"
@@ -201,7 +201,6 @@
 </div>
 
 <!-- pagination bar -->
-<br>
 <div th:replace="~{fragments :: pagination_bar('customers', 'Customers')}"></div>
 
 <!-- custom model for checking email window -->
@@ -249,7 +248,7 @@
 <div th:replace="~{fragments :: footer()}"></div>
 
 <script>
-      const moduleURL = "[[@{/api/v1/customers}]]";
+      const moduleURL = "[[@{${moduleURL}}]]";
 </script>
 <script type="text/javascript" th:src="@{/scripts/common.js}"></script>
 <script type="text/javascript" th:src="@{/scripts/clearSearch.js}"></script>

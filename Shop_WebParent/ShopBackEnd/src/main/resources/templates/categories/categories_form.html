@@ -24,7 +24,7 @@
 
       <!-- Registration form -->
       <form
-        th:action="@{/api/v1/categories/new}"
+        th:action="@{${moduleURL}  + '/new'}"
         method="post"
         style="max-width: 500px; margin: 20px auto"
         th:object="${categoryDTO}"
@@ -150,7 +150,7 @@
     <div th:replace="~{fragments :: footer()}"></div>
 
     <script>
-      const moduleURL = "[[@{/api/v1/categories}]]";
+      const moduleURL = "[[@{${moduleURL}}]]";
     </script>
     <script type="text/javascript" th:src="@{/scripts/checkNameAndAliasUnique.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/common.js}"></script>

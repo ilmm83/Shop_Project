@@ -28,7 +28,7 @@ public class CountryRestController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Integer> update(@PathVariable Integer id, @RequestBody Country country) throws CountryNotFoundException {
+    public ResponseEntity<Integer> update(@PathVariable Integer id, @RequestBody Country country)  {
         return new ResponseEntity<>(service.update(id, country), HttpStatus.CREATED);
     }
 

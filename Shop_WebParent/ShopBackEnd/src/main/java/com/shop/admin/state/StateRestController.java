@@ -38,7 +38,6 @@ public class StateRestController {
         return new ResponseEntity<>(service.update(state_id, state), HttpStatus.OK);
     }
 
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Integer> delete(@PathVariable Integer id) {
         return new ResponseEntity<>(service.delete(id), HttpStatus.OK);

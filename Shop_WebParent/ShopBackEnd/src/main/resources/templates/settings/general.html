@@ -8,7 +8,7 @@
 </head>
 <body>
 <div th:fragment="content" th:remove="tag">
-  <form th:action="@{/api/v1/settings/save_general}" method="post"
+  <form th:action="@{${moduleURL}  + '/save_general'}" method="post"
         style="max-width: 650px; margin: 25px auto"
         enctype="multipart/form-data"
   >
@@ -126,7 +126,7 @@
         <a
             type="button"
             class="btn btn-secondary"
-            th:href="@{/api/v1/settings}"
+            th:href="@{${moduleURL}}"
         >Cancel</a>
       </div>
     </div>

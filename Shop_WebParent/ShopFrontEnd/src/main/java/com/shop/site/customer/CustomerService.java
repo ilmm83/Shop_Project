@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CustomerService {
 
@@ -33,20 +33,21 @@ public class CustomerService {
         else return Objects.equals(customer.get().getId(), id);
     }
 
-    public void registerCustomer(Customer customer) {
-        customer.setPassword(encoder.encode(customer.getPassword()));
-        customer.setEnabled(false);
-        customer.setCreatedAt(new Date());
-        customer.setVerificationCode(RandomString.make(32));
-
-        customerRepo.save(customer);
-    }
-
     public boolean checkVerificationCode(String code) {
        var customer = customerRepo.findByVerificationCode(code);
        if (customer.isEmpty() || customer.get().isEnabled()) return false;
 
        customerRepo.enable(customer.get().getId());
        return true;
+    }
+
+    @Transactional
+    public void save(Customer customer) {
+        customer.setPassword(encoder.encode(customer.getPassword()));
+        customer.setEnabled(false);
+        customer.setCreatedAt(new Date());
+        customer.setVerificationCode(RandomString.make(32));
+
+        customerRepo.save(customer);
     }
 }

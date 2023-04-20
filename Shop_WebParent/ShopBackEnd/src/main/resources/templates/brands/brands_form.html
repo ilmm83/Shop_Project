@@ -26,7 +26,7 @@
 
   <!-- Registration form -->
   <form
-      th:action="@{/api/v1/brands/new}"
+      th:action="@{${moduleURL}  + '/new'}"
       method="post"
       style="max-width: 550px; margin: 20px auto"
       th:object="${brandDTO}"
@@ -155,7 +155,7 @@
 <div th:replace="~{fragments :: footer()}"></div>
 
 <script>
-      const moduleURL = "[[@{/api/v1/brands}]]";
+      const moduleURL = "[[@{${moduleURL}}]]";
 
 </script>
 <script type="text/javascript" th:src="@{/scripts/checkName.js}"></script>
