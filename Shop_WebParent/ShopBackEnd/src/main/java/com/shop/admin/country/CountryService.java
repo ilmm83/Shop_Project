@@ -1,7 +1,5 @@
 package com.shop.admin.country;
 
-import com.shop.admin.country.CountryNotFoundException;
-import com.shop.admin.country.CountryRepository;
 import com.shop.model.Country;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

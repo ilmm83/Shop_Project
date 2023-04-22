@@ -11,7 +11,5 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 public class ShopBackEndApplication {
     public static void main(String[] args) {
         SpringApplication.run(ShopBackEndApplication.class, args);
-
-
     }
 }

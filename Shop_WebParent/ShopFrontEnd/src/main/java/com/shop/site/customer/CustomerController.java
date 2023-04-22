@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.UnsupportedEncodingException;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
     private final CustomerService customerService;
     private final SettingService settingService;
 
-
-    @GetMapping("customers/register")
+    @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("countries", customerService.listAllCountries());
         model.addAttribute("customer", new Customer());
@@ -34,12 +35,7 @@ public class CustomerController {
         return "customers/customer_form";
     }
 
-    @GetMapping("/verify")
-    public String verifyAccount(@Param("code") String code, Model model) {
-        return customerService.checkVerificationCode(code) ? "customers/verify_success" : "customers/verify_fail";
-    }
-
-    @PostMapping("customers/save")
+    @PostMapping("/save")
     public String registerCustomer(Customer customer, HttpServletRequest request, Model model) throws MessagingException, UnsupportedEncodingException {
         customerService.save(customer);
         sendVerificationEmail(request, customer);

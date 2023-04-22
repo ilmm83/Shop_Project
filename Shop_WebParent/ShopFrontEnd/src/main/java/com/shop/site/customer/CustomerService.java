@@ -1,7 +1,9 @@
 package com.shop.site.customer;
 
+import com.shop.model.AuthenticationType;
 import com.shop.model.Country;
 import com.shop.model.Customer;
+import com.shop.site.category.CategoryNotFoundException;
 import com.shop.site.country.CountryRepository;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
@@ -14,8 +16,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomerService {
 
     private final CustomerRepository customerRepo;
@@ -33,6 +35,12 @@ public class CustomerService {
         else return Objects.equals(customer.get().getId(), id);
     }
 
+    @Transactional
+    public void updateAuthenticationType(AuthenticationType type, Long id) {
+        customerRepo.updateAuthenticationType(type, id);
+    }
+
+    @Transactional
     public boolean checkVerificationCode(String code) {
        var customer = customerRepo.findByVerificationCode(code);
        if (customer.isEmpty() || customer.get().isEnabled()) return false;

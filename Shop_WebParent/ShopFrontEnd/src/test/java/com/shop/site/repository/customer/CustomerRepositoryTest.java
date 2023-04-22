@@ -1,14 +1,14 @@
 package com.shop.site.repository.customer;
 
+import com.shop.model.AuthenticationType;
 import com.shop.model.Country;
 import com.shop.model.Customer;
+import com.shop.site.BaseTest;
 import com.shop.site.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
@@ -16,16 +16,12 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
-@DataJpaTest(showSql = false)
+@Rollback(value = false)
 @AutoConfigureTestDatabase(replace = NONE)
-@Rollback
-class CustomerRepositoryTest {
+class CustomerRepositoryTest extends BaseTest {
 
     @Autowired
     private CustomerRepository repository;
-
-    @Autowired
-    private TestEntityManager em;
 
     private Customer customer;
 
@@ -36,7 +32,7 @@ class CustomerRepositoryTest {
         var country = em.find(Country.class, countryId);
 
         customer = new Customer();
-        customer.setId(1L);
+        customer.setId(6L);
         customer.setCountry(country);
         customer.setFirstName("David");
         customer.setLastName("Fountaine");
@@ -48,6 +44,7 @@ class CustomerRepositoryTest {
         customer.setState("California");
         customer.setPostalCode("95867");
         customer.setCreatedAt(new Date());
+        customer.setAuthenticationType(AuthenticationType.GOOGLE);
     }
 
     @Test
@@ -83,10 +80,19 @@ class CustomerRepositoryTest {
     }
 
     @Test
-    void enable() {
+    void canEnable() {
         customer.setEnabled(true);
         var saved = repository.save(customer);
 
         assertThat(saved.isEnabled()).isTrue();
+    }
+
+    @Test
+    void canUpdateAuthenticationType() {
+        repository.updateAuthenticationType(AuthenticationType.DATABASE, customer.getId());
+
+        var found = em.find(Customer.class, customer.getId());
+
+        assertThat(found.getAuthenticationType()).isEqualTo(AuthenticationType.DATABASE);
     }
 }

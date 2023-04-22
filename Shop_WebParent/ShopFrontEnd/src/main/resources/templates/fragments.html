@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:fragment="page_head(title, removeAtr)" th:remove="${removeAtr}">
   <meta charset="UTF-8"/>
   <meta http-equiv="content-type" content="text/html"/>
@@ -242,22 +243,58 @@
 </div>
 
 <div th:fragment="search_bar">
-  <form class="row ps-2 pt-2 g-3" th:action="@{/p/search}" method="get">
-    <div class="col-auto">
-      <div class="input-group">
-        <input name="keyword" th:value="${keyword}"
-               class="form-control col-1 border border-2 border-primary border-opacity-50"
-               type="search" placeholder="Search" required>
-      </div>
-    </div>
+  <nav class="navbar navbar-expand-sm bg-light">
+    <div>
+      <th:block sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" th:hidden="true" name="LogoutForm">
+          <input type="submit" value="Logout">
+        </form>
+      </th:block>
+      <ul class="navbar-nav">
+        <li id="searchNavbar" class="collapse navbar-collapse">
+          <div class="col-auto">
+            <form class="row ps-2 pt-2 g-3" th:action="@{/p/search}" method="get">
+              <div class="input-group">
+                <input name="keyword" th:value="${keyword}"
+                       class="form-control col-1 border border-2 border-primary border-opacity-50"
+                       type="search" placeholder="Search" required>
 
-    <div class="col-auto">
-      <div class="input-group-append">
-        <button class="btn border border-2 border-success border-opacity-75" type="submit"><span
-           class="text-success">Search</span></button>
-      </div>
+                <div class="ps-2">
+                  <button class="btn border border-2 border-success border-opacity-75" type="submit">
+                    <span class="text-success">Search</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </li>
+
+        <th:block sec:authorize="isAuthenticated()">
+          <li class="nav-item">
+            <b><a class="nav-link" th:href="@{/customer}" sec:authentication="principal.fullName"></a></b>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">Address</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">Questions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">Reviews</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript: document.LogoutForm.submit()">Logout</a>
+          </li>
+        </th:block>
+      </ul>
     </div>
-  </form>
+  </nav>
 </div>
 
 <div th:fragment="breadcrumb" th:remove="tag">

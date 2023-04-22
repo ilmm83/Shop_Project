@@ -40,5 +40,4 @@ public class MvcConfig implements WebMvcConfigurer {
     registry.addResourceHandler("/" + folderName + "/**")
         .addResourceLocations("file:/" + fullPath + "/");
   }
-
 }

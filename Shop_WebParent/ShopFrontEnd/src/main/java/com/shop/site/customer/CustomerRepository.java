@@ -1,5 +1,6 @@
 package com.shop.site.customer;
 
+import com.shop.model.AuthenticationType;
 import com.shop.model.Customer;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +16,11 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     Optional<Customer> findByVerificationCode(String verificationCode);
 
-    @Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = ?1")
     @Modifying
+    @Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = ?1")
     void enable(Long customerId);
+
+    @Modifying
+    @Query("UPDATE Customer c SET c.authenticationType = ?1 WHERE c.id = ?2")
+    void updateAuthenticationType(AuthenticationType type, long id);
 }
