@@ -1,22 +1,39 @@
-package com.shop.site.config;
+package com.shop.site.security;
 
 import com.shop.site.customer.CustomerUserDetailsService;
+import com.shop.site.security.handler.DatabaseLoginSuccessHandler;
+import com.shop.site.security.handler.OAuth2LoginSuccessHandler;
+import com.shop.site.security.oauth2.CustomerOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizationFailureHandler;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
+
+    @Autowired
+    private CustomerOAuth2UserService auth2UserService;
+
+    @Autowired
+    private OAuth2LoginSuccessHandler auth2LoginSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
+    private DatabaseLoginSuccessHandler databaseLoginSuccessHandler;
 
 
     @Bean
@@ -27,14 +44,24 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
                 .and()
                 .userDetailsService(userDetailsService())
-                .authenticationProvider(authenticationManager())
+                .authenticationProvider(authenticationProvider())
                 .formLogin()
+                    .loginPage("/login")
                     .usernameParameter("email")
-                    .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/", true)
+                    .successHandler(databaseLoginSuccessHandler)
+                    .permitAll()
                 .and()
-                .logout().permitAll()
-                .clearAuthentication(true)
+                .oauth2Login()
+                    .loginPage("/login")
+                    .userInfoEndpoint()
+                        .userService(auth2UserService)
+                    .and()
+                    .successHandler(auth2LoginSuccessHandler)
+                    .failureHandler(authenticationFailureHandler)
+                .and()
+                .logout()
+                    .clearAuthentication(true)
+                    .permitAll()
                 .and()
                 .rememberMe()
                     .key("sad_l12345kfhsak5dlfhsadfhlkjlk")
@@ -54,7 +81,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationManager() {
+    public DaoAuthenticationProvider authenticationProvider() {
         var provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(getPasswordEncoder());
         provider.setUserDetailsService(userDetailsService());

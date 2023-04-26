@@ -61,5 +61,4 @@ public class CustomerController {
 
         sender.send(message);
     }
-
 }

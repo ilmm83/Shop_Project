@@ -4,6 +4,7 @@ import com.shop.model.AuthenticationType;
 import com.shop.model.Country;
 import com.shop.model.Customer;
 import com.shop.site.category.CategoryNotFoundException;
+import com.shop.site.country.CountryNotFoundException;
 import com.shop.site.country.CountryRepository;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
@@ -11,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,17 +39,12 @@ public class CustomerService {
     }
 
     @Transactional
-    public void updateAuthenticationType(AuthenticationType type, Long id) {
-        customerRepo.updateAuthenticationType(type, id);
-    }
-
-    @Transactional
     public boolean checkVerificationCode(String code) {
-       var customer = customerRepo.findByVerificationCode(code);
-       if (customer.isEmpty() || customer.get().isEnabled()) return false;
+        var customer = customerRepo.findByVerificationCode(code);
+        if (customer.isEmpty() || customer.get().isEnabled()) return false;
 
-       customerRepo.enable(customer.get().getId());
-       return true;
+        customerRepo.enable(customer.get().getId());
+        return true;
     }
 
     @Transactional
@@ -55,6 +53,7 @@ public class CustomerService {
         customer.setEnabled(false);
         customer.setCreatedAt(new Date());
         customer.setVerificationCode(RandomString.make(32));
+        customer.setAuthenticationType(AuthenticationType.DATABASE);
 
         customerRepo.save(customer);
     }

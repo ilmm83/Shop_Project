@@ -27,6 +27,8 @@ public class MvcConfig implements WebMvcConfigurer {
         exposeDirectory(pathToSiteLogo, "site-logo", registry);
     }
 
+
+
     private void exposeDirectory(String fullPath, String folderName, ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + folderName + "/**")
                 .addResourceLocations("file:/" + fullPath + "/");

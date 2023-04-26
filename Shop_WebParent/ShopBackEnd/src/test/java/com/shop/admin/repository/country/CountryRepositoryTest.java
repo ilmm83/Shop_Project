@@ -15,7 +15,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = NONE)
-@Rollback
+//@Rollback(false)
 class CountryRepositoryTest {
 
     @Autowired
@@ -23,10 +23,10 @@ class CountryRepositoryTest {
 
     @Test
     void canCreateCountry() {
-        var country = repository.save(new Country("China", "CN"));
+        var country = repository.save(new Country("United States", "US"));
 
         assertThat(country).isNotNull();
-        assertThat(country.getName()).isEqualTo("China");
+        assertThat(country.getName()).isEqualTo("United States");
     }
 
     @Test

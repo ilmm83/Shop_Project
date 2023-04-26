@@ -2,13 +2,15 @@ package com.shop.site.customer;
 
 import com.shop.model.Customer;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 @AllArgsConstructor
-public class CustomerDetails implements UserDetails {
+public class CustomerUserDetails implements UserDetails {
 
     private Customer customer;
     private static final long serialVersionUID = 1l;

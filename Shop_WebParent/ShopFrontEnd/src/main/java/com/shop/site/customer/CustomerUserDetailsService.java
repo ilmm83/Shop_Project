@@ -13,7 +13,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return new CustomerDetails(repository.findByEmail(email)
+        return new CustomerUserDetails(repository.findByEmail(email)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find customer with email: " + email)));
     }
 }

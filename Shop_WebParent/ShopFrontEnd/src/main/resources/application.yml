@@ -23,6 +23,27 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: "783776844993-p48c7to68md26fvcru74hbo55a4vit9h.apps.googleusercontent.com"
+            clientSecret: "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"
+            redirectUri: "http://localhost:3214/Shop/login/oauth2/code/google"
+            clientName: Google
+            scope:
+              - email
+              - profile
+
+          facebook:
+            clientId: "767909744695077"
+            clientSecret: "176e8d9076a4c69270fd683de7761e9a"
+            redirectUri: "http://localhost:3214/Shop/login/oauth2/code/facebook"
+            clientName: Google
+            scope:
+              - email
+              - public_profile
 
 logging:
   level:

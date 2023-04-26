@@ -2,26 +2,30 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: page_head('Login Page', none)}"></head>
 <body>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v16.0"
+        nonce="4vxs4zXZ"></script>
 
-<div class="">
+<div class="text-center">
   <div th:replace="~{fragments :: header_navbar}"></div>
 
   <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto">
     <h3 class="text-center p-2">Customer Login</h3>
     <div class="border border-secondary border-opacity-25 rounded">
       <p class="ps-2 pe-2 pt-3">
-        <input class="form-control "
-               type="email"
-               name="email"
-               placeholder="E-mail"
-               required
+        <input
+           class="form-control"
+           type="email"
+           name="email"
+           placeholder="E-mail"
+           required
         >
       </p>
       <p class="ps-2 pe-2">
         <input
+           class="form-control"
            type="password"
            name="password"
-           class="form-control"
            placeholder="Password"
            required
         />
@@ -45,6 +49,24 @@
         <input class="btn btn-primary" type="submit" value="Sign In">
       </div>
     </div>
+    <div class="text-center pt-1 pb-1">
+      <a class="btn"
+         th:href="@{/oauth2/authorization/google}">
+        <img th:src="@{Google-Logo.png}" height="40" width="40">
+      </a>
+      <div
+         class="fb-login-button"
+         data-width="40"
+         data-size="small"
+         data-button-type="login_with"
+         data-layout="rounded"
+         data-auto-logout-link="false"
+         data-use-continue-as="false">
+      </div>
+    </div>
+    <div>
+      <span>Don't have an account? <a th:href="@{/customers/register}" style="text-decoration: none">Sign Up</a></span>
+    </div>
     <br>
     <div th:replace="~{fragments :: footer}"></div>
   </form>
@@ -52,3 +74,4 @@
 
 </body>
 </html>
+<br>
