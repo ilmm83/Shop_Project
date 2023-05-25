@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import com.shop.admin.category.CategoryRepository;
-import com.shop.model.Brand;
 import com.shop.model.Category;
 
 @DataJpaTest(showSql = false)

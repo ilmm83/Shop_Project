@@ -1,16 +1,20 @@
 package com.shop.admin.user;
 
 import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.security.ShopUserDetails;
+import com.shop.admin.utils.FileNotSavedException;
+import com.shop.admin.utils.FileUploadUtil;
 import com.shop.model.Role;
 import com.shop.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,29 +62,71 @@ public class UserService {
             return true;
         else if (id == null)
             return false;
-        else if (!Objects.equals(user.get().getId(), id))
-            return false;
-        return true;
+        else return Objects.equals(user.get().getId(), id);
     }
 
-    @Transactional
-    public User save(User formUser) {
-        if (formUser.getId() != null) {
-            Optional<User> optional = userRepository.findById(formUser.getId());
-            if (optional.isPresent()) {
-                User dbUser = optional.get();
-                if (formUser.getPassword().isEmpty())
-                    formUser.setPassword(dbUser.getPassword());
-                else
-                    formUser.setPassword(encoder.encode(formUser.getPassword()));
+    public void updateUserAccount(MultipartFile multipart, User user, ShopUserDetails userDetails) {
+        try {
+            if (!multipart.isEmpty()) {
+                var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+                user.setPhotos(fileName);
+                var saved = updateUserAccount(user);
+                var uploadDir = "./Shop_WebParent/ShopBackEnd/src/main/resources/static/images/user-images/" + saved.getId();
+                FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+            } else {
+                if (user.getPhotos().isEmpty()) {
+                    user.setPhotos(null);
+                }
+                updateUserAccount(user);
             }
-        } else
+        } catch (IOException e) {
+            throw new FileNotSavedException(e.getMessage(), e);
+        }
+
+        userDetails.setFirstName(user.getFirstName());
+        userDetails.setLastName(user.getLastName());
+    }
+
+    public void createNewUser(MultipartFile multipart, User user) {
+        try {
+            if (!multipart.isEmpty()) {
+                var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+                user.setPhotos(fileName);
+                var saved = save(user);
+                var uploadDir = "./Shop_WebParent/user-images/" + saved.getId();
+                FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+            } else {
+                if (user.getPhotos().isEmpty()) {
+                    user.setPhotos(null);
+                }
+                save(user);
+            }
+        } catch (IOException e) {
+            throw new FileNotSavedException(e.getMessage(), e);
+        }
+    }
+
+
+    @Transactional
+    private User save(User formUser) {
+        if (formUser.getId() != null) {
+            var optional = userRepository.findById(formUser.getId());
+            if (optional.isPresent()) {
+                var dbUser = optional.get();
+                if (formUser.getPassword().isEmpty()) {
+                    formUser.setPassword(dbUser.getPassword());
+                } else {
+                    formUser.setPassword(encoder.encode(formUser.getPassword()));
+                }
+            }
+        } else {
             formUser.setPassword(encoder.encode(formUser.getPassword()));
+        }
         return userRepository.save(formUser);
     }
 
     @Transactional
-    public User updateUserAccount(User formUser) {
+    private User updateUserAccount(User formUser) {
         var dbUser = userRepository.findById(formUser.getId()).get();
 
         if (!formUser.getPassword().isEmpty())

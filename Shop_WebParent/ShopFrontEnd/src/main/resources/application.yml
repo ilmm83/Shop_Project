@@ -36,15 +36,6 @@ spring:
               - email
               - profile
 
-          facebook:
-            clientId: "767909744695077"
-            clientSecret: "176e8d9076a4c69270fd683de7761e9a"
-            redirectUri: "http://localhost:3214/Shop/login/oauth2/code/facebook"
-            clientName: Google
-            scope:
-              - email
-              - public_profile
-
 logging:
   level:
     root: warn

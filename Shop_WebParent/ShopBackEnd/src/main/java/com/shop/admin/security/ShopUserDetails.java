@@ -1,15 +1,13 @@
-package com.shop.admin.user;
+package com.shop.admin.security;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
+import com.shop.model.User;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.shop.model.User;
-
-import lombok.AllArgsConstructor;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class ShopUserDetails implements UserDetails {

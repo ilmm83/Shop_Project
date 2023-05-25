@@ -1,20 +1,18 @@
 package com.shop.admin.brand;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.shop.admin.paging.PagingAndSortingHelper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import com.shop.admin.utils.FileNotSavedException;
+import com.shop.admin.utils.FileUploadUtil;
+import com.shop.model.Brand;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.shop.admin.brand.BrandNotFoundException;
-import com.shop.admin.brand.BrandRepository;
-import com.shop.model.Brand;
-
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,7 +24,7 @@ public class BrandService {
     public static final int PAGE_SIZE = 4;
 
     @Transactional
-    public Optional<Brand> save(Brand brand) {
+    private Optional<Brand> save(Brand brand) {
         return repository.save(brand);
     }
 
@@ -71,5 +69,24 @@ public class BrandService {
         else if (brand.getName().equals(name))
             return "brand";
         return "OK";
+    }
+
+    public void createNewBrand(Brand brand, MultipartFile multipart) {
+        try {
+            if (!multipart.isEmpty()) {
+                var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+                brand.setLogo(fileName);
+
+                var saved = save(brand)
+                        .orElseThrow(() -> new BrandNotFoundException("Brand was not saved."));
+
+                var uploadDir = "./Shop_WebParent/brands-images/" + saved.getId();
+                FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+            } else {
+                save(brand);
+            }
+        } catch (IOException e) {
+            throw new FileNotSavedException(e.getMessage(), e);
+        }
     }
 }

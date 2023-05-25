@@ -1,37 +1,21 @@
 package com.shop.admin.product;
 
-import static com.shop.admin.product.ProductSaveHelper.isDescriptionsEmpty;
-import static com.shop.admin.product.ProductSaveHelper.setAndSaveMainImage;
-import static com.shop.admin.product.ProductSaveHelper.setAndSaveNewExtraImages;
-import static com.shop.admin.product.ProductSaveHelper.setProductDetails;
-
-import java.io.File;
-import java.io.IOException;
-
+import com.shop.admin.brand.BrandService;
+import com.shop.admin.category.CategoryService;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
-import org.apache.commons.io.FileUtils;
-import org.springframework.data.domain.Page;
+import com.shop.admin.security.ShopUserDetails;
+import com.shop.dto.ProductDTO;
+import com.shop.model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shop.admin.brand.BrandNotFoundException;
-import com.shop.admin.category.CategoryNotFoundException;
-import com.shop.admin.user.ShopUserDetails;
-import com.shop.admin.brand.BrandService;
-import com.shop.admin.category.CategoryService;
-import com.shop.dto.ProductDTO;
-import com.shop.model.Product;
-
-import lombok.RequiredArgsConstructor;
+import static com.shop.admin.product.ProductSaveHelper.isDescriptionsEmpty;
 
 @Controller
 @RequestMapping("/api/v1/products")
@@ -65,36 +49,16 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String createNewProduct(ProductDTO dto,
-                                   @RequestParam(value = "fileImage", required = false) MultipartFile mainImageMultipart,
+    public String createNewProduct(@RequestParam(value = "fileImage", required = false) MultipartFile mainImageMultipart,
                                    @RequestParam(value = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
                                    @RequestParam(name = "detailName", required = false) String[] detailNames,
                                    @RequestParam(name = "detailValue", required = false) String[] detailValues,
-                                   @AuthenticationPrincipal ShopUserDetails loggedUser, RedirectAttributes attributes) {
+                                   @AuthenticationPrincipal ShopUserDetails loggedUser, RedirectAttributes attributes, ProductDTO dto) {
 
-        try {
-            var product = convertToProduct(dto);
-            productService.save(product);
-
-            if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor") && loggedUser.hasRole("Salesperson")) {
-                productService.saveProductPrice(product);
-                attributes.addFlashAttribute("message", "The product has been saved successfully.");
-                return "redirect:/api/v1/products";
-            }
-
-            setAndSaveMainImage(mainImageMultipart, product);
-            setAndSaveNewExtraImages(extraImagesMultipart, product);
-            setProductDetails(detailNames, detailValues, product, productService);
-
-            productService.save(product);
-            attributes.addFlashAttribute("message", "The product has been saved successfully.");
-
-        } catch (BrandNotFoundException | CategoryNotFoundException | IOException | ProductNotFoundException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            e.printStackTrace();
-        }
-        return "redirect:/api/v1/products";
+        return productService.createNewProduct(mainImageMultipart, extraImagesMultipart, detailNames,
+                detailValues, loggedUser, attributes, convertToProduct(dto));
     }
+
 
     @GetMapping("/{pageNum}")
     public String pageByNumber(@PagingAndSortingParam(listName = "products", moduleURL = "/api/v1/products") PagingAndSortingHelper helper,
@@ -104,8 +68,9 @@ public class ProductController {
 
         productService.findAllProductsSortedBy(pageNum, helper, categoryId);
         model.addAttribute("categories", categoryService.listCategoriesHierarchical());
-        if (categoryId != null)
+        if (categoryId != null) {
             model.addAttribute("categoryId", categoryId);
+        }
 
         return "products/products";
     }
@@ -166,17 +131,8 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, RedirectAttributes attributes) {
-        try {
-            productService.deleteProduct(id);
-            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + id;
-            FileUtils.deleteQuietly(new File(uploadDir));
-
-            attributes.addFlashAttribute("message", "The product with ID: " + id + " has been deleted successfully.");
-        } catch (ProductNotFoundException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            e.printStackTrace();
-        }
+    public String deleteProduct(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        productService.deleteProduct(id, attributes);
 
         return "redirect:/api/v1/products";
     }

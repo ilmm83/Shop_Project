@@ -10,8 +10,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Table(name = "users")
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

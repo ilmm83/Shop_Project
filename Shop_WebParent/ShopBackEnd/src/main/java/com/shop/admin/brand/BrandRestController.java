@@ -1,20 +1,14 @@
 package com.shop.admin.brand;
 
+import com.shop.dto.CategoryDTO;
+import com.shop.model.Category;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.shop.dto.CategoryDTO;
-import com.shop.model.Category;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("api/v1/brands")

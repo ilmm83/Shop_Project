@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Table(name = "customers")
@@ -53,6 +52,9 @@ public class Customer {
     @Column(name = "verification_code", length = 64)
     private String verificationCode;
 
+    @Column(name = "reset_password_token", length = 30)
+    private String resetPasswordToken;
+
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
@@ -70,5 +72,10 @@ public class Customer {
     @Transient
     public String getFullName() {
         return this.firstName + " " + this.lastName;
+    }
+
+    @Transient
+    public String getAuthenticationTypeAsString() {
+        return authenticationType.toString();
     }
 }

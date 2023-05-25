@@ -1,15 +1,11 @@
 package com.shop.admin.brand;
 
-import java.util.Optional;
-
 import com.shop.admin.paging.SearchRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.shop.model.Brand;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.shop.model.Brand;
+import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends SearchRepository<Brand, Long> {

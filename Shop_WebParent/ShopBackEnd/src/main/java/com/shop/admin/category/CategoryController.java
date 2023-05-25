@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
+import com.shop.admin.utils.FileNotSavedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -54,20 +55,8 @@ public class CategoryController {
     }
 
     @PostMapping("/new")
-    public String createNewCategory(CategoryDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
-                                    RedirectAttributes attributes) throws IOException {
-
-        var category = convertToCategory(dto);
-        if (!multipart.isEmpty()) {
-            var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
-            category.setImage(fileName);
-
-            var saved = service.save(category);
-            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\categories-images\\" + saved.getId();
-            FileUploadUtil.saveFile(uploadDir, fileName, multipart);
-
-        } else
-            service.save(category);
+    public String createNewCategory(@RequestParam("fileImage") MultipartFile multipart, CategoryDTO dto, RedirectAttributes attributes) {
+        service.createNewCategory(multipart, convertToCategory(dto));
 
         attributes.addFlashAttribute("message", "The category has been saved successfully!");
         return REDIRECT_API_V1_CATEGORIES;

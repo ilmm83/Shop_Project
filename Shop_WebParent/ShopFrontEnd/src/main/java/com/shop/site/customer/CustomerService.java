@@ -3,7 +3,6 @@ package com.shop.site.customer;
 import com.shop.model.AuthenticationType;
 import com.shop.model.Country;
 import com.shop.model.Customer;
-import com.shop.site.category.CategoryNotFoundException;
 import com.shop.site.country.CountryNotFoundException;
 import com.shop.site.country.CountryRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +35,27 @@ public class CustomerService {
         else return Objects.equals(customer.get().getId(), id);
     }
 
+    public Customer findByEmail(String email) {
+        return customerRepo.findByEmail(email)
+                .orElseThrow(() -> new CountryNotFoundException("Could not find a customer with the E-mail: " + email));
+    }
+
+    public boolean checkResetPasswordToken(String token) {
+        return customerRepo.findByResetPasswordToken(token)
+                .map(customer -> customer.getResetPasswordToken().equals(token)).orElse(false);
+    }
+
+    @Transactional
+    public String updateResetPasswordToken(String email) {
+        var found = findByEmail(email);
+        var token = RandomString.make(30);
+
+        found.setResetPasswordToken(token);
+        customerRepo.save(found);
+
+        return token;
+    }
+
     @Transactional
     public boolean checkVerificationCode(String code) {
         var customer = customerRepo.findByVerificationCode(code);
@@ -45,6 +63,16 @@ public class CustomerService {
 
         customerRepo.enable(customer.get().getId());
         return true;
+    }
+
+    @Transactional
+    public void update(Customer customer) {
+        if (customer.getPassword() == null) customer.setPassword("");
+
+        customer.setPassword(encoder.encode(customer.getPassword()));
+        customer.setCreatedAt(new Date());
+
+        customerRepo.save(customer);
     }
 
     @Transactional
@@ -56,5 +84,17 @@ public class CustomerService {
         customer.setAuthenticationType(AuthenticationType.DATABASE);
 
         customerRepo.save(customer);
+    }
+
+    @Transactional
+    public void updateCustomerPassword(String token, String password) {
+        customerRepo.findByResetPasswordToken(token)
+                .ifPresent(found -> {
+                    found.setResetPasswordToken("");
+                    found.setPassword(encoder.encode(password));
+                    found.setCreatedAt(new Date());
+
+                    customerRepo.save(found);
+                });
     }
 }

@@ -1,31 +1,23 @@
 package com.shop.admin.brand;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-
+import com.shop.admin.category.CategoryService;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.shop.admin.category.CategoryService;
 import com.shop.admin.utils.FileUploadUtil;
 import com.shop.dto.BrandDTO;
 import com.shop.model.Brand;
 import com.shop.model.Category;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 @Controller
 @RequestMapping("/api/v1/brands")
@@ -42,7 +34,7 @@ public class BrandController {
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PagingAndSortingParam(listName = "brands", moduleURL = "/api/v1/brands")PagingAndSortingHelper helper,
+    public String listByPage(@PagingAndSortingParam(listName = "brands", moduleURL = "/api/v1/brands") PagingAndSortingHelper helper,
                              @PathVariable int pageNum) {
         brandService.findAllBrandsSortedBy(pageNum, helper);
         return "brands/brands";
@@ -58,21 +50,8 @@ public class BrandController {
     }
 
     @PostMapping("/new")
-    public String createNewBrand(BrandDTO dto, @RequestParam("fileImage") MultipartFile multipart, Model model,
-            RedirectAttributes attributes) throws IOException {
-
-        var brand = convertToBrand(dto);
-        if (!multipart.isEmpty()) {
-            var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
-            brand.setLogo(fileName);
-
-            var saved = brandService.save(brand)
-                     .orElseThrow(() -> new BrandNotFoundException("Brand was not saved."));
-
-            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + saved.getId();
-            FileUploadUtil.saveFile(uploadDir, fileName, multipart);
-        } else
-            brandService.save(brand);
+    public String createNewBrand(@RequestParam("fileImage") MultipartFile multipart, BrandDTO dto, RedirectAttributes attributes) {
+        brandService.createNewBrand(convertToBrand(dto), multipart);
 
         attributes.addFlashAttribute("message", "The brand has been saved successfully!");
         return REDIRECT_API_V1_BRANDS;
@@ -98,7 +77,7 @@ public class BrandController {
     public String deleteBrand(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             brandService.deleteById(id);
-            var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\brands-images\\" + id;
+            var uploadDir = "./Shop_WebParent/brands-images\\" + id;
             FileUploadUtil.folderCleaner(Path.of(uploadDir));
             attributes.addFlashAttribute("message", "The brand with ID: " + id + " has been deleted successfully!");
         } catch (BrandNotFoundException e) {
@@ -112,11 +91,10 @@ public class BrandController {
         var brand = new Brand();
         var categories = new HashSet<Category>();
         for (var id : dto.getParentIds()) {
-            if (id == 0)
-                continue;
-            var cat = categoryService.findById(id);
-            if (cat != null)
-                categories.add(cat);
+            if (id == 0) continue;
+
+            var category = categoryService.findById(id);
+            if (category != null) categories.add(category);
         }
 
         brand.setId(dto.getId());

@@ -1,30 +1,20 @@
 package com.shop.admin.user;
 
-import java.io.IOException;
-
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.shop.admin.utils.FileUploadUtil;
 import com.shop.admin.utils.exporter.user.UserCsvExporter;
 import com.shop.admin.utils.exporter.user.UserExcelExporter;
 import com.shop.admin.utils.exporter.user.UserPDFExporter;
 import com.shop.model.User;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -81,25 +71,11 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String createNewUser(User user, RedirectAttributes redirect, @RequestParam("image") MultipartFile file)
-            throws IOException {
+    public String createNewUser(@RequestParam("image") MultipartFile multipart, User user, RedirectAttributes redirect) {
+        service.createNewUser(multipart, user);
+        redirect.addFlashAttribute("message", "The user has been saved successfully.");
 
-        if (!file.isEmpty()) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            user.setPhotos(fileName);
-            User saved = service.save(user);
-            String uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\ShopBackEnd\\src\\main\\resources\\static\\images\\user-images\\"
-                    + saved.getId();
-            FileUploadUtil.saveFile(uploadDir, fileName, file);
-        } else {
-            if (user.getPhotos().isEmpty())
-                user.setPhotos(null);
-            service.save(user);
-        }
-
-        redirect.addFlashAttribute("message", "The user has been saved successfuly.");
-
-        String firstPartOfEmail = user.getEmail().split("@")[0];
+        var firstPartOfEmail = user.getEmail().split("@")[0];
         return REDIRECT_API_V1_USERS + "/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 

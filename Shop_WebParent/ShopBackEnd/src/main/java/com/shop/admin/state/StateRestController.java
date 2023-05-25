@@ -4,7 +4,6 @@ import com.shop.dto.StateDTO;
 import com.shop.model.Country;
 import com.shop.model.State;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +31,6 @@ public class StateRestController {
         return new ResponseEntity<>(service.save(state), HttpStatus.CREATED);
     }
 
-    @SneakyThrows
     @PutMapping("/update/{state_id}")
     public ResponseEntity<Integer> update(@PathVariable Integer state_id, @RequestBody State state) {
         return new ResponseEntity<>(service.update(state_id, state), HttpStatus.OK);

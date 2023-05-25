@@ -1,18 +1,21 @@
 package com.shop.admin.category;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.utils.FileNotSavedException;
+import com.shop.admin.utils.FileUploadUtil;
+import com.shop.model.Category;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.shop.model.Category;
-
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,13 +63,30 @@ public class CategoryService {
             return repository.findAll(pageable);
     }
 
-    public Category findById(Long id)  {
+    public Category findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
     }
 
+    public void createNewCategory(MultipartFile multipart, Category category) {
+        if (!multipart.isEmpty()) {
+            var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
+            category.setImage(fileName);
+
+            var saved = save(category);
+            var uploadDir = "./Shop_WebParent/categories-images/" + saved.getId();
+            try {
+                FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+            } catch (IOException e) {
+                throw new FileNotSavedException(e.getMessage(), e);
+            }
+        } else {
+            save(category);
+        }
+    }
+
     @Transactional
-    public Category save(Category catFromForm) {
+    private Category save(Category catFromForm) {
         var parentProxy = catFromForm.getParent();
         if (parentProxy != null) {
             var parent = repository.findById(parentProxy.getId()).get();
@@ -79,7 +99,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void delete(Long id)  {
+    public void delete(Long id) {
         repository.countById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
         repository.deleteById(id);

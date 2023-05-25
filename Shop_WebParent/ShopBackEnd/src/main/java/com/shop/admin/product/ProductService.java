@@ -1,23 +1,24 @@
 
 package com.shop.admin.product;
 
+import com.shop.admin.brand.BrandNotFoundException;
+import com.shop.admin.category.CategoryNotFoundException;
+import com.shop.admin.paging.PagingAndSortingHelper;
+import com.shop.admin.security.ShopUserDetails;
+import com.shop.model.Product;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
-import com.shop.admin.paging.PagingAndSortingHelper;
-import org.apache.commons.io.FileUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.shop.admin.product.ProductNotFoundException;
-import com.shop.admin.product.ProductRepository;
-import com.shop.model.Product;
-
-import lombok.RequiredArgsConstructor;
+import static com.shop.admin.product.ProductSaveHelper.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -68,7 +69,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Long id) {
+    private void delete(Long id) {
         repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Could not found product with ID: " + id));
         repository.deleteById(id);
@@ -77,7 +78,7 @@ public class ProductService {
     @Transactional
     public void removeImage(Long productId, String fileName) {
         repository.removeImageByProductId(productId, fileName);
-        var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + productId
+        var uploadDir = "./Shop_WebParent/product-images\\" + productId
                 + "\\extras\\" + fileName;
         FileUtils.deleteQuietly(new File(uploadDir));
     }
@@ -87,15 +88,56 @@ public class ProductService {
         var response = "OK";
 
         for (var cat : products) {
-            if (!response.equals("OK"))
-                break;
-            if (cat == null)
-                continue;
+            if (!response.equals("OK")) break;
+            if (cat == null) continue;
             response = isProductExistsByNameOrAlias(id, cat, name, alias);
         }
 
         return response;
     }
+
+    public String createNewProduct(MultipartFile mainImageMultipart, MultipartFile[] extraImagesMultipart,
+                                   String[] detailNames, String[] detailValues, ShopUserDetails loggedUser,
+                                   RedirectAttributes attributes, Product product) {
+        try {
+            save(product);
+
+            if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor") && loggedUser.hasRole("Salesperson")) {
+                saveProductPrice(product);
+                attributes.addFlashAttribute("message", "The product has been saved successfully.");
+                return "redirect:/api/v1/products";
+            }
+
+            setAndSaveMainImage(mainImageMultipart, product);
+            setAndSaveNewExtraImages(extraImagesMultipart, product);
+            setProductDetails(detailNames, detailValues, product, this);
+
+            save(product);
+
+            attributes.addFlashAttribute("message", "The product has been saved successfully.");
+
+        } catch (BrandNotFoundException | CategoryNotFoundException | IOException | ProductNotFoundException e) {
+            attributes.addFlashAttribute("message", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return "redirect:/api/v1/products";
+    }
+
+
+    public void deleteProduct(Long id, RedirectAttributes attributes) {
+        try {
+            delete(id);
+            var uploadDir = "./Shop_WebParent/product-images/" + id;
+            FileUtils.deleteQuietly(new File(uploadDir));
+
+            attributes.addFlashAttribute("message", "The product with ID: " + id + " has been deleted successfully.");
+        } catch (ProductNotFoundException e) {
+            attributes.addFlashAttribute("message", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
     private String isProductExistsByNameOrAlias(Long id, Product product, String name, String alias) {
         if (product == null || product.getId() == id)

@@ -1,7 +1,5 @@
 package com.shop.admin.state;
 
-import com.shop.admin.state.StateNotFoundException;
-import com.shop.admin.state.StateRepository;
 import com.shop.model.Country;
 import com.shop.model.State;
 import lombok.RequiredArgsConstructor;

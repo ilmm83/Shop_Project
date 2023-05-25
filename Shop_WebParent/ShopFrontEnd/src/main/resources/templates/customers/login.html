@@ -2,10 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: page_head('Login Page', none)}"></head>
 <body>
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v16.0"
-        nonce="4vxs4zXZ"></script>
-
 <div class="text-center">
   <div th:replace="~{fragments :: header_navbar}"></div>
 
@@ -29,6 +25,7 @@
            placeholder="Password"
            required
         />
+        <span class="d-flex justify-content-end"><a th:href="@{/password/forgot}" style="text-decoration: none; font-size: 13px">Forgot Password?</a></span>
       </p>
       <div class="text-center">
         <div th:if="${param.error}">
@@ -54,15 +51,6 @@
          th:href="@{/oauth2/authorization/google}">
         <img th:src="@{Google-Logo.png}" height="40" width="40">
       </a>
-      <div
-         class="fb-login-button"
-         data-width="40"
-         data-size="small"
-         data-button-type="login_with"
-         data-layout="rounded"
-         data-auto-logout-link="false"
-         data-use-continue-as="false">
-      </div>
     </div>
     <div>
       <span>Don't have an account? <a th:href="@{/customers/register}" style="text-decoration: none">Sign Up</a></span>

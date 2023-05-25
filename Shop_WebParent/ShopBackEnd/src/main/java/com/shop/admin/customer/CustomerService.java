@@ -3,8 +3,6 @@ package com.shop.admin.customer;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.model.Customer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,12 +42,12 @@ public class CustomerService {
     }
 
     @Transactional
-    public void enableCustomer(long id, boolean state) {
+    public void enable(long id, boolean state) {
         repository.enableCustomerById(id, state);
     }
 
     @Transactional
-    public void updateCustomer(Customer customer) {
+    public void update(Customer customer) {
         var found = findById(customer.getId());
 
         if (!customer.getPassword().isBlank())
@@ -64,6 +62,7 @@ public class CustomerService {
         found.setCountry(customer.getCountry());
         found.setState(customer.getState());
         found.setVerificationCode(customer.getVerificationCode());
+        found.setResetPasswordToken(customer.getResetPasswordToken());
         found.setCreatedAt(customer.getCreatedAt());
         found.setEnabled(customer.isEnabled());
 

@@ -32,7 +32,7 @@ public class ProductSaveHelper {
     if (multipart.length == 0)
       return;
 
-    var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\"
+    var uploadDir = "./Shop_WebParent/product-images\\"
         + product.getId() + "\\extras";
     for (var image : multipart) {
       if (image.isEmpty())
@@ -51,7 +51,7 @@ public class ProductSaveHelper {
       return;
 
     var fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());
-    var uploadDir = "E:\\Projects\\JavaProjects\\Shop_Project\\Shop_WebParent\\product-images\\" + product.getId();
+    var uploadDir = "./Shop_WebParent/product-images\\" + product.getId();
     FileUploadUtil.saveFile(uploadDir, fileName, mainImage);
     product.setMainImage(fileName);
   }

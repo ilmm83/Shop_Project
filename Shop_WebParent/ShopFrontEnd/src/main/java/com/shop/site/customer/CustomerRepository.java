@@ -16,6 +16,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     Optional<Customer> findByVerificationCode(String verificationCode);
 
+    Optional<Customer> findByResetPasswordToken(String resetPasswordToken);
+
     @Modifying
     @Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = ?1")
     void enable(Long customerId);

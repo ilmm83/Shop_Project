@@ -6,8 +6,6 @@ import com.shop.admin.utils.exporter.customer.CustomerCSVExporter;
 import com.shop.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +37,7 @@ public class CustomerController {
 
     @GetMapping("/enabled/true/{id}")
     public String enableCustomer(@PathVariable long id, Model model) {
-        customerService.enableCustomer(id, true);
+        customerService.enable(id, true);
 
         model.addAttribute("message", "Customer with ID: " + id + " is enabled.");
         return "redirect:/api/v1/customers";
@@ -47,7 +45,7 @@ public class CustomerController {
 
     @GetMapping("/enabled/false/{id}")
     public String disableCustomer(@PathVariable long id, Model model) {
-        customerService.enableCustomer(id, false);
+        customerService.enable(id, false);
 
         model.addAttribute("message", "Customer with ID: " + id + " is disabled.");
         return "redirect:/api/v1/customers";
@@ -90,7 +88,7 @@ public class CustomerController {
 
     @PostMapping("/update")
     public String updateCustomer(Customer customer) {
-        customerService.updateCustomer(customer);
+        customerService.update(customer);
         return "redirect:/api/v1/customers";
     }
 }

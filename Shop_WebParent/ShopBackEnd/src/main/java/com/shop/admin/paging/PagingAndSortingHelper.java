@@ -1,15 +1,12 @@
 package com.shop.admin.paging;
 
 import com.shop.admin.product.ProductRepository;
-import com.shop.model.Customer;
 import com.shop.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Getter
@@ -52,13 +49,16 @@ public class PagingAndSortingHelper {
             if (categoryId != null && categoryId > 0) {
                 var categoryIdMatch = "-" + categoryId + "-";
                 page = repository.searchInCategory(categoryId, categoryIdMatch, keyword, pageable);
-            } else
+            } else {
                 page = repository.findAll(keyword, pageable);
+            }
         } else if (categoryId != null && categoryId > 0) {
             var categoryIdMatch = "-" + categoryId + "-";
             page = repository.findAllInCategory(categoryId, categoryIdMatch, pageable);
-        } else
+        } else {
             page = repository.findAll(pageable);
+        }
+
         updateModelAttributes(page, pageNum);
     }
 }
