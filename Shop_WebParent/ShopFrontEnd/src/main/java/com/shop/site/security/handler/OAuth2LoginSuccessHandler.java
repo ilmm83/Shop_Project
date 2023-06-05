@@ -22,12 +22,13 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         var user = (CustomerOAuth2User) authentication.getPrincipal();
-
         var found = service.findByEmail(user.getEmail());
-        if (found.isEmpty())
+
+        if (found.isEmpty()) {
             service.addNewCustomerUponOAuthLogin(user.getName(), user.getEmail(), request.getLocale().getCountry());
-        else
+        } else {
             service.updateAuthenticationType(AuthenticationType.GOOGLE, found.get().getId());
+        }
 
         super.onAuthenticationSuccess(request, response, authentication);
     }

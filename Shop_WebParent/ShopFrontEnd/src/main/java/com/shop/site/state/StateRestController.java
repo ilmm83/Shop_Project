@@ -20,6 +20,7 @@ public class StateRestController {
 
     private final StateRepository repository;
 
+
     @GetMapping("/list/{country_id}")
     public ResponseEntity<List<StateDTO>> listAllByCountry(@PathVariable Integer country_id) {
         return ResponseEntity.ok((repository.findByCountryOrderByNameAsc(new Country(country_id)).stream()

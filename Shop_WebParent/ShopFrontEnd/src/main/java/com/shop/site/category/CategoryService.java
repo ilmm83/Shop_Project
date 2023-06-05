@@ -15,12 +15,13 @@ public class CategoryService {
 
     private final CategoryRepository repository;
 
+
     public List<Category> listNoChildrenCategories() {
         var noChildren = new ArrayList<Category>();
 
         repository.findAllEnabledCategories().stream()
                 .filter(category -> category != null || category.getChildren().size() == 0)
-                .forEach(category -> noChildren.add(category));
+                .forEach(noChildren::add);
 
         return noChildren;
     }

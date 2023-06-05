@@ -18,17 +18,17 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class CustomerOAuth2Service {
 
-    private final CustomerRepository customerRepo;
+    private final CustomerRepository customerRepository;
     private final CountryRepository countryRepo;
 
 
     public Optional<Customer> findByEmail(String email) {
-        return customerRepo.findByEmail(email);
+        return customerRepository.findByEmail(email);
     }
 
     @Transactional
     public void updateAuthenticationType(AuthenticationType type, Long id) {
-        customerRepo.updateAuthenticationType(type, id);
+        customerRepository.updateAuthenticationType(type, id);
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class CustomerOAuth2Service {
         customer.setState("");
         customer.setCity("");
 
-        customerRepo.save(customer);
+        customerRepository.save(customer);
     }
 
     private void setName(String name, Customer customer) {

@@ -20,7 +20,7 @@ public class MvcConfig implements WebMvcConfigurer {
         var pathToProductImages = "./Shop_WebParent/product-images";
         exposeDirectory(pathToProductImages, "product-images", registry);
 
-        var pathToProductExtraImages = "./Shop_WebParent/product-images\\extras";
+        var pathToProductExtraImages = "./Shop_WebParent/product-images/extras";
         exposeDirectory(pathToProductExtraImages, "extras", registry);
 
         var pathToSiteLogo = "./Shop_WebParent/site-logo";

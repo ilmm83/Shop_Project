@@ -1,12 +1,9 @@
 package com.shop.admin.repository.product;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import com.shop.admin.product.ProductRepository;
+import com.shop.model.Brand;
+import com.shop.model.Category;
+import com.shop.model.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,8 +12,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
-import com.shop.model.Category;
-import com.shop.model.Product;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -32,14 +32,14 @@ public class ProductRepositoryTest {
     @Test
     void canCreateProducts() {
         var brand = manager.find(Brand.class, 16);
-        var categegory = manager.find(Category.class, 8);
+        var category = manager.find(Category.class, 8);
         var product = Product.builder()
                 .name("Samsung Galaxy A32")
                 .alias("Samsung A32")
                 .shortDescription("short description")
                 .fullDescription("full description")
                 .brand(brand)
-                .category(categegory)
+                .category(category)
                 .enabled(true)
                 .inStock(true)
                 .mainImage("mainImage.png")

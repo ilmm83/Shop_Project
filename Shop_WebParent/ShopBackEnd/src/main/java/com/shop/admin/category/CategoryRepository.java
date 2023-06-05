@@ -1,17 +1,15 @@
 package com.shop.admin.category;
 
-import java.util.Optional;
-
 import com.shop.admin.paging.SearchRepository;
+import com.shop.model.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.shop.model.Category;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends SearchRepository<Category, Long> {
@@ -32,8 +30,8 @@ public interface CategoryRepository extends SearchRepository<Category, Long> {
   
   void deleteById(Long id);
 
-  @Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")
   @Modifying
+  @Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")
   void updateEnabledStatus(Long id, boolean enabled);
 
   @Query("SELECT c FROM Category c WHERE c.name LIKE %?1% OR c.alias LIKE %?2%")
