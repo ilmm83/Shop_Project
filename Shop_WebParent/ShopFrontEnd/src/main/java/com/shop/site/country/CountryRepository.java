@@ -1,6 +1,6 @@
 package com.shop.site.country;
 
-import com.shop.model.Country;
+import com.common.model.Country;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

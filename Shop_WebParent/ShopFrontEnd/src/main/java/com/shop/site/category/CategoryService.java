@@ -1,6 +1,6 @@
 package com.shop.site.category;
 
-import com.shop.model.Category;
+import com.common.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -5,7 +5,7 @@ import com.shop.admin.brand.BrandNotFoundException;
 import com.shop.admin.category.CategoryNotFoundException;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.security.ShopUserDetails;
-import com.shop.model.Product;
+import com.common.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.shop.admin.paging;
 
 import com.shop.admin.product.ProductRepository;
-import com.shop.model.Product;
+import com.common.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;

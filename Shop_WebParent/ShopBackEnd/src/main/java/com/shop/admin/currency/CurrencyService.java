@@ -1,6 +1,6 @@
 package com.shop.admin.currency;
 
-import com.shop.model.Currency;
+import com.common.model.Currency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

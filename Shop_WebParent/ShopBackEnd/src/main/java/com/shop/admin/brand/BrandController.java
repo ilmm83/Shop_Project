@@ -1,12 +1,12 @@
 package com.shop.admin.brand;
 
+import com.common.dto.BrandDTO;
+import com.common.model.Brand;
+import com.common.model.Category;
 import com.shop.admin.category.CategoryService;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.dto.BrandDTO;
-import com.shop.model.Brand;
-import com.shop.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

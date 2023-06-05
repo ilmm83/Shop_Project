@@ -1,7 +1,7 @@
 package com.shop.site.prouduct;
 
-import com.shop.model.Category;
-import com.shop.model.Product;
+import com.common.model.Category;
+import com.common.model.Product;
 import com.shop.site.category.CategoryNotFoundException;
 import com.shop.site.category.CategoryService;
 import lombok.RequiredArgsConstructor;

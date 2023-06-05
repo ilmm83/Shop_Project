@@ -1,8 +1,8 @@
 package com.shop.admin.repository.state;
 
 import com.shop.admin.state.StateRepository;
-import com.shop.model.Country;
-import com.shop.model.State;
+import com.common.model.Country;
+import com.common.model.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

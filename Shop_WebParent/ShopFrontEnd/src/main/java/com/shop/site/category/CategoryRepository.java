@@ -1,6 +1,6 @@
 package com.shop.site.category;
 
-import com.shop.model.Category;
+import com.common.model.Category;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

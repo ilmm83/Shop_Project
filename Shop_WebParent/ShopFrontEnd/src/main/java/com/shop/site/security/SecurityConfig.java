@@ -4,7 +4,6 @@ import com.shop.site.customer.CustomerUserDetailsService;
 import com.shop.site.security.handler.DatabaseLoginSuccessHandler;
 import com.shop.site.security.handler.OAuth2LoginSuccessHandler;
 import com.shop.site.security.oauth2.CustomerOAuth2UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizationFailureHandler;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -39,35 +36,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests()
+            .authorizeHttpRequests(requests -> requests
                 .requestMatchers("/customer").authenticated()
                 .anyRequest().permitAll()
-                .and()
-                .userDetailsService(userDetailsService())
-                .authenticationProvider(authenticationProvider())
-                .formLogin()
-                    .loginPage("/login")
-                    .usernameParameter("email")
-                    .successHandler(databaseLoginSuccessHandler)
-                    .permitAll()
-                .and()
-                .oauth2Login()
-                    .loginPage("/login")
-                    .userInfoEndpoint()
-                        .userService(auth2UserService)
-                    .and()
-                    .successHandler(auth2LoginSuccessHandler)
-                    .failureHandler(authenticationFailureHandler)
-                .and()
-                .logout()
-                    .clearAuthentication(true)
-                    .permitAll()
-                .and()
-                .rememberMe()
-                    .key("sad_l12345kfhsak5dlfhsadfhlkjlk")
-                    .tokenValiditySeconds(14 * 24 * 60 * 60)
-                .and()
-                .build();
+            )
+            .userDetailsService(userDetailsService())
+            .authenticationProvider(authenticationProvider())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .usernameParameter("email")
+                .successHandler(databaseLoginSuccessHandler)
+                .permitAll()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .userInfoEndpoint(endpointConfig -> endpointConfig.userService(auth2UserService))
+                .successHandler(auth2LoginSuccessHandler)
+                .failureHandler(authenticationFailureHandler)
+            )
+            .logout(logout -> logout
+                .clearAuthentication(true)
+                .permitAll()
+            )
+            .rememberMe(rememberMe -> rememberMe
+                .key("sad_l12345kfhsak5dlfhsadfhlkjlk")
+                .tokenValiditySeconds(14 * 24 * 60 * 60)
+            )
+            .build();
     }
 
     @Bean

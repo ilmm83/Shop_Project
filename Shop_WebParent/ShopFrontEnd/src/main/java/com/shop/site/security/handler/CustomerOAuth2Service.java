@@ -1,8 +1,8 @@
 package com.shop.site.security.handler;
 
 
-import com.shop.model.AuthenticationType;
-import com.shop.model.Customer;
+import com.common.model.AuthenticationType;
+import com.common.model.Customer;
 import com.shop.site.country.CountryNotFoundException;
 import com.shop.site.country.CountryRepository;
 import com.shop.site.customer.CustomerRepository;

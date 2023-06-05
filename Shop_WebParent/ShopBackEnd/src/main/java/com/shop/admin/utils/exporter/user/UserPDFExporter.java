@@ -1,22 +1,16 @@
 package com.shop.admin.utils.exporter.user;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.List;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
+import com.common.model.User;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.shop.admin.utils.exporter.AbstractExporter;
-import com.shop.model.User;
-
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
 
 public class UserPDFExporter extends AbstractExporter {
 

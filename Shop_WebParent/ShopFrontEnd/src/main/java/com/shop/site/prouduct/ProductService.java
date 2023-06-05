@@ -1,6 +1,6 @@
 package com.shop.site.prouduct;
 
-import com.shop.model.Product;
+import com.common.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

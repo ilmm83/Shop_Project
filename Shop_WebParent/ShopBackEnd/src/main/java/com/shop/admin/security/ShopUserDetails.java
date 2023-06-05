@@ -1,6 +1,6 @@
 package com.shop.admin.security;
 
-import com.shop.model.User;
+import com.common.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,7 +1,7 @@
 package com.shop.admin.brand.controller.country;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shop.model.Country;
+import com.common.model.Country;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

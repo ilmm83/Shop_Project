@@ -1,7 +1,7 @@
 package com.shop.admin.state;
 
-import com.shop.model.Country;
-import com.shop.model.State;
+import com.common.model.Country;
+import com.common.model.State;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
 package com.shop.admin.brand.controller.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shop.model.Country;
-import com.shop.model.State;
+import com.common.model.Country;
+import com.common.model.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

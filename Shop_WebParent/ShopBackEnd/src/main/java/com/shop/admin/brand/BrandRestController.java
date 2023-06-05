@@ -1,7 +1,7 @@
 package com.shop.admin.brand;
 
-import com.shop.dto.CategoryDTO;
-import com.shop.model.Category;
+import com.common.dto.CategoryDTO;
+import com.common.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;

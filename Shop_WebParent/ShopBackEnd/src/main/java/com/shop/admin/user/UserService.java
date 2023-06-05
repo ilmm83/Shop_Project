@@ -4,8 +4,8 @@ import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.security.ShopUserDetails;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.model.Role;
-import com.shop.model.User;
+import com.common.model.Role;
+import com.common.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +29,7 @@ public class UserService {
     private final PasswordEncoder encoder;
 
     public static final int PAGE_SIZE = 4;
+
 
     public List<User> findAllUsersSortedByFirstName() {
         return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());

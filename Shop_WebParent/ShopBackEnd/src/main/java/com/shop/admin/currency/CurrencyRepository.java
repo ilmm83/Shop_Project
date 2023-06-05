@@ -1,6 +1,6 @@
 package com.shop.admin.currency;
 
-import com.shop.model.Currency;
+import com.common.model.Currency;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.shop.admin.country;
 
-import com.shop.model.Country;
+import com.common.model.Country;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.shop.admin.product;
 
 import com.shop.admin.paging.SearchRepository;
-import com.shop.model.Product;
+import com.common.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,14 +21,14 @@ public interface ProductRepository extends SearchRepository<Product, Long> {
 
   Optional<Product> deleteById(Long id);
 
-  java.lang.Iterable<Product> saveAll(java.lang.Iterable<Product> products);
+  Iterable<Product> saveAll(Iterable<Product> products);
 
-  java.lang.Iterable<Product> findAll();
+  Iterable<Product> findAll();
 
   Optional<Long> countById(Long id);
 
   @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% OR p.alias LIKE %?2%")
-  java.lang.Iterable<Product> findByNameAndAlias(String name, String alias);
+  Iterable<Product> findByNameAndAlias(String name, String alias);
 
   @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
   @Modifying

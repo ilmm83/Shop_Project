@@ -1,8 +1,8 @@
 package com.shop.site.state;
 
-import com.shop.dto.StateDTO;
-import com.shop.model.Country;
-import com.shop.model.State;
+import com.common.dto.StateDTO;
+import com.common.model.Country;
+import com.common.model.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

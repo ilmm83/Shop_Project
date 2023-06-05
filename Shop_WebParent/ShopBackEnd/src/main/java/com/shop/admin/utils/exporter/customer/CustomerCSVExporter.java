@@ -1,7 +1,7 @@
 package com.shop.admin.utils.exporter.customer;
 
 import com.shop.admin.utils.exporter.AbstractExporter;
-import com.shop.model.Customer;
+import com.common.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;

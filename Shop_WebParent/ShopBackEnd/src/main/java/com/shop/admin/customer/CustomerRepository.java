@@ -1,14 +1,9 @@
 package com.shop.admin.customer;
 
+import com.common.model.Customer;
 import com.shop.admin.paging.SearchRepository;
-import com.shop.model.Customer;
-import com.shop.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

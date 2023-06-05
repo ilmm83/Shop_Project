@@ -1,8 +1,8 @@
 package com.shop.site.repository.customer;
 
-import com.shop.model.AuthenticationType;
-import com.shop.model.Country;
-import com.shop.model.Customer;
+import com.common.model.AuthenticationType;
+import com.common.model.Country;
+import com.common.model.Customer;
 import com.shop.site.BaseTest;
 import com.shop.site.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;

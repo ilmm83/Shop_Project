@@ -1,6 +1,6 @@
 package com.shop.site.customer;
 
-import com.shop.model.Customer;
+import com.common.model.Customer;
 import com.shop.site.security.oauth2.CustomerOAuth2User;
 import com.shop.site.setting.SettingService;
 import com.shop.site.util.Utility;

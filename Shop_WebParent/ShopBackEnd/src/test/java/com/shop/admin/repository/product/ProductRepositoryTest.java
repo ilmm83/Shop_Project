@@ -1,9 +1,9 @@
 package com.shop.admin.repository.product;
 
 import com.shop.admin.product.ProductRepository;
-import com.shop.model.Brand;
-import com.shop.model.Category;
-import com.shop.model.Product;
+import com.common.model.Brand;
+import com.common.model.Category;
+import com.common.model.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

@@ -3,7 +3,7 @@ package com.shop.admin.brand;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.model.Brand;
+import com.common.model.Brand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

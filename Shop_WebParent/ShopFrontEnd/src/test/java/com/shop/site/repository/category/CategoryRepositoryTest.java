@@ -1,6 +1,6 @@
 package com.shop.site.repository.category;
 
-import com.shop.model.Category;
+import com.common.model.Category;
 import com.shop.site.category.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

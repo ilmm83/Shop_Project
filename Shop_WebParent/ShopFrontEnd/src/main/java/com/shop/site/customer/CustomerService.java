@@ -1,8 +1,8 @@
 package com.shop.site.customer;
 
-import com.shop.model.AuthenticationType;
-import com.shop.model.Country;
-import com.shop.model.Customer;
+import com.common.model.AuthenticationType;
+import com.common.model.Country;
+import com.common.model.Customer;
 import com.shop.site.country.CountryNotFoundException;
 import com.shop.site.country.CountryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ public class CustomerService {
     private final CustomerRepository customerRepo;
     private final CountryRepository countryRepo;
     private final PasswordEncoder encoder;
+
 
     public List<Country> listAllCountries() {
         return (List<Country>) countryRepo.findAllByOrderByNameAsc();

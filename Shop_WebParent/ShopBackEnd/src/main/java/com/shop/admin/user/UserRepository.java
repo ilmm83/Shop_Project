@@ -1,7 +1,7 @@
 package com.shop.admin.user;
 
 import com.shop.admin.paging.SearchRepository;
-import com.shop.model.User;
+import com.common.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

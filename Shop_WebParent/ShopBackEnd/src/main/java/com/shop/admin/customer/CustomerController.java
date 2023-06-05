@@ -3,7 +3,7 @@ package com.shop.admin.customer;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.utils.exporter.customer.CustomerCSVExporter;
-import com.shop.model.Customer;
+import com.common.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

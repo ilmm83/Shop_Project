@@ -1,6 +1,6 @@
 package com.shop.site.customer;
 
-import com.shop.model.Customer;
+import com.common.model.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

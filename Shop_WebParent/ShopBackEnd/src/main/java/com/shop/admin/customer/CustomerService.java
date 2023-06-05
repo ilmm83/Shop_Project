@@ -1,7 +1,7 @@
 package com.shop.admin.customer;
 
 import com.shop.admin.paging.PagingAndSortingHelper;
-import com.shop.model.Customer;
+import com.common.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;

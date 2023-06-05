@@ -1,6 +1,6 @@
 package com.shop.site.security.handler;
 
-import com.shop.model.AuthenticationType;
+import com.common.model.AuthenticationType;
 import com.shop.site.security.oauth2.CustomerOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

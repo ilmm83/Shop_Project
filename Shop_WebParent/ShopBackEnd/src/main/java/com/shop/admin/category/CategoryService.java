@@ -3,7 +3,7 @@ package com.shop.admin.category;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.model.Category;
+import com.common.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

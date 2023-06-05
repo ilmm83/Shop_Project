@@ -1,7 +1,7 @@
 package com.shop.site.customer;
 
-import com.shop.dto.SettingBag;
-import com.shop.model.Setting;
+import com.common.dto.SettingBag;
+import com.common.model.Setting;
 
 import java.util.List;
 

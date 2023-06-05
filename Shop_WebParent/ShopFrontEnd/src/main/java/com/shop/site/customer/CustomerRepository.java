@@ -1,7 +1,7 @@
 package com.shop.site.customer;
 
-import com.shop.model.AuthenticationType;
-import com.shop.model.Customer;
+import com.common.model.AuthenticationType;
+import com.common.model.Customer;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

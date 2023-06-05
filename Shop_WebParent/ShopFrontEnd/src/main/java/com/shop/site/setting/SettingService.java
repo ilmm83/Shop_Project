@@ -1,7 +1,7 @@
 package com.shop.site.setting;
 
-import com.shop.model.Setting;
-import com.shop.model.SettingCategory;
+import com.common.model.Setting;
+import com.common.model.SettingCategory;
 import com.shop.site.customer.EmailSettingBag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

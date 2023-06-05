@@ -5,7 +5,7 @@ import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.utils.exporter.user.UserCsvExporter;
 import com.shop.admin.utils.exporter.user.UserExcelExporter;
 import com.shop.admin.utils.exporter.user.UserPDFExporter;
-import com.shop.model.User;
+import com.common.model.User;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,6 +24,7 @@ public class UserController {
     private final UserService service;
 
     private static final String REDIRECT_API_V1_USERS = "redirect:/api/v1/users";
+
 
     @GetMapping
     public String listFirstPage() {

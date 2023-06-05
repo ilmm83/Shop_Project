@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.shop.admin.category.CategoryService;
-import com.shop.model.Category;
+import com.common.model.Category;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)

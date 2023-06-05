@@ -1,7 +1,7 @@
 package com.shop.site.repository.setting;
 
-import com.shop.model.Setting;
-import com.shop.model.SettingCategory;
+import com.common.model.Setting;
+import com.common.model.SettingCategory;
 import com.shop.site.setting.SettingRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

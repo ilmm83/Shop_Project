@@ -1,8 +1,8 @@
 package com.shop.admin.product;
 
 import com.shop.admin.utils.FileUploadUtil;
-import com.shop.model.Product;
-import com.shop.model.ProductDetail;
+import com.common.model.Product;
+import com.common.model.ProductDetail;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,0 +1,10 @@
+rootProject.name = 'Shop_Project'
+
+include 'Shop_Common'
+include 'Shop_WebParent'
+include 'Shop_WebParent:ShopBackEnd'
+findProject(':Shop_WebParent:ShopBackEnd')?.name = 'ShopBackEnd'
+
+include 'Shop_WebParent:ShopFrontEnd'
+findProject(':Shop_WebParent:ShopFrontEnd')?.name = 'ShopFrontEnd'
+

@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.shop.site'
+version = '0.0.1-SNAPSHOT'
+description = 'ShopFrontEnd'
+jar.enabled = true
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':Shop_WebParent')
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'net.bytebuddy:byte-buddy:1.14.4'
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

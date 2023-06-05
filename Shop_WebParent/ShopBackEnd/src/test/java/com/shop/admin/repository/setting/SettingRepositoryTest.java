@@ -1,7 +1,7 @@
 package com.shop.admin.repository.setting;
 
+import com.common.model.Setting;
 import com.shop.admin.setting.SettingRepository;
-import com.shop.model.Setting;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,8 +11,8 @@ import org.springframework.test.annotation.Rollback;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.shop.model.SettingCategory.CURRENCY;
-import static com.shop.model.SettingCategory.GENERAL;
+import static com.common.model.SettingCategory.CURRENCY;
+import static com.common.model.SettingCategory.GENERAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 

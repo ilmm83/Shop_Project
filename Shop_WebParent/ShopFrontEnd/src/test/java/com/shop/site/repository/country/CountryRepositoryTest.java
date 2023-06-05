@@ -1,7 +1,7 @@
 package com.shop.site.repository.country;
 
 
-import com.shop.model.Country;
+import com.common.model.Country;
 import com.shop.site.country.CountryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

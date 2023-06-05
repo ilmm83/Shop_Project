@@ -2,8 +2,8 @@ package com.shop.admin.repository.brand;
 
 import com.shop.admin.brand.BrandRepository;
 import com.shop.admin.category.CategoryRepository;
-import com.shop.model.Brand;
-import com.shop.model.Category;
+import com.common.model.Brand;
+import com.common.model.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

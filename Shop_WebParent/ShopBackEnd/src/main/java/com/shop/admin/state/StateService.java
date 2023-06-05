@@ -1,7 +1,7 @@
 package com.shop.admin.state;
 
-import com.shop.model.Country;
-import com.shop.model.State;
+import com.common.model.Country;
+import com.common.model.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +14,7 @@ import java.util.List;
 public class StateService {
 
     private final StateRepository repository;
+
 
     public List<State> listByCountry(Country country) {
         return (List<State>) repository.findByCountryOrderByNameAsc(country);

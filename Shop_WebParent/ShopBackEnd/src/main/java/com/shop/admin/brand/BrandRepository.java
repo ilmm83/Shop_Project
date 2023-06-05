@@ -1,7 +1,7 @@
 package com.shop.admin.brand;
 
 import com.shop.admin.paging.SearchRepository;
-import com.shop.model.Brand;
+import com.common.model.Brand;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,15 +18,15 @@ public interface BrandRepository extends SearchRepository<Brand, Long> {
 
   Brand deleteById(Long id);
 
-  java.lang.Iterable<Brand> saveAll(java.lang.Iterable<Brand> brands);
+  Iterable<Brand> saveAll(Iterable<Brand> brands);
 
-  java.lang.Iterable<Brand> findAll();
+  Iterable<Brand> findAll();
 
   Optional<Long> countById(Long id);
 
   @Query("SELECT b FROM Brand b ORDER BY b.name ASC")
-  java.lang.Iterable<Brand> findAllByNameAsc();
+  Iterable<Brand> findAllByNameAsc();
 
   @Query("SELECT b FROM Brand b WHERE b.name LIKE %?1%")
-  java.lang.Iterable<Brand> findByName(String name);
+  Iterable<Brand> findByName(String name);
 }

@@ -1,7 +1,7 @@
 package com.shop.admin.setting;
 
-import com.shop.model.Setting;
-import com.shop.model.SettingCategory;
+import com.common.model.Setting;
+import com.common.model.SettingCategory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
