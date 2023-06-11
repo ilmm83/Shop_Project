@@ -1,4 +1,4 @@
-package com.shop.site.controller.main;
+package com.shop.site.controller;
 
 import com.shop.site.MainController;
 import com.shop.site.category.CategoryService;

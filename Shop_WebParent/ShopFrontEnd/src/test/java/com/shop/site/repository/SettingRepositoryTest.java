@@ -1,4 +1,4 @@
-package com.shop.site.repository.setting;
+package com.shop.site.repository;
 
 import com.common.model.Setting;
 import com.common.model.SettingCategory;

@@ -1,4 +1,4 @@
-package com.shop.site.repository.country;
+package com.shop.site.repository;
 
 
 import com.common.model.Country;

@@ -20,29 +20,28 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class CustomerService {
 
-    private final CustomerRepository customerRepo;
-    private final CountryRepository countryRepo;
+    private final CustomerRepository customerRepository;
+    private final CountryRepository countryRepository;
     private final PasswordEncoder encoder;
 
 
     public List<Country> listAllCountries() {
-        return (List<Country>) countryRepo.findAllByOrderByNameAsc();
+        return (List<Country>) countryRepository.findAllByOrderByNameAsc();
     }
 
     public boolean isEmailUnique(Long id, String email) {
-        var customer = customerRepo.findByEmail(email);
+        var customer = customerRepository.findByEmail(email);
         if (customer.isEmpty()) return true;
         else if (id == null) return false;
         else return Objects.equals(customer.get().getId(), id);
     }
 
-    public Customer findByEmail(String email) {
-        return customerRepo.findByEmail(email)
+    public Customer findByEmail(String email) { return customerRepository.findByEmail(email)
                 .orElseThrow(() -> new CountryNotFoundException("Could not find a customer with the E-mail: " + email));
     }
 
     public boolean checkResetPasswordToken(String token) {
-        return customerRepo.findByResetPasswordToken(token)
+        return customerRepository.findByResetPasswordToken(token)
                 .map(customer -> customer.getResetPasswordToken().equals(token)).orElse(false);
     }
 
@@ -52,17 +51,17 @@ public class CustomerService {
         var token = RandomString.make(30);
 
         found.setResetPasswordToken(token);
-        customerRepo.save(found);
+        customerRepository.save(found);
 
         return token;
     }
 
     @Transactional
     public boolean checkVerificationCode(String code) {
-        var customer = customerRepo.findByVerificationCode(code);
+        var customer = customerRepository.findByVerificationCode(code);
         if (customer.isEmpty() || customer.get().isEnabled()) return false;
 
-        customerRepo.enable(customer.get().getId());
+        customerRepository.enable(customer.get().getId());
         return true;
     }
 
@@ -73,7 +72,7 @@ public class CustomerService {
         customer.setPassword(encoder.encode(customer.getPassword()));
         customer.setCreatedAt(new Date());
 
-        customerRepo.save(customer);
+        customerRepository.save(customer);
     }
 
     @Transactional
@@ -84,18 +83,18 @@ public class CustomerService {
         customer.setVerificationCode(RandomString.make(32));
         customer.setAuthenticationType(AuthenticationType.DATABASE);
 
-        customerRepo.save(customer);
+        customerRepository.save(customer);
     }
 
     @Transactional
     public void updateCustomerPassword(String token, String password) {
-        customerRepo.findByResetPasswordToken(token)
+        customerRepository.findByResetPasswordToken(token)
                 .ifPresent(found -> {
                     found.setResetPasswordToken("");
                     found.setPassword(encoder.encode(password));
                     found.setCreatedAt(new Date());
 
-                    customerRepo.save(found);
+                    customerRepository.save(found);
                 });
     }
 }

@@ -41,22 +41,21 @@ public class CustomerController {
     @GetMapping("/account")
     public String viewCustomer(HttpServletRequest request, Model model) {
         var email = getCustomerEmailByAuthenticationToken(request);
-        var customer = customerService.findByEmail(email);
 
         model.addAttribute("countries", customerService.listAllCountries());
-        model.addAttribute("customer", customer);
+        model.addAttribute("customer", customerService.findByEmail(email));
         model.addAttribute("pageTitle", "Customer Registration Page");
 
         return "customers/customer_update_form";
     }
 
     @GetMapping("/registration_verify")
-    public String verifyAccount(@Param("code") String code, Model model) {
+    public String verifyAccount(@Param("code") String code) {
         return customerService.checkVerificationCode(code) ? "customers/verify_success" : "customers/verify_fail";
     }
 
     @PostMapping("/update")
-    public String updateCustomer(Customer customer, HttpServletRequest request, Model model) {
+    public String updateCustomer(Customer customer) {
         customerService.update(customer);
         return "redirect:/";
     }
@@ -78,8 +77,8 @@ public class CustomerController {
         var message = sender.createMimeMessage();
         var helper = new MimeMessageHelper(message);
         var content = settings.getCustomerVerifyContent()
-                .replace("[[name]]", customer.getFullName())
-                .replace("[[URL]]", url);
+            .replace("[[name]]", customer.getFullName())
+            .replace("[[URL]]", url);
 
         helper.setFrom(settings.getFromAddress(), settings.getSenderName());
         helper.setTo(customer.getEmail());
@@ -93,10 +92,11 @@ public class CustomerController {
         var token = request.getUserPrincipal();
         String email = null;
 
-        if (token instanceof UsernamePasswordAuthenticationToken || token instanceof RememberMeAuthenticationToken)
+        if (token instanceof UsernamePasswordAuthenticationToken || token instanceof RememberMeAuthenticationToken) {
             email = token.getName();
-        else if (token instanceof OAuth2AuthenticationToken)
+        } else if (token instanceof OAuth2AuthenticationToken) {
             email = ((CustomerOAuth2User) ((OAuth2AuthenticationToken) token).getPrincipal()).getEmail();
+        }
 
         return email;
     }

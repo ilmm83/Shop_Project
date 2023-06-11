@@ -1,4 +1,4 @@
-package com.shop.site.repository.customer;
+package com.shop.site.repository;
 
 import com.common.model.AuthenticationType;
 import com.common.model.Country;
