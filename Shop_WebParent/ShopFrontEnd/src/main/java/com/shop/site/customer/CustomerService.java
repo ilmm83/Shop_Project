@@ -31,18 +31,20 @@ public class CustomerService {
 
     public boolean isEmailUnique(Long id, String email) {
         var customer = customerRepository.findByEmail(email);
+
         if (customer.isEmpty()) return true;
         else if (id == null) return false;
         else return Objects.equals(customer.get().getId(), id);
     }
 
-    public Customer findByEmail(String email) { return customerRepository.findByEmail(email)
-                .orElseThrow(() -> new CountryNotFoundException("Could not find a customer with the E-mail: " + email));
+    public Customer findByEmail(String email) {
+        return customerRepository.findByEmail(email)
+            .orElseThrow(() -> new CountryNotFoundException("Could not find a customer with the E-mail: " + email));
     }
 
     public boolean checkResetPasswordToken(String token) {
         return customerRepository.findByResetPasswordToken(token)
-                .map(customer -> customer.getResetPasswordToken().equals(token)).orElse(false);
+            .map(customer -> customer.getResetPasswordToken().equals(token)).orElse(false);
     }
 
     @Transactional
@@ -59,9 +61,10 @@ public class CustomerService {
     @Transactional
     public boolean checkVerificationCode(String code) {
         var customer = customerRepository.findByVerificationCode(code);
-        if (customer.isEmpty() || customer.get().isEnabled()) return false;
 
+        if (customer.isEmpty() || customer.get().isEnabled()) return false;
         customerRepository.enable(customer.get().getId());
+
         return true;
     }
 
@@ -89,12 +92,12 @@ public class CustomerService {
     @Transactional
     public void updateCustomerPassword(String token, String password) {
         customerRepository.findByResetPasswordToken(token)
-                .ifPresent(found -> {
-                    found.setResetPasswordToken("");
-                    found.setPassword(encoder.encode(password));
-                    found.setCreatedAt(new Date());
+            .ifPresent(found -> {
+                found.setResetPasswordToken("");
+                found.setPassword(encoder.encode(password));
+                found.setCreatedAt(new Date());
 
-                    customerRepository.save(found);
-                });
+                customerRepository.save(found);
+            });
     }
 }

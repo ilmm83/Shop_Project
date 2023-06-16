@@ -28,10 +28,8 @@ public class MvcConfig implements WebMvcConfigurer {
     }
 
 
-
     private void exposeDirectory(String fullPath, String folderName, ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + folderName + "/**")
-                .addResourceLocations("file:/" + fullPath + "/");
+            .addResourceLocations("file:/" + fullPath + "/");
     }
-
 }

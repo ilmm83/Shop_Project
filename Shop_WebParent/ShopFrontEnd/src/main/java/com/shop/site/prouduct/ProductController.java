@@ -25,7 +25,17 @@ public class ProductController {
 
     @GetMapping("/c/{category_alias}")
     public String viewFirstPage(@PathVariable("category_alias") String categoryAlias, Model model) {
-        return viewCategoryByPage(categoryAlias, 1, model);
+        try {
+            var category = categoryService.getCategoryByAlias(categoryAlias);
+            var page = productService.listByCategory(0, category.getId());
+
+            changingDisplayProductsPage(1, model, page, category);
+        } catch (CategoryNotFoundException e) {
+            e.printStackTrace();
+            return "error/404";
+        }
+
+        return "products_by_category";
     }
 
     @GetMapping("/p/{product_alias}")
@@ -33,7 +43,6 @@ public class ProductController {
         try {
             var product = productService.getProductByAlias(productAlias);
             var parents = categoryService.getCategoryParents(product.getCategory());
-            if (parents == null) return "error/404";
 
             model.addAttribute("parents", parents);
             model.addAttribute("product", product);
@@ -49,11 +58,9 @@ public class ProductController {
     public String viewCategoryByPage(@PathVariable("category_alias") String categoryAlias, @PathVariable("page_num") int pageNum, Model model) {
         try {
             var category = categoryService.getCategoryByAlias(categoryAlias);
-            if (category == null) return "error/404";
-
             var page = productService.listByCategory(pageNum - 1, category.getId());
-            changingDisplayProductsPage(pageNum, model, page, category);
 
+            changingDisplayProductsPage(pageNum, model, page, category);
         } catch (CategoryNotFoundException e) {
             e.printStackTrace();
             return "error/404";
@@ -64,7 +71,16 @@ public class ProductController {
 
     @GetMapping("/p/search")
     public String viewProductsByKeyword(@RequestParam("keyword") String keyword, Model model) {
-        return viewProductsByKeywordPageable(keyword, 1, model);
+        var page = productService.searchByKeyword(keyword, 1);
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("products", page.getContent());
+        model.addAttribute("currentPage", 1);
+        model.addAttribute("lastPage", (page.getTotalElements() / ProductService.SEARCH_PER_PAGE) + 1);
+        model.addAttribute("totalPages", page.getTotalElements());
+        model.addAttribute("pageTitle", keyword + " - Search Result");
+
+        return "search_result";
     }
 
     @GetMapping("/p/search/{page_num}")
@@ -81,8 +97,8 @@ public class ProductController {
         return "search_result";
     }
 
-    private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, Category category) {
 
+    private void changingDisplayProductsPage(int pageNum, Model model, Page<Product> page, Category category) {
         model.addAttribute("products", page.getContent());
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("lastPage", (page.getTotalElements() / ProductService.PRODUCTS_PER_PAGE) + 1);
