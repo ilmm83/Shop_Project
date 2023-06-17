@@ -10,9 +10,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 
@@ -43,8 +44,21 @@ class ProductRepositoryTest {
 
     @Test
     void canFindByAlias() {
-        var computers = repository.findByAlias("Acer").get();
+        // given
+        var expectedAlias = "alias";
+        var expectedProduct = new Product();
+        expectedProduct.setAlias(expectedAlias);
+        var expectedResult = Optional.of(expectedProduct);
 
-        assertThat(computers.getAlias()).isEqualTo("Acer");
+        willReturn(expectedResult).given(repository).findByAlias(expectedAlias);
+
+        // when
+        var result = repository.findByAlias(expectedAlias);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedResult, result);
+        assertEquals(expectedProduct, result.get());
+        assertEquals(expectedProduct.getAlias(), result.get().getAlias());
     }
 }
