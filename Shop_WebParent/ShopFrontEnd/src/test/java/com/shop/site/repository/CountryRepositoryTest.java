@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willReturn;
@@ -95,9 +94,15 @@ class CountryRepositoryTest {
 
     @Test
     void canFindAllByOrderByNameAsc() {
+        // given
+        var expectedCountries = List.of(new Country("China", "CN"));
+
+        willReturn(expectedCountries).given(repository).findAllByOrderByNameAsc();
+
+        // when
         var countries = (List<Country>) repository.findAllByOrderByNameAsc();
 
-        assertThat(countries).isNotNull();
-        assertThat(countries.size()).isGreaterThan(0);
+        // then
+        assertEquals(expectedCountries, countries);
     }
 }
