@@ -95,6 +95,17 @@ class CustomerRepositoryTest {
 
     @Test
     void canEnable() {
+        // given
+        var expectedCustomer = new Customer();
+        expectedCustomer.setId(1L);
+
+        willDoNothing().given(repository).enable(1L);
+
+        // when
+        repository.enable(1L);
+
+        // then
+        verify(repository, times(1)).enable(1L);
     }
 
     @Test
