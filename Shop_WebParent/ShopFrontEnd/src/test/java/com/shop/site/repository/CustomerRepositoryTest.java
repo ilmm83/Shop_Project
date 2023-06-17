@@ -9,8 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.times;
@@ -56,6 +55,22 @@ class CustomerRepositoryTest {
 
     @Test
     void canFindByEmail() {
+        // given
+        var expectedEmail = "test-email";
+        var expectedCustomer = new Customer();
+        expectedCustomer.setEmail(expectedEmail);
+        var expectedResult = Optional.of(expectedCustomer);
+
+        willReturn(expectedResult).given(repository).findByEmail(expectedEmail);
+
+        // when
+        var result = repository.findByEmail(expectedEmail);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedResult, result);
+        assertEquals(expectedCustomer, result.get());
+        assertEquals(expectedEmail, result.get().getEmail());
     }
 
     @Test
