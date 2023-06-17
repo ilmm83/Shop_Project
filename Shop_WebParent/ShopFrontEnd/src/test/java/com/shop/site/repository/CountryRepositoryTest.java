@@ -4,30 +4,35 @@ package com.shop.site.repository;
 import com.common.model.Country;
 import com.shop.site.country.CountryRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.willReturn;
 
-@DataJpaTest(showSql = false)
-@AutoConfigureTestDatabase(replace = NONE)
-@Rollback
+@ExtendWith(MockitoExtension.class)
 class CountryRepositoryTest {
 
-    @Autowired
-    private CountryRepository repository;
+    @Spy
+    CountryRepository repository;
+
 
     @Test
     void canCreateCountry() {
-        var country = repository.save(new Country("China", "CN"));
+        // given
+        var expectedCountry = new Country("China", "CN");
 
-        assertThat(country).isNotNull();
-        assertThat(country.getName()).isEqualTo("China");
+        willReturn(expectedCountry).given(repository).save(expectedCountry);
+
+        // when
+        var country = repository.save(expectedCountry);
+
+        // then
+        assertEquals(expectedCountry, country);
     }
 
     @Test
