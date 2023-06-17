@@ -13,7 +13,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CountryRepositoryTest {
@@ -75,10 +78,19 @@ class CountryRepositoryTest {
 
     @Test
     void canDeleteCountry() {
-        repository.deleteById(1);
-        var deleted = repository.findById(1);
+        // given
+        var expectedResult = Optional.empty();
 
-        assertThat(deleted.isEmpty()).isTrue();
+        willDoNothing().given(repository).deleteById(1);
+        willReturn(expectedResult).given(repository).findById(1);
+
+        // when
+        repository.deleteById(1);
+        var result = repository.findById(1);
+
+        // then
+        verify(repository, times(1)).deleteById(1);
+        assertTrue(result.isEmpty());
     }
 
     @Test
