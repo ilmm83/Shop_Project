@@ -75,6 +75,22 @@ class CustomerRepositoryTest {
 
     @Test
     void canFindByVerificationCode() {
+        // given
+        var expectedVerificationCode = "code";
+        var expectedCustomer = new Customer();
+        expectedCustomer.setVerificationCode(expectedVerificationCode);
+        var expectedResult = Optional.of(expectedCustomer);
+
+        willReturn(expectedResult).given(repository).findByVerificationCode(expectedVerificationCode);
+
+        // when
+        var result = repository.findByVerificationCode(expectedVerificationCode);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedResult, result);
+        assertEquals(expectedCustomer, result.get());
+        assertEquals(expectedVerificationCode, result.get().getVerificationCode());
     }
 
     @Test
