@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.willReturn;
 
@@ -39,9 +38,18 @@ class SettingRepositoryTest {
 
     @Test
     void canFindByTwoCategories() {
-        var found = (List<Setting>) repository.findByTwoCategories(SettingCategory.GENERAL, SettingCategory.PAYMENT);
+        // given
+        var settingCategoryGeneral = SettingCategory.GENERAL;
+        var settingCategoryCurrency = SettingCategory.CURRENCY;
+        var expectedResult = List.of(new Setting());
 
-        assertThat(found).isNotNull();
-        assertThat(found.size()).isEqualTo(3);
+        willReturn(expectedResult).given(repository).findByTwoCategories(settingCategoryGeneral, settingCategoryCurrency);
+
+        // when
+        var result = (List<Setting>) repository.findByTwoCategories(settingCategoryGeneral, settingCategoryCurrency);
+
+        // then
+        assertEquals(expectedResult, result);
+        assertEquals(expectedResult.get(0), result.get(0));
     }
 }
