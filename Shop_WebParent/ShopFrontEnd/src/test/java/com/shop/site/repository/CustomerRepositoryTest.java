@@ -95,6 +95,26 @@ class CustomerRepositoryTest {
     }
 
     @Test
+    void canFindByResetPasswordToken() {
+        // given
+        var expectedResetPassToken = "token";
+        var expectedCustomer = new Customer();
+        expectedCustomer.setResetPasswordToken(expectedResetPassToken);
+        var expectedResult = Optional.of(expectedCustomer);
+
+        willReturn(expectedResult).given(repository).findByResetPasswordToken(expectedResetPassToken);
+
+        // when
+        var result = repository.findByResetPasswordToken(expectedResetPassToken);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedResult, result);
+        assertEquals(expectedCustomer, result.get());
+        assertEquals(expectedResetPassToken, result.get().getResetPasswordToken());
+    }
+
+    @Test
     void canEnable() {
         // given
         var expectedCustomer = new Customer();
