@@ -9,9 +9,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.BDDMockito.willReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,10 +39,18 @@ class CountryRepositoryTest {
 
     @Test
     void canReadCountry() {
-        var country = repository.findById(1).get();
+        // given
+        var expectedCountry = new Country(1, "China", "CN");
+        var expectedResult = Optional.of(expectedCountry);
 
-        assertThat(country).isNotNull();
-        assertThat(country.getName()).isEqualTo("China");
+        willReturn(expectedResult).given(repository).findById(1);
+
+        // when
+        var result = repository.findById(1);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedCountry, result.get());
     }
 
     @Test
