@@ -1,5 +1,6 @@
 package com.shop.site.repository;
 
+import com.common.model.AuthenticationType;
 import com.common.model.Customer;
 import com.shop.site.customer.CustomerRepository;
 import org.junit.jupiter.api.Test;
@@ -110,5 +111,13 @@ class CustomerRepositoryTest {
 
     @Test
     void canUpdateAuthenticationType() {
+        // given
+        willDoNothing().given(repository).updateAuthenticationType(AuthenticationType.GOOGLE, 1L);
+
+        // when
+        repository.updateAuthenticationType(AuthenticationType.GOOGLE, 1L);
+
+        // then
+        verify(repository, times(1)).updateAuthenticationType(AuthenticationType.GOOGLE, 1L);
     }
 }
