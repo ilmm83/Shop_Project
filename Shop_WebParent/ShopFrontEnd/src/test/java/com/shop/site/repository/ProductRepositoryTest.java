@@ -43,6 +43,24 @@ class ProductRepositoryTest {
     }
 
     @Test
+    void canFindByKeyword() {
+        // given
+        var expectedPageContent = List.of(new Product());
+        var expectedPage = new PageImpl<>(expectedPageContent);
+        var keyword = "keyword";
+        var pageable = mock(Pageable.class);
+
+        willReturn(expectedPage).given(repository).findByKeyword(keyword, pageable);
+
+        // when
+        var page = repository.findByKeyword(keyword, pageable);
+
+        // then
+        assertEquals(expectedPage, page);
+        assertEquals(expectedPageContent, page.getContent());
+    }
+
+    @Test
     void canFindByAlias() {
         // given
         var expectedAlias = "alias";
