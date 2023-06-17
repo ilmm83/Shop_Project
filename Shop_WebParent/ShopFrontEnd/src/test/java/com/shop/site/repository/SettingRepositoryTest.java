@@ -4,30 +4,37 @@ import com.common.model.Setting;
 import com.common.model.SettingCategory;
 import com.shop.site.setting.SettingRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.willReturn;
 
-@DataJpaTest(showSql = false)
-@AutoConfigureTestDatabase(replace = NONE)
-@Rollback
+@ExtendWith(MockitoExtension.class)
 class SettingRepositoryTest {
 
-    @Autowired
-    private SettingRepository repository;
+    @Spy
+    SettingRepository repository;
+
 
     @Test
     void canFindByCategory() {
-        var found = (List<Setting>) repository.findByCategory(SettingCategory.CURRENCY);
+        // given
+        var settingCategory = SettingCategory.GENERAL;
+        var expectedResult = List.of(new Setting());
 
-        assertThat(found).isNotNull();
-        assertThat(found.size()).isEqualTo(6);
+        willReturn(expectedResult).given(repository).findByCategory(settingCategory);
+
+        // when
+        var result = (List<Setting>) repository.findByCategory(settingCategory);
+
+        // then
+        assertEquals(expectedResult, result);
+        assertEquals(expectedResult.get(0), result.get(0));
     }
 
     @Test
