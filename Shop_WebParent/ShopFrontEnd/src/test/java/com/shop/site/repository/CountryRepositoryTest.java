@@ -105,4 +105,23 @@ class CountryRepositoryTest {
         // then
         assertEquals(expectedCountries, countries);
     }
+
+    @Test
+    void canFindByCode() {
+        // given
+        var expectedCountryCode = "CN";
+        var expectedCountry = new Country(1, "China", expectedCountryCode);
+        var expectedResult = Optional.of(expectedCountry);
+
+        willReturn(expectedResult).given(repository).findByCode(expectedCountryCode);
+
+        // when
+        var result = repository.findByCode(expectedCountryCode);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedResult, result);
+        assertEquals(expectedCountry, result.get());
+        assertEquals(expectedCountryCode, result.get().getCode());
+    }
 }
