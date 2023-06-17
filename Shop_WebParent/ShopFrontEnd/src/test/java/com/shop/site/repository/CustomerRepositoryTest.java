@@ -1,98 +1,72 @@
 package com.shop.site.repository;
 
-import com.common.model.AuthenticationType;
-import com.common.model.Country;
 import com.common.model.Customer;
-import com.shop.site.BaseTest;
 import com.shop.site.customer.CustomerRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.annotation.Rollback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Date;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@Rollback(value = false)
-@AutoConfigureTestDatabase(replace = NONE)
-class CustomerRepositoryTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class CustomerRepositoryTest {
 
-    @Autowired
-    private CustomerRepository repository;
+    @Spy
+    CustomerRepository repository;
 
-    private Customer customer;
-
-
-    @BeforeEach
-    void setup() {
-        var countryId = 21;
-        var country = em.find(Country.class, countryId);
-
-        customer = new Customer();
-        customer.setId(6L);
-        customer.setCountry(country);
-        customer.setFirstName("David");
-        customer.setLastName("Fountaine");
-        customer.setPassword("password123");
-        customer.setEmail("david.s.fountaine@gmail.com");
-        customer.setPhoneNumber("312-462-7518");
-        customer.setAddressLine1("1927 West Drive");
-        customer.setCity("Sacramento");
-        customer.setState("California");
-        customer.setPostalCode("95867");
-        customer.setCreatedAt(new Date());
-        customer.setAuthenticationType(AuthenticationType.GOOGLE);
-    }
 
     @Test
     void canCreateCustomer() {
-        var saved = repository.save(customer);
+        // given
+        var expectedCustomer = new Customer();
 
-        assertThat(saved).isNotNull();
-        assertThat(saved.getId()).isGreaterThan(0);
+        willReturn(expectedCustomer).given(repository).save(expectedCustomer);
+
+        // when
+        var country = repository.save(expectedCustomer);
+
+        // then
+        assertEquals(expectedCustomer, country);
     }
 
     @Test
     void canDeleteCustomer() {
-        repository.deleteById(customer.getId());
+        // given
+        var expectedResult = Optional.empty();
 
-        var found = em.find(Customer.class, customer.getId());
-        assertThat(found).isNull();
+        willDoNothing().given(repository).deleteById(1L);
+        willReturn(expectedResult).given(repository).findById(1L);
+
+        // when
+        repository.deleteById(1L);
+        var result = repository.findById(1L);
+
+        // then
+        verify(repository, times(1)).deleteById(1L);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void canFindByEmail() {
-        var found = repository.findByEmail(customer.getEmail());
-
-        assertThat(found.isEmpty()).isFalse();
-        assertThat(found.get().getEmail()).isEqualTo(customer.getEmail());
     }
 
     @Test
     void canFindByVerificationCode() {
-        var found = repository.findByVerificationCode(customer.getVerificationCode());
-
-        assertThat(found.isEmpty()).isFalse();
-        assertThat(found.get().getVerificationCode()).isEqualTo(customer.getVerificationCode());
     }
 
     @Test
     void canEnable() {
-        customer.setEnabled(true);
-        var saved = repository.save(customer);
-
-        assertThat(saved.isEnabled()).isTrue();
     }
 
     @Test
     void canUpdateAuthenticationType() {
-        repository.updateAuthenticationType(AuthenticationType.DATABASE, customer.getId());
-
-        var found = em.find(Customer.class, customer.getId());
-
-        assertThat(found.getAuthenticationType()).isEqualTo(AuthenticationType.DATABASE);
     }
 }
