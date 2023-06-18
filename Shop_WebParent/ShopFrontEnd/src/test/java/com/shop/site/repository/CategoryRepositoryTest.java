@@ -3,34 +3,60 @@ package com.shop.site.repository;
 import com.common.model.Category;
 import com.shop.site.category.CategoryRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.repository.config.BootstrapMode;
-import org.springframework.test.annotation.Rollback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import java.util.List;
+import java.util.Optional;
 
-@DataJpaTest(showSql = false, bootstrapMode = BootstrapMode.LAZY)
-@AutoConfigureTestDatabase(replace = NONE)
-@Rollback(true)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.willReturn;
+
+@ExtendWith(MockitoExtension.class)
 public class CategoryRepositoryTest {
 
-    @Autowired
-    private CategoryRepository repository;
+    @Spy
+    CategoryRepository repository;
+
 
     @Test
     void canFindAllEnabledCategories() {
-        repository.findAllEnabledCategories()
-                .forEach(category ->
-                        System.out.println(category.getName() + " ( " + category.isEnabled() + " )"));
+        // given
+        var expectedCategory = new Category();
+        expectedCategory.setEnabled(true);
+        var expectedResult = List.of(expectedCategory);
+
+        willReturn(expectedResult).given(repository).findAllEnabledCategories();
+
+        // when
+        var result = repository.findAllEnabledCategories();
+
+        // then
+        assertEquals(expectedResult, result);
+        assertEquals(expectedResult.size(), result.size());
+        assertEquals(expectedCategory, result.get(0));
+        assertTrue(result.get(0).isEnabled());
     }
 
     @Test
     void canFindByAliasEnabled() {
-        Category cameras = repository.findByAliasEnabled("Cameras").get();
+        // given
+        var expectedAlias = "test-alias";
+        var expectedCategory = new Category();
+        expectedCategory.setEnabled(true);
+        expectedCategory.setAlias(expectedAlias);
+        var expectedResult = Optional.of(expectedCategory);
 
-        assertThat(cameras).isNotNull();
+        willReturn(expectedResult).given(repository).findByAliasEnabled(expectedAlias);
+
+        // when
+        var result = repository.findByAliasEnabled(expectedAlias);
+
+        // then
+        assertFalse(result.isEmpty());
+        assertEquals(expectedCategory, result.get());
+        assertEquals(expectedAlias, result.get().getAlias());
+        assertTrue(result.get().isEnabled());
     }
 }

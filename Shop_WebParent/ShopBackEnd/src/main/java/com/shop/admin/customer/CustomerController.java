@@ -1,9 +1,9 @@
 package com.shop.admin.customer;
 
+import com.common.model.Customer;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.utils.exporter.customer.CustomerCSVExporter;
-import com.common.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -31,6 +31,7 @@ public class CustomerController {
     @GetMapping("/{pageNum}")
     public String viewByPage(@PagingAndSortingParam(listName = "customers", moduleURL = "/api/v1/customers") PagingAndSortingHelper helper,
                              @PathVariable int pageNum) {
+
         customerService.listByPage(pageNum, helper);
         return "customers/customers";
     }

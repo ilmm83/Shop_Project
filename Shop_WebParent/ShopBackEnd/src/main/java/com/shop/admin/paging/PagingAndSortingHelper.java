@@ -1,7 +1,7 @@
 package com.shop.admin.paging;
 
-import com.shop.admin.product.ProductRepository;
 import com.common.model.Product;
+import com.shop.admin.product.ProductRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,7 @@ public class PagingAndSortingHelper {
     private String sortField;
     private String sortDir;
     private String keyword;
+
 
     public void updateModelAttributes(Page<?> page, int pageNum) {
         model.addAttribute(listName, page.getContent());

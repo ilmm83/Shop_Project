@@ -12,12 +12,11 @@ import java.util.Optional;
 public interface CategoryRepository extends CrudRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c"
-            + " WHERE c.enabled = true"
-            + " ORDER BY c.name ASC")
+        + " WHERE c.enabled = true"
+        + " ORDER BY c.name ASC")
     List<Category> findAllEnabledCategories();
 
     @Query("SELECT c FROM Category c"
-            + " WHERE c.enabled = true AND c.alias = ?1")
+        + " WHERE c.enabled = true AND c.alias = ?1")
     Optional<Category> findByAliasEnabled(String alias);
-
 }

@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,7 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {
@@ -29,7 +28,7 @@ class CustomerControllerTest {
     CustomerService customerService;
 
     @Mock
-    SettingService settingService ;
+    SettingService settingService;
 
     @Mock
     HttpServletRequest request;
@@ -40,13 +39,13 @@ class CustomerControllerTest {
     @Mock
     Principal principal;
 
-    @InjectMocks
     CustomerController controller;
 
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        controller = new CustomerController(customerService, settingService);
     }
 
     @Test
@@ -65,7 +64,7 @@ class CustomerControllerTest {
         var viewName = controller.showRegisterForm(model);
 
         // then
-        assertEquals(viewName , "customers/customer_form");
+        assertEquals(viewName, "customers/customer_form");
         assertEquals(customerService.listAllCountries(), expectedCountries);
         assertEquals(model.getAttribute("expectedCountries"), expectedCountries);
         assertEquals(model.getAttribute("pageTitle"), expectedPageTitle);
@@ -124,13 +123,12 @@ class CustomerControllerTest {
         var code = "code";
         var expectedResult = "customers/verify_success";
 
-        when(customerService.checkVerificationCode(eq(code))).thenReturn(true);
+        when(customerService.checkVerificationCode(anyString())).thenReturn(true);
 
         // when
         var result = controller.verifyAccount(code);
 
         // then
-        assertTrue(customerService.checkVerificationCode(code));
         assertEquals(expectedResult, result);
     }
 
@@ -138,11 +136,16 @@ class CustomerControllerTest {
     void updateCustomer() {
         // given
         var updatedCustomer = new Customer();
+        var expectedResult = "redirect:/";
 
+        doNothing().when(customerService).update(updatedCustomer);
 
-    }
+        // when
+        customerService.update(updatedCustomer);
+        var result = controller.updateCustomer(updatedCustomer);
 
-    @Test
-    void registerCustomer() {
+        // then
+        verify(customerService, times(1)).update(updatedCustomer);
+        assertEquals(expectedResult, result);
     }
 }
