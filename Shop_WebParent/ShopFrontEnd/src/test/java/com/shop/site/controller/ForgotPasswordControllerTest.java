@@ -48,15 +48,34 @@ public class ForgotPasswordControllerTest {
     void canViewNewPasswordPage_Success() {
         // given
         var expectedViewName = "customers/password/new_password_form";
-        var token = "token";
+        var expectedToken = "token";
 
-        given(customerService.checkResetPasswordToken(token)).willReturn(true);
+        given(customerService.checkResetPasswordToken(expectedToken)).willReturn(true);
+        given(model.getAttribute("token")).willReturn(expectedToken);
 
         // when
-        var viewName = controller.viewNewPasswordPage(token, model);
+        var viewName = controller.viewNewPasswordPage(expectedToken, model);
 
         // then
         assertEquals(expectedViewName, viewName);
+        assertEquals(expectedToken, model.getAttribute("token"));
+    }
+
+    @Test
+    void canViewNewPasswordPage_Fail() {
+        // given
+        var expectedViewName = "customers/password/invalid_token";
+        var expectedToken = "token";
+
+        given(customerService.checkResetPasswordToken(expectedToken)).willReturn(false);
+        given(model.getAttribute("token")).willReturn(expectedToken);
+
+        // when
+        var viewName = controller.viewNewPasswordPage(expectedToken, model);
+
+        // then
+        assertEquals(expectedViewName, viewName);
+        assertEquals(expectedToken, model.getAttribute("token"));
     }
 
 }
