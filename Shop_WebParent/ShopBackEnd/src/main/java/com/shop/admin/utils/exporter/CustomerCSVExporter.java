@@ -1,6 +1,5 @@
-package com.shop.admin.utils.exporter.customer;
+package com.shop.admin.utils.exporter;
 
-import com.shop.admin.utils.exporter.AbstractExporter;
 import com.common.model.Customer;
 import jakarta.servlet.http.HttpServletResponse;
 import org.supercsv.io.CsvBeanWriter;
@@ -21,7 +20,10 @@ public class CustomerCSVExporter extends AbstractExporter {
 
         csvWriter.writeHeader(csvHeader);
 
-        for (var customer : customers) csvWriter.write(customer, fieldMapping);
+        for (var customer : customers) {
+            csvWriter.write(customer, fieldMapping);
+        }
+
         csvWriter.close();
     }
 }

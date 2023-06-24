@@ -1,7 +1,7 @@
 package com.shop.admin.user;
 
-import com.shop.admin.security.ShopUserDetails;
 import com.common.model.User;
+import com.shop.admin.security.ShopUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,10 +32,12 @@ public class AccountController {
     }
 
     @PostMapping("/update")
-    public String updateUserAccount(@RequestParam("image") MultipartFile multipart, @AuthenticationPrincipal ShopUserDetails userDetails,
+    public String updateUserAccount(@RequestParam("image") MultipartFile multipart,
+                                    @AuthenticationPrincipal ShopUserDetails userDetails,
                                     User user, RedirectAttributes redirect) {
 
         service.updateUserAccount(multipart, user, userDetails);
+
         redirect.addFlashAttribute("message", "The user has been updated successfully.");
 
         return "redirect:/api/v1/account";

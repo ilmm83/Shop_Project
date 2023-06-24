@@ -22,8 +22,8 @@ public class StateRestController {
     @GetMapping("/list/{country_id}")
     public ResponseEntity<List<StateDTO>> listAllByCountry(@PathVariable Integer country_id) {
         return ResponseEntity.ok(service.listByCountry(new Country(country_id)).stream()
-                .map(this::convertToStateDTO)
-                .collect(Collectors.toList()));
+            .map(this::convertToStateDTO)
+            .collect(Collectors.toList()));
     }
 
     @PostMapping("/save")

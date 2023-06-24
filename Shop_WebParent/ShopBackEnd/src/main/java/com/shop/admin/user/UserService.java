@@ -1,11 +1,11 @@
 package com.shop.admin.user;
 
+import com.common.model.Role;
+import com.common.model.User;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.security.ShopUserDetails;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.common.model.Role;
-import com.common.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
+            .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
     }
 
     public List<Role> findAllRoles() {
@@ -54,16 +53,19 @@ public class UserService {
 
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Could not find the user with email " + email));
+            .orElseThrow(() -> new UserNotFoundException("Could not find the user with email " + email));
     }
 
     public boolean isEmailUnique(Long id, String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty())
+        var user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
             return true;
-        else if (id == null)
+        } else if (id == null) {
             return false;
-        else return Objects.equals(user.get().getId(), id);
+        } else {
+            return Objects.equals(user.get().getId(), id);
+        }
     }
 
     public void updateUserAccount(MultipartFile multipart, User user, ShopUserDetails userDetails) {
@@ -73,6 +75,7 @@ public class UserService {
                 user.setPhotos(fileName);
                 var saved = updateUserAccount(user);
                 var uploadDir = "./Shop_WebParent/ShopBackEnd/src/main/resources/static/images/user-images/" + saved.getId();
+
                 FileUploadUtil.saveFile(uploadDir, fileName, multipart);
             } else {
                 if (user.getPhotos().isEmpty()) {
@@ -95,6 +98,7 @@ public class UserService {
                 user.setPhotos(fileName);
                 var saved = save(user);
                 var uploadDir = "./Shop_WebParent/user-images/" + saved.getId();
+
                 FileUploadUtil.saveFile(uploadDir, fileName, multipart);
             } else {
                 if (user.getPhotos().isEmpty()) {
@@ -112,8 +116,10 @@ public class UserService {
     private User save(User formUser) {
         if (formUser.getId() != null) {
             var optional = userRepository.findById(formUser.getId());
+
             if (optional.isPresent()) {
                 var dbUser = optional.get();
+
                 if (formUser.getPassword().isEmpty()) {
                     formUser.setPassword(dbUser.getPassword());
                 } else {
@@ -123,31 +129,38 @@ public class UserService {
         } else {
             formUser.setPassword(encoder.encode(formUser.getPassword()));
         }
+
         return userRepository.save(formUser);
     }
 
     @Transactional
     private User updateUserAccount(User formUser) {
-        var dbUser = userRepository.findById(formUser.getId()).get();
+        var DBUser = userRepository.findById(formUser.getId()).get();
 
-        if (!formUser.getPassword().isEmpty())
-            dbUser.setPassword(encoder.encode(formUser.getPassword()));
-        if (formUser.getFirstName() != null)
-            dbUser.setFirstName(formUser.getFirstName());
-        if (formUser.getLastName() != null)
-            dbUser.setLastName(formUser.getLastName());
-        if (formUser.getEnabled() != null)
-            dbUser.setEnabled(formUser.getEnabled());
-        if (formUser.getPhotos() != null)
-            dbUser.setPhotos(formUser.getPhotos());
+        if (!formUser.getPassword().isEmpty()) {
+            DBUser.setPassword(encoder.encode(formUser.getPassword()));
+        }
+        if (formUser.getFirstName() != null) {
+            DBUser.setFirstName(formUser.getFirstName());
+        }
+        if (formUser.getLastName() != null) {
+            DBUser.setLastName(formUser.getLastName());
+        }
+        if (formUser.getEnabled() != null) {
+            DBUser.setEnabled(formUser.getEnabled());
+        }
+        if (formUser.getPhotos() != null) {
+            DBUser.setPhotos(formUser.getPhotos());
+        }
 
-        return userRepository.save(dbUser);
+        return userRepository.save(DBUser);
     }
 
     @Transactional
     public void delete(Long id) {
         userRepository.countById(id)
-                .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
+            .orElseThrow(() -> new UserNotFoundException("Could not find the user with id " + id));
+
         userRepository.deleteById(id);
     }
 

@@ -12,59 +12,60 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ShopUserDetails implements UserDetails {
 
-  private User user;
-  private static final long serialVersionUID = 1l;
+    private User user;
+    private static final long serialVersionUID = 1l;
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return user.getRoles().stream()
-        .map(role -> new SimpleGrantedAuthority(role.getName()))
-        .collect(Collectors.toSet());
-  }
 
-  @Override
-  public String getPassword() {
-    return user.getPassword();
-  }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return user.getRoles().stream()
+            .map(role -> new SimpleGrantedAuthority(role.getName()))
+            .collect(Collectors.toSet());
+    }
 
-  @Override
-  public String getUsername() {
-    return user.getEmail();
-  }
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
+    @Override
+    public String getUsername() {
+        return user.getEmail();
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return user.getEnabled();
-  }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-  public String getFullName() {
-    return user.getFullName(); 
-  }
+    @Override
+    public boolean isEnabled() {
+        return user.getEnabled();
+    }
 
-  public void setFirstName(String firstName) {
-    user.setFirstName(firstName);
-  }
+    public String getFullName() {
+        return user.getFullName();
+    }
 
-  public void setLastName(String lastName) {
-    user.setLastName(lastName);
-  }
+    public void setFirstName(String firstName) {
+        user.setFirstName(firstName);
+    }
 
-  public boolean hasRole(String roleName) {
-      return user.hasRole(roleName);
-  }
+    public void setLastName(String lastName) {
+        user.setLastName(lastName);
+    }
+
+    public boolean hasRole(String roleName) {
+        return user.hasRole(roleName);
+    }
 }

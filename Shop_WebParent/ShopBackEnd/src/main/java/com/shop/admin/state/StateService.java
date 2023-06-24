@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StateService {
 
     private final StateRepository repository;
@@ -26,9 +26,9 @@ public class StateService {
     }
 
     @Transactional
-    public Integer update(Integer id, State state)  {
+    public Integer update(Integer id, State state) {
         var found = repository.findById(id)
-                .orElseThrow(() -> new StateNotFoundException("Could not find state by ID: " + id));
+            .orElseThrow(() -> new StateNotFoundException("Could not find state by ID: " + id));
 
         found.setName(state.getName());
         found.setCountry(state.getCountry());
@@ -39,7 +39,7 @@ public class StateService {
     @Transactional
     public Integer delete(Integer id) {
         repository.deleteById(id);
+
         return id;
     }
-
 }

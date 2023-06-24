@@ -2,7 +2,6 @@ package com.shop.admin.utils;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,43 +16,47 @@ public class FileUploadUtil {
 
 
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+        var uploadPath = Paths.get(uploadDir);
         folderCleaner(uploadPath);
 
-        if (!Files.exists(uploadPath))
+        if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
+        }
 
-        try (InputStream is = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
+        try (var is = multipartFile.getInputStream()) {
+            var filePath = uploadPath.resolve(fileName);
             Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
+
         } catch (IOException e) {
             throw new FileNotSavedException("Could not save file: " + fileName, e);
         }
     }
 
-    public static void saveFileWithoutClearingForlder(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+    public static void saveFileWithoutClearingFolder(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+        var uploadPath = Paths.get(uploadDir);
 
-        if (!Files.exists(uploadPath))
+        if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
+        }
 
         try (InputStream is = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
+            var filePath = uploadPath.resolve(fileName);
             Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
+
         } catch (IOException e) {
             throw new IOException("Could not save file: " + fileName, e);
         }
     }
 
     public static void folderCleaner(Path uploadPath) {
-        File[] listFiles = uploadPath.toFile().listFiles();
+        var listFiles = uploadPath.toFile().listFiles();
+
         if (listFiles != null) {
-            for (File file : listFiles) {
-                if (!file.isDirectory())
+            for (var file : listFiles) {
+                if (!file.isDirectory()) {
                     file.delete();
+                }
             }
         }
     }
-
-
 }

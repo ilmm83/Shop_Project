@@ -1,12 +1,12 @@
 package com.shop.admin.product;
 
+import com.common.dto.ProductDTO;
+import com.common.model.Product;
 import com.shop.admin.brand.BrandService;
 import com.shop.admin.category.CategoryService;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.security.ShopUserDetails;
-import com.common.dto.ProductDTO;
-import com.common.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,16 +18,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static com.shop.admin.product.ProductSaveHelper.isDescriptionsEmpty;
 
 @Controller
-@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
     private final BrandService brandService;
     private final CategoryService categoryService;
 
+
     @GetMapping
-    public String productPage(Model model) {
+    public String productPage() {
         return "redirect:/api/v1/products/1?sortField=id&sortDir=asc";
     }
 
@@ -36,9 +37,10 @@ public class ProductController {
         var brands = brandService.findAllByNameAsc();
         var categories = categoryService.listCategoriesHierarchical();
         var dto = ProductDTO.builder()
-                .enabled(true)
-                .inStock(true)
-                .build();
+            .enabled(true)
+            .inStock(true)
+            .build();
+
         model.addAttribute("brands", brands);
         model.addAttribute("categories", categories);
         model.addAttribute("productDTO", dto);
@@ -56,7 +58,7 @@ public class ProductController {
                                    @AuthenticationPrincipal ShopUserDetails loggedUser, RedirectAttributes attributes, ProductDTO dto) {
 
         return productService.createNewProduct(mainImageMultipart, extraImagesMultipart, detailNames,
-                detailValues, loggedUser, attributes, convertToProduct(dto));
+            detailValues, loggedUser, attributes, convertToProduct(dto));
     }
 
 
@@ -67,7 +69,9 @@ public class ProductController {
                                Model model) {
 
         productService.findAllProductsSortedBy(pageNum, helper, categoryId);
+
         model.addAttribute("categories", categoryService.listCategoriesHierarchical());
+
         if (categoryId != null) {
             model.addAttribute("categoryId", categoryId);
         }
@@ -97,6 +101,7 @@ public class ProductController {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return "products/products_form";
     }
 
@@ -115,16 +120,19 @@ public class ProductController {
             model.addAttribute("imagesAmount", product.getImages().size());
 
             return "products/product_detail_modal";
+
         } catch (ProductNotFoundException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return "redirect:/api/v1/products";
     }
 
     @GetMapping("/enabled/false/{id}")
     public String changeToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
         productService.changeProductState(id, false);
+
         attributes.addFlashAttribute("message", "The product with ID: " + id + " is now disabled.");
 
         return "redirect:/api/v1/products";
@@ -176,7 +184,6 @@ public class ProductController {
     }
 
     private Product convertToProduct(ProductDTO dto) {
-
         var product = new Product();
         var brand = dto.getBrandId() == 0 ? null : brandService.findById(dto.getBrandId());
         var category = dto.getCategoryId() == 0 ? null : categoryService.findById(dto.getCategoryId());
@@ -198,8 +205,8 @@ public class ProductController {
         product.setHeight(dto.getHeight());
         product.setWeight(dto.getWeight());
         product.setMainImage(
-                dto.getMainImage() == null && dto.getId() != null ? productService.findById(dto.getId()).getMainImage()
-                        : "");
+            dto.getMainImage() == null && dto.getId() != null ? productService.findById(dto.getId()).getMainImage()
+                : "");
         product.setDetails(dto.getDetails());
         product.setImages(dto.getImages());
         product.setBrand(brand);

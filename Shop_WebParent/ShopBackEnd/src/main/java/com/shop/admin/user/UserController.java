@@ -1,11 +1,11 @@
 package com.shop.admin.user;
 
+import com.common.model.User;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
-import com.shop.admin.utils.exporter.user.UserCsvExporter;
-import com.shop.admin.utils.exporter.user.UserExcelExporter;
-import com.shop.admin.utils.exporter.user.UserPDFExporter;
-import com.common.model.User;
+import com.shop.admin.utils.exporter.UserCsvExporter;
+import com.shop.admin.utils.exporter.UserExcelExporter;
+import com.shop.admin.utils.exporter.UserPDFExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -34,46 +34,45 @@ public class UserController {
     @GetMapping("/export/csv")
     public void exportToCSV(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedByFirstName();
-        var exporter = new UserCsvExporter();
-        exporter.export(users, response);
+        new UserCsvExporter().export(users, response);
     }
 
     @GetMapping("/export/excel")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedByFirstName();
-        var exporter = new UserExcelExporter();
-        exporter.export(users, response);
+        new UserExcelExporter().export(users, response);
     }
 
     @GetMapping("/export/pdf")
     public void exportToPDF(HttpServletResponse response) throws IOException {
         var users = service.findAllUsersSortedById();
-        var exporter = new UserPDFExporter();
-        exporter.export(users, response);
+        new UserPDFExporter().export(users, response);
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PagingAndSortingParam(listName = "users", moduleURL = "/api/v1/users") PagingAndSortingHelper helper,
-                             @PathVariable int pageNum) {
+    public String listByPage(@PagingAndSortingParam(listName = "users", moduleURL = "/api/v1/users") PagingAndSortingHelper helper, @PathVariable int pageNum) {
         service.listByPage(pageNum, helper);
+
         return "users/users";
     }
 
     @GetMapping("/new")
     public String viewUserFormPage(Model model) {
-        User user = new User();
+        var user = new User();
         user.setEnabled(true);
 
         model.addAttribute("roles", service.findAllRoles());
         model.addAttribute("user", user);
         model.addAttribute("pageTitle", "Create New User");
         model.addAttribute("moduleURL", "/api/v1/users");
+
         return "users/user_form";
     }
 
     @PostMapping("/save")
     public String createNewUser(@RequestParam("image") MultipartFile multipart, User user, RedirectAttributes redirect) {
         service.createNewUser(multipart, user);
+
         redirect.addFlashAttribute("message", "The user has been saved successfully.");
 
         var firstPartOfEmail = user.getEmail().split("@")[0];
@@ -87,11 +86,14 @@ public class UserController {
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
             model.addAttribute("roles", service.findAllRoles());
             model.addAttribute("moduleURL", "/api/v1/users");
+
             return "users/user_form";
+
         } catch (UserNotFoundException e) {
             e.printStackTrace();
             redirect.addFlashAttribute("message", e.getMessage());
         }
+
         return REDIRECT_API_V1_USERS;
     }
 
@@ -99,24 +101,31 @@ public class UserController {
     public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
         try {
             service.delete(id);
+
             redirect.addFlashAttribute("message", "The user with ID " + id + " has been deleted successfuly");
+
         } catch (UserNotFoundException e) {
             redirect.addFlashAttribute("message", e.getMessage());
         }
+
         return REDIRECT_API_V1_USERS;
     }
 
     @GetMapping("/enabled/true/{id}")
     public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Enabled.");
+
         service.changeEnableState(id, true);
+
         return REDIRECT_API_V1_USERS;
     }
 
     @GetMapping("/enabled/false/{id}")
     public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
+
         service.changeEnableState(id, false);
+
         return REDIRECT_API_V1_USERS;
     }
 }
