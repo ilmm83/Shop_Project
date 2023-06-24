@@ -57,15 +57,18 @@ public class CustomerController {
     @PostMapping("/update")
     public String updateCustomer(Customer customer) {
         customerService.update(customer);
+        
         return "redirect:/";
     }
 
     @PostMapping("/save")
     public String registerCustomer(Customer customer, HttpServletRequest request, Model model) throws MessagingException, UnsupportedEncodingException {
         customerService.save(customer);
+
         sendRegistrationVerificationEmail(request, customer);
 
         model.addAttribute("pageTitle", "Registration Succeeded!");
+
         return "customers/registration_success";
     }
 

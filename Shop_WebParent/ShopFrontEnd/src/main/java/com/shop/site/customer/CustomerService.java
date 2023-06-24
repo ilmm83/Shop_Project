@@ -69,13 +69,26 @@ public class CustomerService {
     }
 
     @Transactional
-    public void update(Customer customer) {
-        if (customer.getPassword() == null) customer.setPassword("");
+    public void update(Customer formCustomer) {
+        var DBCustomer = findByEmail(formCustomer.getEmail());
 
-        customer.setPassword(encoder.encode(customer.getPassword()));
-        customer.setCreatedAt(new Date());
+        if (DBCustomer.getAuthenticationType().equals(AuthenticationType.DATABASE)) {
+            if (!formCustomer.getPassword().isEmpty()) {
+                formCustomer.setPassword(encoder.encode(formCustomer.getPassword()));
+            } else {
+                formCustomer.setPassword(DBCustomer.getPassword());
+            }
+        } else {
+            formCustomer.setPassword(DBCustomer.getPassword());
+        }
 
-        customerRepository.save(customer);
+        formCustomer.setEnabled(DBCustomer.isEnabled());
+        formCustomer.setCreatedAt(DBCustomer.getCreatedAt());
+        formCustomer.setVerificationCode(DBCustomer.getVerificationCode());
+        formCustomer.setAuthenticationType(DBCustomer.getAuthenticationType());
+        formCustomer.setResetPasswordToken(DBCustomer.getResetPasswordToken());
+
+        customerRepository.save(formCustomer);
     }
 
     @Transactional
@@ -90,10 +103,10 @@ public class CustomerService {
     }
 
     @Transactional
-    public void updateCustomerPassword(String token, String password) {
+    public void updatePassword(String token, String password) {
         customerRepository.findByResetPasswordToken(token)
             .ifPresent(found -> {
-                found.setResetPasswordToken("");
+                found.setResetPasswordToken(null);
                 found.setPassword(encoder.encode(password));
                 found.setCreatedAt(new Date());
 

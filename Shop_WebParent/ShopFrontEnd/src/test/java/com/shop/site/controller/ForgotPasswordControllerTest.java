@@ -95,14 +95,14 @@ public class ForgotPasswordControllerTest {
         var expectedViewName = "redirect:/login";
         var expectedToken = "token";
 
-        willDoNothing().given(customerService).updateCustomerPassword(expectedToken, password);
+        willDoNothing().given(customerService).updatePassword(expectedToken, password);
         given(model.getAttribute("token")).willReturn(expectedToken);
 
         // when
         var viewName = controller.saveNewPassword(password, expectedToken);
 
         // then
-        verify(customerService, times(1)).updateCustomerPassword(expectedToken, password);
+        verify(customerService, times(1)).updatePassword(expectedToken, password);
         assertEquals(expectedViewName, viewName);
         assertEquals(expectedToken, model.getAttribute("token"));
     }

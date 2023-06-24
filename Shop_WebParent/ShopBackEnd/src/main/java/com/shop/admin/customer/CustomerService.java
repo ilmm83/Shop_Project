@@ -1,7 +1,7 @@
 package com.shop.admin.customer;
 
-import com.shop.admin.paging.PagingAndSortingHelper;
 import com.common.model.Customer;
+import com.shop.admin.paging.PagingAndSortingHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ public class CustomerService {
 
     public Customer findById(long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
+            .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
     }
 
     @Transactional
@@ -47,32 +47,28 @@ public class CustomerService {
     }
 
     @Transactional
-    public void update(Customer customer) {
-        var found = findById(customer.getId());
+    public void update(Customer formCustomer) {
+        var DBCustomer = findById(formCustomer.getId());
 
-        if (!customer.getPassword().isBlank())
-            found.setPassword(encoder.encode(customer.getPassword()));
-        found.setFirstName(customer.getFirstName());
-        found.setLastName(customer.getLastName());
-        found.setEmail(customer.getEmail());
-        found.setPhoneNumber(customer.getPhoneNumber());
-        found.setAddressLine1(customer.getAddressLine1());
-        found.setAddressLine2(customer.getAddressLine2());
-        found.setCity(customer.getCity());
-        found.setCountry(customer.getCountry());
-        found.setState(customer.getState());
-        found.setVerificationCode(customer.getVerificationCode());
-        found.setResetPasswordToken(customer.getResetPasswordToken());
-        found.setCreatedAt(customer.getCreatedAt());
-        found.setEnabled(customer.isEnabled());
+        if (!formCustomer.getPassword().isEmpty()) {
+            formCustomer.setPassword(encoder.encode(formCustomer.getPassword()));
+        } else {
+            formCustomer.setPassword(DBCustomer.getPassword());
+        }
 
-        repository.save(found);
+        formCustomer.setEnabled(DBCustomer.isEnabled());
+        formCustomer.setCreatedAt(DBCustomer.getCreatedAt());
+        formCustomer.setVerificationCode(DBCustomer.getVerificationCode());
+        formCustomer.setAuthenticationType(DBCustomer.getAuthenticationType());
+        formCustomer.setResetPasswordToken(DBCustomer.getResetPasswordToken());
+
+        repository.save(formCustomer);
     }
 
     @Transactional
     public void deleteById(long id) {
         repository.countById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
+            .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
         repository.deleteById(id);
     }
 }

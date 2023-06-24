@@ -37,7 +37,7 @@ public class ForgotPasswordController {
 
     @PostMapping("/new")
     public String saveNewPassword(@Param("password") String password, @Param("token") String token) {
-        customerService.updateCustomerPassword(token, password);
+        customerService.updatePassword(token, password);
         return "redirect:/login";
     }
 
@@ -64,11 +64,11 @@ public class ForgotPasswordController {
         var message = sender.createMimeMessage();
         var helper = new MimeMessageHelper(message);
         var content = "<p>Hello,</p>"
-                + "You have requested to reset your password."
-                + "Click the link below to change your password:</p>"
-                + "<p><a href=\"" + url + "\">Change password.</a>"
-                + "<p>Ignore this message if you do remember your password, "
-                + "or you don't made the request.</p>";
+            + "You have requested to reset your password."
+            + "Click the link below to change your password:</p>"
+            + "<p><a href=\"" + url + "\">Change password.</a>"
+            + "<p>Ignore this message if you do remember your password, "
+            + "or you don't made the request.</p>";
 
         helper.setTo(email);
         helper.setFrom(settings.getFromAddress(), settings.getSenderName());
