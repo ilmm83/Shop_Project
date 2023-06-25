@@ -26,11 +26,12 @@ public class BrandController {
 
     private final BrandService brandService;
     private final CategoryService categoryService;
+
     private static final String REDIRECT_API_V1_BRANDS = "redirect:/api/v1/brands";
 
 
     @GetMapping
-    public String brandsPage() {
+    public String viewFirstPage() {
         return "redirect:/api/v1/brands/1?sortField=id&sortDir=asc";
     }
 
@@ -44,7 +45,7 @@ public class BrandController {
     }
 
     @GetMapping("/new")
-    public String newBrandCreationPage(Model model) {
+    public String showBrandCreationPage(Model model) {
         model.addAttribute("categories", categoryService.listCategoriesHierarchical());
         model.addAttribute("brandDTO", new BrandDTO());
         model.addAttribute("moduleURL", "/api/v1/brands");
@@ -72,7 +73,6 @@ public class BrandController {
 
         } catch (BrandNotFoundException e) {
             e.printStackTrace();
-            throw new BrandNotFoundException(e.getMessage());
         }
 
         return "brands/brands_form";
