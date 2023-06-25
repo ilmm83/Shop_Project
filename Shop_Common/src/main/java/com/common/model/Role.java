@@ -5,12 +5,13 @@ import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Table(name = "roles")
 @Entity
-@Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "roles")
 public class Role {
 
     @Id
@@ -22,6 +23,7 @@ public class Role {
 
     @Column(nullable = false)
     private String description;
+
 
     @Override
     public String toString() {

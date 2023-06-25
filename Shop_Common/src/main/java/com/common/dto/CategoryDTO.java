@@ -9,23 +9,26 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDTO {
 
-  private Long id;
+    private Long id;
 
-  private Long parentId;
+    private Long parentId;
 
-  private String name;
+    private String name;
 
-  private String alias;
+    private String alias;
 
-  private String image;
+    private String image;
 
-  private boolean enabled;
+    private boolean enabled;
 
-  private String allParentIDs;
+    private String allParentIDs;
 
-  public String getPhotosImagePath() {
-    if (this.id == null || this.image == null)
-      return null;
-    return "/categories-images/" + this.id + "/" + this.image;
-  }
+
+    public String getPhotosImagePath() {
+        if (this.id == null || this.image == null) {
+            return null;
+        }
+
+        return "/categories-images/" + this.id + "/" + this.image;
+    }
 }

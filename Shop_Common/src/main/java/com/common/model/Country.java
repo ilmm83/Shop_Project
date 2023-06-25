@@ -7,10 +7,33 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Table(name = "countries")
 @Entity
 @NoArgsConstructor
+@Table(name = "countries")
 public class Country {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
+    private Integer id;
+
+    @Column(nullable = false, length = 45)
+    @Getter
+    @Setter
+    private String name;
+
+    @Column(nullable = false, length = 5)
+    @Getter
+    @Setter
+    private String code;
+
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
+    private Set<State> states;
+
+    @OneToMany(mappedBy = "country")
+    private Set<Customer> customers;
+
 
     public Country(Integer id) {
         this.id = id;
@@ -26,23 +49,4 @@ public class Country {
         this.name = name;
         this.code = code;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
-    private Integer id;
-
-    @Column(nullable = false, length = 45)
-    @Getter @Setter
-    private String name;
-
-    @Column(nullable = false, length = 5)
-    @Getter @Setter
-    private String code;
-
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
-    private Set<State> states;
-
-    @OneToMany(mappedBy = "country")
-    private Set<Customer> customers;
 }

@@ -8,11 +8,12 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Table(name = "customers")
 @Entity
-@Getter @Setter
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "customers")
 public class Customer {
 
     @Id

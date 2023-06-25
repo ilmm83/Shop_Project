@@ -11,18 +11,20 @@ import java.util.List;
 @NoArgsConstructor
 public class BrandDTO {
 
-  private Long id;
+    private Long id;
 
-  private List<Long> parentIds;
+    private List<Long> parentIds;
 
-  private String name;
+    private String name;
 
-  private String logo;
+    private String logo;
 
 
-  public String getPhotosImagePath() {
-    if (this.id == null || this.logo == null)
-      return null;
-    return "/brands-images/" + this.id + "/" + this.logo;
-  }
+    public String getPhotosImagePath() {
+        if (this.id == null || this.logo == null) {
+            return null;
+        }
+
+        return "/brands-images/" + this.id + "/" + this.logo;
+    }
 }

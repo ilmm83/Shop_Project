@@ -16,54 +16,56 @@ import java.util.List;
 @Builder
 public class ProductDTO {
 
-  private Long id;
+    private Long id;
 
-  private String name;
+    private String name;
 
-  private String alias;
+    private String alias;
 
-  private String shortDescription;
+    private String shortDescription;
 
-  private String fullDescription;
+    private String fullDescription;
 
-  private Date createdAt;
+    private Date createdAt;
 
-  private Date updatedAt;
+    private Date updatedAt;
 
-  private boolean enabled;
+    private boolean enabled;
 
-  private boolean inStock;
+    private boolean inStock;
 
-  private BigDecimal price;
+    private BigDecimal price;
 
-  private BigDecimal discountPercent;
+    private BigDecimal discountPercent;
 
-  private BigDecimal cost;
+    private BigDecimal cost;
 
-  private float length;
+    private float length;
 
-  private float width;
+    private float width;
 
-  private float height;
+    private float height;
 
-  private float weight;
+    private float weight;
 
-  private String mainImage;
+    private String mainImage;
 
-  @Builder.Default
-  private List<ProductDetail> details = new LinkedList<>();
+    @Builder.Default
+    private List<ProductDetail> details = new LinkedList<>();
 
-  @Builder.Default
-  private List<ProductImage> images = new LinkedList<>();
+    @Builder.Default
+    private List<ProductImage> images = new LinkedList<>();
 
-  private Long brandId;
+    private Long brandId;
 
-  private Long categoryId;
+    private Long categoryId;
 
-  public String getMainImagesPath() {
-    if (this.id == null || this.mainImage == null)
-      return null;
 
-    return "/product-images/" + this.id + "/" + this.mainImage;
-  }
+    public String getMainImagesPath() {
+        if (this.id == null || this.mainImage == null) {
+            return null;
+        }
+
+        return "/product-images/" + this.id + "/" + this.mainImage;
+    }
 }

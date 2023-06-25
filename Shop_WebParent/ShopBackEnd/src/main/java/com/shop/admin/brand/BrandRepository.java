@@ -20,10 +20,6 @@ public interface BrandRepository extends SearchRepository<Brand, Long> {
 
     Brand deleteById(Long id);
 
-    Iterable<Brand> saveAll(Iterable<Brand> brands);
-
-    Iterable<Brand> findAll();
-
     @Query("SELECT b FROM Brand b ORDER BY b.name ASC")
     Iterable<Brand> findAllByNameAsc();
 

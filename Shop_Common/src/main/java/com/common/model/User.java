@@ -8,12 +8,13 @@ import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Table(name = "users")
 @Entity
-@Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users")
 public class User {
 
     @Id
@@ -42,6 +43,7 @@ public class User {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+
     public void addRole(Role role) {
         this.roles.add(role);
     }
@@ -50,19 +52,21 @@ public class User {
     public String toString() {
         var listOfRoleNames = roles.stream().map(Role::getName).toList();
         return "User: \n"
-                + "  " + id + ", \n"
-                + "  " + email + ", \n"
-                + "  " + password + ", \n"
-                + "  " + firstName + ", \n"
-                + "  " + lastName + ", \n"
-                + "  " + enabled + ", \n"
-                + "  " + listOfRoleNames + ";\n";
+            + "  " + id + ", \n"
+            + "  " + email + ", \n"
+            + "  " + password + ", \n"
+            + "  " + firstName + ", \n"
+            + "  " + lastName + ", \n"
+            + "  " + enabled + ", \n"
+            + "  " + listOfRoleNames + ";\n";
     }
 
     @Transient
     public String getPhotosImagePath() {
-        if (this.id == null || this.photos == null)
+        if (this.id == null || this.photos == null) {
             return null;
+        }
+
         return "/images/user-images/" + this.id + "/" + this.photos;
     }
 
@@ -72,13 +76,12 @@ public class User {
     }
 
     public boolean hasRole(String roleName) {
-        var iterator = roles.iterator();
-        
-        while (iterator.hasNext()) {
-            var role = iterator.next();
-            if (role.getName().equals(roleName))
+        for (var role : roles) {
+            if (role.getName().equals(roleName)) {
                 return true;
+            }
         }
+
         return false;
     }
 }
