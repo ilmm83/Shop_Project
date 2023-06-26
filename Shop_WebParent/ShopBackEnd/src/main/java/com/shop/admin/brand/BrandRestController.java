@@ -32,12 +32,12 @@ public class BrandRestController {
         var listCategories = new ArrayList<CategoryDTO>();
 
         try {
-            service.findById(brandId).getCategories()
+            service.findById(brandId)
+                .getCategories()
                 .forEach(cat -> listCategories.add(convertToCategoryDTO(cat)));
 
         } catch (BrandNotFoundException e) {
             e.printStackTrace();
-            throw new BrandNotFoundRestException();
         }
 
         return listCategories;
