@@ -20,16 +20,12 @@ public interface CategoryRepository extends SearchRepository<Category, Long> {
 
     Optional<Long> countById(Long id);
 
-    Iterable<Category> saveAll(Iterable<Category> categories);
-
-    Iterable<Category> findAll();
-
     Iterable<Category> findAll(Sort sort);
+
+    Page<Category> findAll(Pageable pageable);
 
     @Query("SELECT c FROM Category c WHERE c.name LIKE %?1% OR c.alias LIKE %?2%")
     Iterable<Category> findByNameAndAlias(String name, String alias);
-
-    Page<Category> findAll(Pageable pageable);
 
     @Modifying
     @Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")
