@@ -5,8 +5,6 @@ import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,16 +53,6 @@ public class CategoryService {
         return (List<Category>) repository.findAll(Sort.by("name").ascending());
     }
 
-    public Page<Category> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
-        var sort = Sort.by(sortField);
-        sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-
-        var pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-
-        if (keyword != null) return repository.findAll(keyword, pageable);
-        else return repository.findAll(pageable);
-    }
-
     public Category findById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
@@ -89,10 +77,6 @@ public class CategoryService {
         }
     }
 
-    public List<Category> findAll() {
-        return (List<Category>) repository.findAll();
-    }
-
     public String checkNameAndAliasUnique(Long id, String name, String alias) {
         var categories = repository.findByNameAndAlias(name, alias);
         var response = "OK";
@@ -100,6 +84,7 @@ public class CategoryService {
         for (var cat : categories) {
             if (!response.equals("OK")) break;
             if (cat == null) continue;
+
             response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
         }
 
