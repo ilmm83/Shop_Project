@@ -37,7 +37,7 @@ public class CountryRestController {
     }
 
     @ExceptionHandler(CountryNotFoundException.class)
-    private ResponseEntity<CountryExceptionResponse> authRegisterExceptionHandler(CountryNotFoundException e) {
+    public ResponseEntity<CountryExceptionResponse> handleAuthRegisterException(CountryNotFoundException e) {
         var response = new CountryExceptionResponse(e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
