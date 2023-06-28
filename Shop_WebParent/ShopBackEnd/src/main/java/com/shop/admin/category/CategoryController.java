@@ -21,6 +21,7 @@ import java.io.IOException;
 public class CategoryController {
 
     private static final String REDIRECT_API_V1_CATEGORIES = "redirect:/api/v1/categories";
+
     private final CategoryService service;
 
 
@@ -59,6 +60,7 @@ public class CategoryController {
     public String deleteCategory(@PathVariable("id") long id, RedirectAttributes attributes) {
         try {
             service.delete(id);
+
             attributes.addFlashAttribute("message", "The category with ID: " + id + " has been deleted successfully!");
 
         } catch (CategoryNotFoundException e) {
@@ -70,7 +72,7 @@ public class CategoryController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    public String viewEditPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var category = service.findById(id);
 
@@ -108,9 +110,7 @@ public class CategoryController {
     @GetMapping("/export/csv")
     public void exportToCSV(HttpServletResponse response) throws IOException {
         var categories = service.findAllCategoriesSortedByName();
-        var exporter = new CategoryCSVExporter();
-
-        exporter.export(categories, response);
+        new CategoryCSVExporter().export(categories, response);
     }
 
     private Category convertToCategory(CategoryDTO dto) {
