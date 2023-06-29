@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends SearchRepository<Customer, Long> {
 
-    @Query("UPDATE Customer c SET c.enabled = ?2 WHERE c.id = ?1")
     @Modifying
+    @Query("UPDATE Customer c SET c.enabled = ?2 WHERE c.id = ?1")
     void enableCustomerById(long id, boolean state);
 
     Optional<Customer> findById(long id);
