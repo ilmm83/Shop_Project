@@ -81,7 +81,7 @@ public class CustomerController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCustomerById(@PathVariable long id, Model model) {
+    public String deleteCustomer(@PathVariable long id, Model model) {
         try {
             customerService.deleteById(id);
 
