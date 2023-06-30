@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class ProductSaveHelper {
 
-    static void setProductDetails(String[] detailNames, String[] detailValues, Product product, ProductService productService) {
+    public static void setProductDetails(String[] detailNames, String[] detailValues, Product product, ProductService productService) {
         if (detailNames == null) {
             return;
         }
@@ -34,7 +34,7 @@ public class ProductSaveHelper {
         product.setDetails(details);
     }
 
-    static void setAndSaveNewExtraImages(MultipartFile[] multipart, Product product) throws IOException {
+    public static void setAndSaveNewExtraImages(MultipartFile[] multipart, Product product) throws IOException {
         if (multipart.length == 0) {
             return;
         }
@@ -54,7 +54,7 @@ public class ProductSaveHelper {
         }
     }
 
-    static void setAndSaveMainImage(MultipartFile mainImage, Product product) throws IOException {
+    public static void setAndSaveMainImage(MultipartFile mainImage, Product product) throws IOException {
         if (Objects.equals(mainImage.getOriginalFilename(), "")) {
             return;
         }
@@ -67,7 +67,7 @@ public class ProductSaveHelper {
         product.setMainImage(fileName);
     }
 
-    static void isDescriptionsEmpty(Product product, String empty) {
+    public static void isDescriptionsEmpty(Product product, String empty) {
         if (product.getFullDescription().equals(empty)) {
             product.setFullDescription("No description.");
         }

@@ -34,7 +34,6 @@ public class ProductService {
         helper.searchEntities(pageNum, PAGE_SIZE, repository, categoryId);
     }
 
-
     public String checkNameAndAliasUnique(Long id, String name, String alias) {
         var products = repository.findByNameAndAlias(name, alias);
         var response = "OK";
@@ -52,7 +51,6 @@ public class ProductService {
     public String createNewProduct(MultipartFile mainImageMultipart, MultipartFile[] extraImagesMultipart,
                                    String[] detailNames, String[] detailValues, ShopUserDetails loggedUser,
                                    RedirectAttributes attributes, Product product) {
-
         try {
             save(product);
 
@@ -82,7 +80,6 @@ public class ProductService {
         return "redirect:/api/v1/products";
     }
 
-
     public void deleteProduct(Long id, RedirectAttributes attributes) {
         try {
             delete(id);
@@ -97,7 +94,6 @@ public class ProductService {
             e.printStackTrace();
         }
     }
-
 
     public Product findById(Long id) {
         return repository.findById(id)
