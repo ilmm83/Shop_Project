@@ -41,6 +41,7 @@ public class SettingController {
                                       RedirectAttributes attributes) {
 
         var settingBag = settingService.getGeneralSettings();
+
         settingService.saveLogo(multipart, settingBag);
         settingService.saveCurrencySymbol(request, settingBag, currencyService);
         settingService.updateSettingValues(request, settingBag.getSettings());
