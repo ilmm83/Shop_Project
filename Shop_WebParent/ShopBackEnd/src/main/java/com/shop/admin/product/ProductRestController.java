@@ -20,7 +20,7 @@ public class ProductRestController {
     }
 
     @PostMapping("/remove_image")
-    public void removeImage(@Param("id") Long id, @Param("fileName") String fileName) {
+    public void removeProductImage(@Param("id") Long id, @Param("fileName") String fileName) {
         service.removeImage(id, fileName);
     }
 }
