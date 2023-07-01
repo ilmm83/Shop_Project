@@ -21,29 +21,23 @@ public interface ProductRepository extends SearchRepository<Product, Long> {
 
     Optional<Product> deleteById(Long id);
 
-    Iterable<Product> saveAll(Iterable<Product> products);
-
-    Iterable<Product> findAll();
-
-    Optional<Long> countById(Long id);
-
     @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% OR p.alias LIKE %?2%")
     Iterable<Product> findByNameAndAlias(String name, String alias);
 
-    @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
     @Modifying
+    @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
     void changeProductState(Long id, boolean state);
 
-    @Query("DELETE FROM ProductDetail pd" +
-        " WHERE pd.product.id =" +
-        " (SELECT p.id FROM Product p WHERE p.id=?1)")
     @Modifying
+    @Query("DELETE FROM ProductDetail pd"
+        + " WHERE pd.product.id ="
+        + " (SELECT p.id FROM Product p WHERE p.id=?1)")
     void clearProductDetails(Long id);
 
+    @Modifying
     @Query("DELETE FROM ProductImage pi" +
         " WHERE pi.name=?2 AND pi.product.id =" +
         " (SELECT p.id FROM Product p WHERE p.id=?1)")
-    @Modifying
     void removeImageByProductId(Long productId, String fileName);
 
     @Query("SELECT p FROM Product p WHERE p.category.id = ?1 OR p.category.allParentIDs LIKE %?2%")
