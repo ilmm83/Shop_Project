@@ -38,7 +38,7 @@ public class UserService {
         return (List<User>) userRepository.findAll(Sort.by("id").ascending());
     }
 
-    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+    public void findUsersByPageNumber(int pageNum, PagingAndSortingHelper helper) {
         helper.searchEntities(pageNum, PAGE_SIZE, userRepository);
     }
 
@@ -165,7 +165,7 @@ public class UserService {
     }
 
     @Transactional
-    public void changeEnableState(Long id, boolean isEnable) {
+    public void changeUserState(Long id, boolean isEnable) {
         userRepository.updateEnabledStatus(id, isEnable);
     }
 }

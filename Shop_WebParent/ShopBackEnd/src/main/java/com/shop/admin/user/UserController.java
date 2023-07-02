@@ -27,7 +27,7 @@ public class UserController {
 
 
     @GetMapping
-    public String listFirstPage() {
+    public String viewFirstPage() {
         return "redirect:/api/v1/users/1?sortField=id&sortDir=asc";
     }
 
@@ -50,14 +50,15 @@ public class UserController {
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PagingAndSortingParam(listName = "users", moduleURL = "/api/v1/users") PagingAndSortingHelper helper, @PathVariable int pageNum) {
-        service.listByPage(pageNum, helper);
+    public String viewUsersByPageNumber(@PagingAndSortingParam(listName = "users", moduleURL = "/api/v1/users") PagingAndSortingHelper helper,
+                                        @PathVariable int pageNum) {
+        service.findUsersByPageNumber(pageNum, helper);
 
         return "users/users";
     }
 
     @GetMapping("/new")
-    public String viewUserFormPage(Model model) {
+    public String viewCreateUserPage(Model model) {
         var user = new User();
         user.setEnabled(true);
 
@@ -70,17 +71,17 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String createNewUser(@RequestParam("image") MultipartFile multipart, User user, RedirectAttributes redirect) {
+    public String createNewUser(@RequestParam("image") MultipartFile multipart, User user, RedirectAttributes attributes) {
         service.createNewUser(multipart, user);
 
-        redirect.addFlashAttribute("message", "The user has been saved successfully.");
+        attributes.addFlashAttribute("message", "The user has been saved successfully.");
 
         var firstPartOfEmail = user.getEmail().split("@")[0];
         return REDIRECT_API_V1_USERS + "/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
+    public String viewEditUserPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             model.addAttribute("user", service.findById(id));
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
@@ -91,40 +92,40 @@ public class UserController {
 
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-            redirect.addFlashAttribute("message", e.getMessage());
+            attributes.addFlashAttribute("message", e.getMessage());
         }
 
         return REDIRECT_API_V1_USERS;
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirect) {
+    public String deleteUser(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             service.delete(id);
 
-            redirect.addFlashAttribute("message", "The user with ID " + id + " has been deleted successfuly");
+            attributes.addFlashAttribute("message", "The user with ID " + id + " has been deleted successfully");
 
         } catch (UserNotFoundException e) {
-            redirect.addFlashAttribute("message", e.getMessage());
+            attributes.addFlashAttribute("message", e.getMessage());
         }
 
         return REDIRECT_API_V1_USERS;
     }
 
     @GetMapping("/enabled/true/{id}")
-    public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
-        redirect.addFlashAttribute("message", "User with ID: " + id + " is now Enabled.");
+    public String changeUserStateToEnabled(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        attributes.addFlashAttribute("message", "User with ID: " + id + " is now Enabled.");
 
-        service.changeEnableState(id, true);
+        service.changeUserState(id, true);
 
         return REDIRECT_API_V1_USERS;
     }
 
     @GetMapping("/enabled/false/{id}")
-    public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
-        redirect.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
+    public String changeUserStateToDisabled(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        attributes.addFlashAttribute("message", "User with ID: " + id + " is now Disabled.");
 
-        service.changeEnableState(id, false);
+        service.changeUserState(id, false);
 
         return REDIRECT_API_V1_USERS;
     }

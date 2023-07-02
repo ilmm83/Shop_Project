@@ -33,10 +33,10 @@ public class UserExcelExporter extends AbstractExporter {
         workbook.close();
     }
 
-    private void createCell(XSSFRow row, int columnIndx, Object value, CellStyle style) {
-        var cell = row.createCell(columnIndx);
+    private void createCell(XSSFRow row, int columnIndex, Object value, CellStyle style) {
+        var cell = row.createCell(columnIndex);
 
-        sheet.autoSizeColumn(columnIndx);
+        sheet.autoSizeColumn(columnIndex);
 
         if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
@@ -80,7 +80,7 @@ public class UserExcelExporter extends AbstractExporter {
         var rowIndex = 1;
 
         for (var user : users) {
-            XSSFRow row = sheet.createRow(rowIndex++);
+            var row = sheet.createRow(rowIndex++);
 
             var columnIndex = 0;
             var style = setCellStyle(false, 12);
