@@ -1,4 +1,4 @@
-package controller;
+package com.shop.admin.controller;
 
 import com.common.model.Country;
 import com.common.model.Currency;

@@ -1,4 +1,4 @@
-package controller;
+package com.shop.admin.controller;
 
 import com.shop.admin.category.CategoryRestController;
 import com.shop.admin.category.CategoryService;

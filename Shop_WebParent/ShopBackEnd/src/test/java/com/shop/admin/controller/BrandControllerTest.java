@@ -1,4 +1,4 @@
-package controller;
+package com.shop.admin.controller;
 
 import com.common.dto.BrandDTO;
 import com.common.model.Brand;

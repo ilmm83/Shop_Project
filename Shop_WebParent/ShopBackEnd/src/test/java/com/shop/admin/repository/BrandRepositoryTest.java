@@ -1,4 +1,4 @@
-package repository;
+package com.shop.admin.repository;
 
 import com.common.model.Brand;
 import com.shop.admin.brand.BrandRepository;

@@ -1,4 +1,4 @@
-package controller;
+package com.shop.admin.controller;
 
 import com.shop.admin.product.ProductRestController;
 import com.shop.admin.product.ProductService;

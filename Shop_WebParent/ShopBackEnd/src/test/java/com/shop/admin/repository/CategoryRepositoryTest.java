@@ -1,4 +1,4 @@
-package repository;
+package com.shop.admin.repository;
 
 import com.common.model.Category;
 import com.shop.admin.category.CategoryRepository;

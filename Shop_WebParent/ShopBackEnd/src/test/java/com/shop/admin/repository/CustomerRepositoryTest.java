@@ -1,4 +1,4 @@
-package repository;
+package com.shop.admin.repository;
 
 import com.shop.admin.customer.CustomerRepository;
 import org.junit.jupiter.api.Test;
