@@ -22,7 +22,7 @@ public class AccountController {
 
 
     @GetMapping
-    public String viewDetails(@AuthenticationPrincipal ShopUserDetails loggedUser, Model model) {
+    public String viewAccountDetails(@AuthenticationPrincipal ShopUserDetails loggedUser, Model model) {
         var email = loggedUser.getUsername();
         var user = service.getByEmail(email);
 
@@ -33,12 +33,12 @@ public class AccountController {
 
     @PostMapping("/update")
     public String updateUserAccount(@RequestParam("image") MultipartFile multipart,
-                                    @AuthenticationPrincipal ShopUserDetails userDetails,
-                                    User user, RedirectAttributes redirect) {
+                                    @AuthenticationPrincipal ShopUserDetails loggedUser,
+                                    User user, RedirectAttributes attributes) {
 
-        service.updateUserAccount(multipart, user, userDetails);
+        service.updateUserAccount(multipart, user, loggedUser);
 
-        redirect.addFlashAttribute("message", "The user has been updated successfully.");
+        attributes.addFlashAttribute("message", "The user has been updated successfully.");
 
         return "redirect:/api/v1/account";
     }
