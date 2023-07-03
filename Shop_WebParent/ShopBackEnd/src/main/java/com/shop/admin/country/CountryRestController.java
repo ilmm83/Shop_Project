@@ -4,22 +4,21 @@ import com.common.model.Country;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/countries")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/countries")
 public class CountryRestController {
 
     private final CountryService service;
 
+
     @GetMapping("/list")
-    public ResponseEntity<List<Country>> listAllCountries(Model model) {
-        var countries = service.listAllCountriesOrderByNameAsc();
-        return ResponseEntity.ok(countries);
+    public ResponseEntity<List<Country>> listAllCountries() {
+        return ResponseEntity.ok(service.listAllCountriesOrderByNameAsc());
     }
 
     @PostMapping("/save")
@@ -28,7 +27,7 @@ public class CountryRestController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Integer> update(@PathVariable Integer id, @RequestBody Country country)  {
+    public ResponseEntity<Integer> update(@PathVariable Integer id, @RequestBody Country country) {
         return new ResponseEntity<>(service.update(id, country), HttpStatus.CREATED);
     }
 
@@ -38,8 +37,9 @@ public class CountryRestController {
     }
 
     @ExceptionHandler(CountryNotFoundException.class)
-    private ResponseEntity<CountryExceptionResponse> authRegisterExceptionHandler(CountryNotFoundException e) {
+    public ResponseEntity<CountryExceptionResponse> handleAuthRegisterException(CountryNotFoundException e) {
         var response = new CountryExceptionResponse(e.getMessage(), System.currentTimeMillis());
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

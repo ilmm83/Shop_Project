@@ -5,84 +5,84 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-@Table(name = "categories")
 @Entity
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
+@Table(name = "categories")
 public class Category {
 
-  public Category(Long id) {
-    this.id = id;
-  }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  public Category(String name, Category parent) {
-    this(name);
-    this.parent = parent;
-  }
+    @Column(length = 128, unique = true, nullable = false)
+    private String name;
 
-  public Category(Long id, String name) {
-    this.id = id;
-    this.name = name;
-  }
+    @Column(length = 64, unique = true, nullable = false)
+    private String alias;
 
-  public Category(String name) {
-    this.name = name;
-    this.alias = name;
-    this.image = "default.png";
-  }
+    @Column(length = 64, nullable = false)
+    private String image;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    private boolean enabled;
 
-  @Column(length = 128, unique = true, nullable = false)
-  private String name;
+    @Column(name = "all_parent_ids", length = 256, nullable = true)
+    private String allParentIDs;
 
-  @Column(length = 64, unique = true, nullable = false)
-  private String alias;
+    @OneToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
 
-  @Column(length = 64, nullable = false)
-  private String image;
+    @Builder.Default
+    @OrderBy("name asc")
+    @OneToMany(mappedBy = "parent")
+    private Set<Category> children = new HashSet<>();
 
-  private boolean enabled;
 
-  @Column(name = "all_parent_ids", length = 256, nullable = true)
-  private String allParentIDs;
+    public Category(Long id) {
+        this.id = id;
+    }
 
-  @OneToOne
-  @JoinColumn(name = "parent_id")
-  private Category parent;
+    public Category(String name, Category parent) {
+        this(name);
+        this.parent = parent;
+    }
 
-  @Builder.Default
-  @OrderBy("name asc")
-  @OneToMany(mappedBy = "parent")
-  private Set<Category> children = new HashSet<>();
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-  @Override
-  public String toString() {
-    return "\n  id - " + id + ", \n"
-        + "  Category - " + name + ", \n"
-        + "  alias - " + alias + ", \n"
-        + "  image - " + image + ", \n"
-        + "  parent - " + parent + ", \n"
-        + "  enabled - " + enabled + ", \n"
-        + "  children\n\t" + children.stream()
+    public Category(String name) {
+        this.name = name;
+        this.alias = name;
+        this.image = "default.png";
+    }
+
+    @Override
+    public String toString() {
+        return "\n  id - " + id + ", \n"
+            + "  Category - " + name + ", \n"
+            + "  alias - " + alias + ", \n"
+            + "  image - " + image + ", \n"
+            + "  parent - " + parent + ", \n"
+            + "  enabled - " + enabled + ", \n"
+            + "  children\n\t" + children.stream()
             .map(Category::getName)
-            .collect(Collectors.toList())
-        + ";\n";
-  }
+            .toList()
+            + ";\n";
+    }
 
-  @Transient
-  public String getPhotosImagePath() {
-    if (this.id == null || this.image == null)
-      return null;
+    @Transient
+    public String getPhotosImagePath() {
+        if (this.id == null || this.image == null) {
+            return null;
+        }
 
-    return "/categories-images/" + this.id + "/" + this.image;
-  }
-
+        return "/categories-images/" + this.id + "/" + this.image;
+    }
 }

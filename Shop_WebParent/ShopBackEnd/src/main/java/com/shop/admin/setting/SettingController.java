@@ -22,6 +22,7 @@ public class SettingController {
     private final CurrencyService currencyService;
     private final CountryService countryService;
 
+
     @GetMapping
     public String viewAllSettings(Model model) {
         model.addAttribute("currencies", currencyService.findAllByOrderByIdAsc());
@@ -29,18 +30,22 @@ public class SettingController {
         model.addAttribute("moduleURL", "/api/v1/settings");
 
         settingService.findAllSettings()
-                .forEach(setting -> model.addAttribute(setting.getKey(), setting.getValue()));
+            .forEach(setting -> model.addAttribute(setting.getKey(), setting.getValue()));
 
         return "settings/settings";
     }
 
     @PostMapping("/save_general")
-    public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipart, HttpServletRequest request,
+    public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipart,
+                                      HttpServletRequest request,
                                       RedirectAttributes attributes) {
+
         var settingBag = settingService.getGeneralSettings();
+
         settingService.saveLogo(multipart, settingBag);
         settingService.saveCurrencySymbol(request, settingBag, currencyService);
         settingService.updateSettingValues(request, settingBag.getSettings());
+
         attributes.addFlashAttribute("message", "General settings have been saved.");
 
         return "redirect:/api/v1/settings";
@@ -50,6 +55,7 @@ public class SettingController {
     public String saveMailServerSettings(RedirectAttributes attributes, HttpServletRequest request) {
         var settingBag = settingService.getMainServerSettings();
         settingService.updateSettingValues(request, settingBag.getSettings());
+
         attributes.addFlashAttribute("message", "Mail Server settings have been saved.");
 
         return "redirect:/api/v1/settings";
@@ -59,9 +65,9 @@ public class SettingController {
     public String saveMailTemplatesSettings(RedirectAttributes attributes, HttpServletRequest request) {
         var settingBag = settingService.getMainTemplatesSettings();
         settingService.updateSettingValues(request, settingBag.getSettings());
+
         attributes.addFlashAttribute("message", "Mail Templates settings have been saved.");
 
         return "redirect:/api/v1/settings";
     }
-
 }

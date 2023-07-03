@@ -1,12 +1,10 @@
 package com.shop.admin.category;
 
+import com.common.model.Category;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.common.model.Category;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,20 +25,24 @@ public class CategoryService {
 
     public static final int PAGE_SIZE = 4;
 
-    public List<Category> listCategoriesHierarchical() {
-        var catToForm = new ArrayList<Category>();
-        var catFromDB = repository.findAll(Sort.by("name").ascending());
 
-        for (var category : catFromDB) {
+    public List<Category> listCategoriesHierarchical() {
+        var formCategory = new ArrayList<Category>();
+        var DBCategory = repository.findAll(Sort.by("name").ascending());
+
+        for (var category : DBCategory) {
             if (category.getParent() == null) {
-                catToForm.add(new Category(category.getId(), category.getName()));
+                formCategory.add(new Category(category.getId(), category.getName()));
+
                 for (var sub : category.getChildren()) {
-                    catToForm.add(new Category(sub.getId(), "--" + sub.getName()));
-                    listChildren(sub, catToForm);
+                    formCategory.add(new Category(sub.getId(), "--" + sub.getName()));
+
+                    listChildren(sub, formCategory);
                 }
             }
         }
-        return catToForm;
+
+        return formCategory;
     }
 
     public void findAllCategoriesSortedBy(int pageNum, PagingAndSortingHelper helper) {
@@ -47,25 +50,12 @@ public class CategoryService {
     }
 
     public List<Category> findAllCategoriesSortedByName() {
-        Sort sort = Sort.by("name").ascending();
-        return (List<Category>) repository.findAll(sort);
-    }
-
-    public Page<Category> listByPage(int pageNum, String sortField, String sortDirection, String keyword) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-
-        PageRequest pageable = PageRequest.of(pageNum - 1, PAGE_SIZE, sort);
-
-        if (keyword != null)
-            return repository.findAll(keyword, pageable);
-        else
-            return repository.findAll(pageable);
+        return (List<Category>) repository.findAll(Sort.by("name").ascending());
     }
 
     public Category findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
+            .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
     }
 
     public void createNewCategory(MultipartFile multipart, Category category) {
@@ -75,8 +65,10 @@ public class CategoryService {
 
             var saved = save(category);
             var uploadDir = "./Shop_WebParent/categories-images/" + saved.getId();
+
             try {
                 FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+
             } catch (IOException e) {
                 throw new FileNotSavedException(e.getMessage(), e);
             }
@@ -85,23 +77,38 @@ public class CategoryService {
         }
     }
 
+    public String checkNameAndAliasUnique(Long id, String name, String alias) {
+        var categories = repository.findByNameAndAlias(name, alias);
+        var response = "OK";
+
+        for (var cat : categories) {
+            if (!response.equals("OK")) break;
+            if (cat == null) continue;
+
+            response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
+        }
+
+        return response;
+    }
+
     @Transactional
-    private Category save(Category catFromForm) {
-        var parentProxy = catFromForm.getParent();
+    private Category save(Category formCategory) {
+        var parentProxy = formCategory.getParent();
+
         if (parentProxy != null) {
             var parent = repository.findById(parentProxy.getId()).get();
             var allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
-            allParentIds += String.valueOf(parent.getId()) + "-";
-            catFromForm.setAllParentIDs(allParentIds);
+            allParentIds += parent.getId() + "-";
+
+            formCategory.setAllParentIDs(allParentIds);
         }
 
-        return repository.save(catFromForm);
+        return repository.save(formCategory);
     }
 
     @Transactional
     public void delete(Long id) {
-        repository.countById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
+        repository.countById(id).orElseThrow(() -> new CategoryNotFoundException("Could not find category with this ID " + id));
         repository.deleteById(id);
     }
 
@@ -110,44 +117,26 @@ public class CategoryService {
         repository.updateEnabledStatus(id, isEnabled);
     }
 
-    public List<Category> findAll() {
-        return (List<Category>) repository.findAll();
-    }
 
-    public String checkNameAndAliasUnique(Long id, String name, String alias) {
-        var categories = repository.findByNameAndAlias(name, alias);
-        var response = "OK";
-
-        for (var cat : categories) {
-            if (!response.equals("OK"))
-                break;
-            if (cat == null)
-                continue;
-            response = isCategoryExistsByNameOrAlias(id, cat, name, alias);
-        }
-
-        return response;
-    }
-
-    private void listChildren(Category parent, List<Category> catToForm) {
+    private void listChildren(Category parent, List<Category> categories) {
         var children = parent.getChildren();
-        var dashes = "--";
+        var dashes = new StringBuilder("--");
+
         for (var sub : children) {
-            for (int i = 0; i < children.size(); i++)
-                dashes += "--";
-            catToForm.add(new Category(sub.getId(), dashes + sub.getName()));
-            listChildren(sub, catToForm);
+            dashes.append("--".repeat(children.size()));
+
+            categories.add(new Category(sub.getId(), dashes + sub.getName()));
+            listChildren(sub, categories);
+
             children.remove(sub);
         }
     }
 
     private String isCategoryExistsByNameOrAlias(Long id, Category category, String name, String alias) {
-        if (category == null || category.getId() == id)
-            return "OK";
-        else if (category.getName().equals(name))
-            return "Name";
-        else if (category.getAlias().equals(alias))
-            return "Alias";
+        if (category == null || Objects.equals(category.getId(), id)) return "OK";
+        else if (category.getName().equals(name)) return "Name";
+        else if (category.getAlias().equals(alias)) return "Alias";
+
         return "OK";
     }
 }

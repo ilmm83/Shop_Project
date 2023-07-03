@@ -4,7 +4,7 @@ import com.common.dto.CategoryDTO;
 import com.common.model.Category;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
-import com.shop.admin.utils.exporter.category.CategoryCSVExporter;
+import com.shop.admin.utils.exporter.CategoryCSVExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,12 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/categories")
 public class CategoryController {
 
     private static final String REDIRECT_API_V1_CATEGORIES = "redirect:/api/v1/categories";
+
     private final CategoryService service;
+
 
     @GetMapping
     public String viewCategories() {
@@ -29,19 +31,19 @@ public class CategoryController {
     }
 
     @GetMapping("/{pageNum}")
-    public String listByPage(@PagingAndSortingParam(listName = "categories", moduleURL = "/api/v1/categories") PagingAndSortingHelper helper,
-                             @PathVariable int pageNum) {
+    public String listByPage(@PagingAndSortingParam(listName = "categories", moduleURL = "/api/v1/categories") PagingAndSortingHelper helper, @PathVariable int pageNum) {
         service.findAllCategoriesSortedBy(pageNum, helper);
+
         return "categories/categories";
     }
 
     @GetMapping("/new")
     public String viewCategoryForm(Model model) {
-
         model.addAttribute("categories", service.listCategoriesHierarchical());
         model.addAttribute("categoryDTO", new CategoryDTO());
         model.addAttribute("category", new Category());
         model.addAttribute("moduleURL", "/api/v1/categories");
+
         return "categories/categories_form";
     }
 
@@ -50,6 +52,7 @@ public class CategoryController {
         service.createNewCategory(multipart, convertToCategory(dto));
 
         attributes.addFlashAttribute("message", "The category has been saved successfully!");
+
         return REDIRECT_API_V1_CATEGORIES;
     }
 
@@ -57,16 +60,19 @@ public class CategoryController {
     public String deleteCategory(@PathVariable("id") long id, RedirectAttributes attributes) {
         try {
             service.delete(id);
+
             attributes.addFlashAttribute("message", "The category with ID: " + id + " has been deleted successfully!");
+
         } catch (CategoryNotFoundException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return REDIRECT_API_V1_CATEGORIES;
     }
 
     @GetMapping("/edit/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    public String viewEditPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var category = service.findById(id);
 
@@ -86,22 +92,25 @@ public class CategoryController {
     @GetMapping("/enabled/true/{id}")
     public String changeEnableStateToEnabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Enabled.");
+
         service.changeEnableState(id, true);
+
         return REDIRECT_API_V1_CATEGORIES;
     }
 
     @GetMapping("/enabled/false/{id}")
     public String changeEnableStateToDisabled(@PathVariable("id") Long id, RedirectAttributes redirect) {
         redirect.addFlashAttribute("message", "Category with ID: " + id + " is now Disabled.");
+
         service.changeEnableState(id, false);
+
         return REDIRECT_API_V1_CATEGORIES;
     }
 
     @GetMapping("/export/csv")
     public void exportToCSV(HttpServletResponse response) throws IOException {
         var categories = service.findAllCategoriesSortedByName();
-        var exporter = new CategoryCSVExporter();
-        exporter.export(categories, response);
+        new CategoryCSVExporter().export(categories, response);
     }
 
     private Category convertToCategory(CategoryDTO dto) {

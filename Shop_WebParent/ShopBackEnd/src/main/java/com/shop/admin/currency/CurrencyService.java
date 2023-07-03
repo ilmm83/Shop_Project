@@ -14,9 +14,10 @@ public class CurrencyService {
 
     private final CurrencyRepository repository;
 
-    public Currency findById(Integer id) throws CurrencyNotFound {
+
+    public Currency findById(Integer id) {
         return repository.findById(id)
-                .orElseThrow(() -> new CurrencyNotFound("Could not find a currency with id: " + id));
+            .orElseThrow(() -> new CurrencyNotFound("Could not find a currency with id: " + id));
     }
 
     public List<Currency> findAllByOrderByIdAsc() {

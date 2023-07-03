@@ -14,6 +14,7 @@ public class CountryService {
 
     private final CountryRepository repository;
 
+
     public List<Country> listAllCountriesOrderByNameAsc() {
         return (List<Country>) repository.findAllByOrderByNameAsc();
     }
@@ -26,11 +27,12 @@ public class CountryService {
     @Transactional
     public Integer delete(Integer id) {
         repository.deleteById(id);
+
         return id;
     }
 
     @Transactional
-    public Integer update(Integer id, Country country)  {
+    public Integer update(Integer id, Country country) {
         var found = repository.findById(id).orElseThrow(() -> new CountryNotFoundException("Could not found a country with ID: " + id));
         found.setName(country.getName());
         found.setCode(country.getCode());

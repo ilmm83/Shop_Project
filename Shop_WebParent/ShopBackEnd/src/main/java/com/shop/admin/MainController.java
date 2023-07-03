@@ -1,11 +1,10 @@
 package com.shop.admin;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,8 +18,11 @@ public class MainController {
     @GetMapping("/login")
     public String login() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken)
+
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "login";
+        }
+
         return "redirect:/";
     }
 }

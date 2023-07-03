@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomerService {
 
     private final CustomerRepository repository;
     private final PasswordEncoder encoder;
+
     public static final int PAGE_SIZE = 10;
 
 
@@ -31,6 +32,7 @@ public class CustomerService {
 
     public boolean isEmailUnique(Long id, String email) {
         var found = repository.findByEmail(email);
+
         if (found.isEmpty()) return true;
         else if (id == null) return false;
         else return Objects.equals(found.get().getId(), id);
@@ -69,6 +71,7 @@ public class CustomerService {
     public void deleteById(long id) {
         repository.countById(id)
             .orElseThrow(() -> new CustomerNotFoundException("Could not found a customer with the ID: " + id));
+
         repository.deleteById(id);
     }
 }

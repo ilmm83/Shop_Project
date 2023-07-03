@@ -1,19 +1,18 @@
 package com.common.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "settings")
 public class Setting {
-
-    public Setting(String key) {
-        this.key = key;
-    }
-
 
     @Id
     @Column(name = "'key'", nullable = false, length = 128)
@@ -26,11 +25,17 @@ public class Setting {
     @Column(nullable = false, length = 45)
     private SettingCategory category;
 
+
+    public Setting(String key) {
+        this.key = key;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+        final var prime = 31;
+        var result = 1;
         result = prime * result + ((key == null) ? 0 : key.hashCode());
+
         return result;
     }
 
@@ -39,13 +44,12 @@ public class Setting {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Setting that = (Setting) o;
+        var that = (Setting) o;
 
         if (key == null) {
-            if (that.key != null) return false;
-        } else if (!key.equals(that.key))
-            return false;
-
-        return true;
+            return that.key == null;
+        } else {
+            return key.equals(that.key);
+        }
     }
 }

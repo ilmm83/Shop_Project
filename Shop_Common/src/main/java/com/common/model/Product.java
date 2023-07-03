@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-@Table(name = "products")
 @Entity
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -85,6 +85,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductDetail> details = new LinkedList<>();
 
+
     public void addExtraImage(String imageName) {
         this.images.add(new ProductImage(imageName, this));
     }
@@ -95,17 +96,19 @@ public class Product {
 
     @Transient
     public String getMainImagesPath() {
-        if (this.id == null || this.mainImage == null)
+        if (this.id == null || this.mainImage == null) {
             return null;
+        }
 
         return "/product-images/" + this.id + "/" + this.mainImage;
     }
 
     @Transient
     public BigDecimal getDiscountPrice() {
-        BigDecimal dp = discountPercent.divide(new BigDecimal(100));
+        var dp = discountPercent.divide(new BigDecimal(100));
+
         return this.price.stripTrailingZeros()
-                .subtract(this.price.stripTrailingZeros().multiply(dp));
+            .subtract(this.price.stripTrailingZeros().multiply(dp));
     }
 
     @Transient
@@ -113,16 +116,20 @@ public class Product {
         var sb = new StringBuilder(String.valueOf(discountPercent));
         int s = sb.indexOf("."), e = sb.length();
 
-        while (e-- > s) { sb.deleteCharAt(e); }
+        while (e-- > s) {
+            sb.deleteCharAt(e);
+        }
 
         return sb.toString();
     }
 
     public boolean containsImageName(String fileName) {
         for (var image : images) {
-            if (image.getName().equals(fileName))
+            if (image.getName().equals(fileName)) {
                 return true;
+            }
         }
+
         return false;
     }
 }

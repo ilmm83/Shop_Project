@@ -1,22 +1,16 @@
 package com.common.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "currencies")
 @Entity
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
+@Table(name = "currencies")
 public class Currency {
-
-    public Currency(String name, String symbol, String code) {
-        this.name = name;
-        this.symbol = symbol;
-        this.code = code;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +25,10 @@ public class Currency {
     @Column(nullable = false, length = 4)
     private String code;
 
+
+    public Currency(String name, String symbol, String code) {
+        this.name = name;
+        this.symbol = symbol;
+        this.code = code;
+    }
 }

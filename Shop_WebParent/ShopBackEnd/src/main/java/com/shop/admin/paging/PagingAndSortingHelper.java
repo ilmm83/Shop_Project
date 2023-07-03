@@ -36,6 +36,7 @@ public class PagingAndSortingHelper {
 
         if (keyword != null) page = repository.findAll(keyword, pageable);
         else page = repository.findAll(pageable);
+
         updateModelAttributes(page, pageNum);
     }
 

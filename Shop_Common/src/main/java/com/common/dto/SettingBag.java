@@ -8,11 +8,12 @@ import java.util.List;
 @Getter
 public class SettingBag {
 
+    private List<Setting> settings;
+
+
     public SettingBag(List<Setting> settings) {
         this.settings = settings;
     }
-
-    private List<Setting> settings;
 
     public Setting get(String key) {
         int index = settings.indexOf(new Setting(key));
@@ -20,8 +21,8 @@ public class SettingBag {
     }
 
     public String getValue(String key) {
-       var setting = get(key);
-       return setting == null ? null : setting.getValue();
+        var setting = get(key);
+        return setting == null ? null : setting.getValue();
     }
 
     public void update(String key, String value) {

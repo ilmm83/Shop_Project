@@ -1,27 +1,16 @@
 package com.common.model;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "states")
 @Entity
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
+@Table(name = "states")
 public class State {
-
-    public State(String name, Country country) {
-        this.name = name;
-        this.country = country;
-    }
-
-    public State(int id, String name, Country country) {
-        this.id = id;
-        this.name = name;
-        this.country = country;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +22,16 @@ public class State {
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
+
+
+    public State(String name, Country country) {
+        this.name = name;
+        this.country = country;
+    }
+
+    public State(int id, String name, Country country) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+    }
 }

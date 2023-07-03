@@ -1,10 +1,10 @@
 package com.shop.admin.setting;
 
+import com.common.model.Setting;
+import com.common.model.SettingCategory;
 import com.shop.admin.currency.CurrencyService;
 import com.shop.admin.utils.FileNotSavedException;
 import com.shop.admin.utils.FileUploadUtil;
-import com.common.model.Setting;
-import com.common.model.SettingCategory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +40,7 @@ public class SettingService {
         var currency = (List<Setting>) repository.findByCategory(SettingCategory.CURRENCY);
 
         general.addAll(currency);
+
         return new GeneralSettingBag(general);
     }
 
@@ -47,14 +48,16 @@ public class SettingService {
         for (var setting : settings) {
             var value = request.getParameter(setting.getKey());
             if (value == null) continue;
+
             setting.setValue(value);
         }
+
         saveAll(settings);
     }
 
     public void saveCurrencySymbol(HttpServletRequest request, GeneralSettingBag settingBag, CurrencyService currencyService) {
-        var curIndex = Integer.parseInt(request.getParameter("CURRENCY_ID"));
-        var currency = currencyService.findById(curIndex);
+        var currencyId = Integer.parseInt(request.getParameter("CURRENCY_ID"));
+        var currency = currencyService.findById(currencyId);
         settingBag.updateCurrencySymbol(currency.getSymbol());
     }
 
@@ -62,11 +65,14 @@ public class SettingService {
         if (!multipart.isEmpty()) {
             var fileName = StringUtils.cleanPath(multipart.getOriginalFilename());
             var uploadDir = "./Shop_WebParent/site-logo/";
+
             try {
                 FileUploadUtil.saveFile(uploadDir, fileName, multipart);
+
             } catch (IOException e) {
                 throw new FileNotSavedException(e.getMessage(), e);
             }
+
             settingBag.updateSiteLogo("/site-logo/" + fileName);
         }
     }

@@ -1,12 +1,12 @@
 package com.shop.admin.product;
 
+import com.common.dto.ProductDTO;
+import com.common.model.Product;
 import com.shop.admin.brand.BrandService;
 import com.shop.admin.category.CategoryService;
 import com.shop.admin.paging.PagingAndSortingHelper;
 import com.shop.admin.paging.PagingAndSortingParam;
 import com.shop.admin.security.ShopUserDetails;
-import com.common.dto.ProductDTO;
-import com.common.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,27 +18,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static com.shop.admin.product.ProductSaveHelper.isDescriptionsEmpty;
 
 @Controller
-@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
     private final BrandService brandService;
     private final CategoryService categoryService;
 
+
     @GetMapping
-    public String productPage(Model model) {
+    public String viewFirstPage() {
         return "redirect:/api/v1/products/1?sortField=id&sortDir=asc";
     }
 
     @GetMapping("/new")
-    public String createNewProductPage(Model model) {
+    public String viewCreateNewProductPage(Model model) {
         var brands = brandService.findAllByNameAsc();
         var categories = categoryService.listCategoriesHierarchical();
         var dto = ProductDTO.builder()
-                .enabled(true)
-                .inStock(true)
-                .build();
+            .enabled(true)
+            .inStock(true)
+            .build();
+
         model.addAttribute("brands", brands);
         model.addAttribute("categories", categories);
         model.addAttribute("productDTO", dto);
@@ -49,25 +51,28 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String createNewProduct(@RequestParam(value = "fileImage", required = false) MultipartFile mainImageMultipart,
-                                   @RequestParam(value = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
-                                   @RequestParam(name = "detailName", required = false) String[] detailNames,
+    public String createNewProduct(@RequestParam(value = "extraImage", required = false) MultipartFile[] extraImagesMultipart,
+                                   @RequestParam(value = "fileImage", required = false) MultipartFile mainImageMultipart,
                                    @RequestParam(name = "detailValue", required = false) String[] detailValues,
-                                   @AuthenticationPrincipal ShopUserDetails loggedUser, RedirectAttributes attributes, ProductDTO dto) {
+                                   @RequestParam(name = "detailName", required = false) String[] detailNames,
+                                   @AuthenticationPrincipal ShopUserDetails loggedUser,
+                                   RedirectAttributes attributes, ProductDTO dto) {
 
         return productService.createNewProduct(mainImageMultipart, extraImagesMultipart, detailNames,
-                detailValues, loggedUser, attributes, convertToProduct(dto));
+            detailValues, loggedUser, attributes, convertToProduct(dto));
     }
 
 
     @GetMapping("/{pageNum}")
-    public String pageByNumber(@PagingAndSortingParam(listName = "products", moduleURL = "/api/v1/products") PagingAndSortingHelper helper,
-                               @PathVariable int pageNum,
-                               @RequestParam(name = "categoryId", required = false) Long categoryId,
-                               Model model) {
+    public String viewPageByPageNumber(@PagingAndSortingParam(listName = "products", moduleURL = "/api/v1/products") PagingAndSortingHelper helper,
+                                       @RequestParam(name = "categoryId", required = false) Long categoryId,
+                                       @PathVariable int pageNum,
+                                       Model model) {
 
         productService.findAllProductsSortedBy(pageNum, helper, categoryId);
+
         model.addAttribute("categories", categoryService.listCategoriesHierarchical());
+
         if (categoryId != null) {
             model.addAttribute("categoryId", categoryId);
         }
@@ -76,7 +81,7 @@ public class ProductController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editProduct(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    public String viewEditProductPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var product = productService.findById(id);
             var brands = brandService.findAllByNameAsc();
@@ -97,11 +102,12 @@ public class ProductController {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return "products/products_form";
     }
 
     @GetMapping("/detail/{id}")
-    public String showProductDetails(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    public String showProductDetailsPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
         try {
             var product = productService.findById(id);
             var brand = product.getBrand();
@@ -115,17 +121,29 @@ public class ProductController {
             model.addAttribute("imagesAmount", product.getImages().size());
 
             return "products/product_detail_modal";
+
         } catch (ProductNotFoundException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return "redirect:/api/v1/products";
     }
 
     @GetMapping("/enabled/false/{id}")
-    public String changeToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
+    public String changeTheProductStateToDisableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
         productService.changeProductState(id, false);
+
         attributes.addFlashAttribute("message", "The product with ID: " + id + " is now disabled.");
+
+        return "redirect:/api/v1/products";
+    }
+
+    @GetMapping("/enabled/true/{id}")
+    public String changeTheProductStateToEnableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        productService.changeProductState(id, true);
+
+        attributes.addFlashAttribute("message", "The product with ID: " + id + " is now enabled.");
 
         return "redirect:/api/v1/products";
     }
@@ -133,14 +151,6 @@ public class ProductController {
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, RedirectAttributes attributes) {
         productService.deleteProduct(id, attributes);
-
-        return "redirect:/api/v1/products";
-    }
-
-    @GetMapping("/enabled/true/{id}")
-    public String changeToEnableState(@PathVariable("id") Long id, RedirectAttributes attributes) {
-        productService.changeProductState(id, true);
-        attributes.addFlashAttribute("message", "The product with ID: " + id + " is now enabled.");
 
         return "redirect:/api/v1/products";
     }
@@ -176,7 +186,6 @@ public class ProductController {
     }
 
     private Product convertToProduct(ProductDTO dto) {
-
         var product = new Product();
         var brand = dto.getBrandId() == 0 ? null : brandService.findById(dto.getBrandId());
         var category = dto.getCategoryId() == 0 ? null : categoryService.findById(dto.getCategoryId());
@@ -197,9 +206,8 @@ public class ProductController {
         product.setWidth(dto.getWidth());
         product.setHeight(dto.getHeight());
         product.setWeight(dto.getWeight());
-        product.setMainImage(
-                dto.getMainImage() == null && dto.getId() != null ? productService.findById(dto.getId()).getMainImage()
-                        : "");
+        product.setMainImage(dto.getMainImage() == null && dto.getId() != null ?
+            productService.findById(dto.getId()).getMainImage() : "");
         product.setDetails(dto.getDetails());
         product.setImages(dto.getImages());
         product.setBrand(brand);

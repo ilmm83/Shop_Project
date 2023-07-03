@@ -20,28 +20,32 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 @Controller
-@RequestMapping("/api/v1/brands")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/brands")
 public class BrandController {
 
     private final BrandService brandService;
     private final CategoryService categoryService;
+
     private static final String REDIRECT_API_V1_BRANDS = "redirect:/api/v1/brands";
 
+
     @GetMapping
-    public String brandsPage() {
+    public String viewFirstPage() {
         return "redirect:/api/v1/brands/1?sortField=id&sortDir=asc";
     }
 
     @GetMapping("/{pageNum}")
     public String listByPage(@PagingAndSortingParam(listName = "brands", moduleURL = "/api/v1/brands") PagingAndSortingHelper helper,
                              @PathVariable int pageNum) {
+
         brandService.findAllBrandsSortedBy(pageNum, helper);
+
         return "brands/brands";
     }
 
     @GetMapping("/new")
-    public String newBrandCreationPage(Model model) {
+    public String showBrandCreationPage(Model model) {
         model.addAttribute("categories", categoryService.listCategoriesHierarchical());
         model.addAttribute("brandDTO", new BrandDTO());
         model.addAttribute("moduleURL", "/api/v1/brands");
@@ -54,20 +58,21 @@ public class BrandController {
         brandService.createNewBrand(convertToBrand(dto), multipart);
 
         attributes.addFlashAttribute("message", "The brand has been saved successfully!");
+
         return REDIRECT_API_V1_BRANDS;
     }
 
     @GetMapping("/edit/{id}")
-    public String viewEditPage(@PathVariable("id") Long id, Model model, RedirectAttributes attributes) {
+    public String viewEditPage(@PathVariable("id") Long id, Model model) {
         try {
             var brand = brandService.findById(id);
 
             model.addAttribute("brandDTO", convertToBrandDTO(brand));
             model.addAttribute("categories", categoryService.listCategoriesHierarchical());
             model.addAttribute("moduleURL", "/api/v1/brands");
+
         } catch (BrandNotFoundException e) {
             e.printStackTrace();
-            throw new BrandNotFoundException(e.getMessage());
         }
 
         return "brands/brands_form";
@@ -77,19 +82,24 @@ public class BrandController {
     public String deleteBrand(@PathVariable("id") Long id, RedirectAttributes attributes) {
         try {
             brandService.deleteById(id);
-            var uploadDir = "./Shop_WebParent/brands-images\\" + id;
+
+            var uploadDir = "./Shop_WebParent/brands-images/" + id;
             FileUploadUtil.folderCleaner(Path.of(uploadDir));
+
             attributes.addFlashAttribute("message", "The brand with ID: " + id + " has been deleted successfully!");
+
         } catch (BrandNotFoundException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             e.printStackTrace();
         }
+
         return REDIRECT_API_V1_BRANDS;
     }
 
     private Brand convertToBrand(BrandDTO dto) {
         var brand = new Brand();
         var categories = new HashSet<Category>();
+
         for (var id : dto.getParentIds()) {
             if (id == 0) continue;
 

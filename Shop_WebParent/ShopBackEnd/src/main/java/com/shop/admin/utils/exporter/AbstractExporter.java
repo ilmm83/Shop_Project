@@ -1,22 +1,22 @@
 package com.shop.admin.utils.exporter;
 
-import java.text.DateFormat;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 public abstract class AbstractExporter {
 
-  public void setResponseHeader(HttpServletResponse response, String fileExtension, String contentType, String fileNameStartsWith) {
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-    String timestamp = dateFormat.format(new Date());
-    String fileName = fileNameStartsWith + timestamp + fileExtension;
+    public void setResponseHeader(HttpServletResponse response, String fileExtension, String contentType, String fileNameStartsWith) {
+        var dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        var timestamp = dateFormat.format(new Date());
+        var fileName = fileNameStartsWith + timestamp + fileExtension;
 
-    response.setContentType(contentType);
+        response.setContentType(contentType);
 
-    String headerKey = "Content-Disposition";
-    String headerValue = "attachment; filename=" + fileName;
-    response.setHeader(headerKey, headerValue);
-  }
+        var headerKey = "Content-Disposition";
+        var headerValue = "attachment; filename=" + fileName;
+
+        response.setHeader(headerKey, headerValue);
+    }
 }
